@@ -659,29 +659,27 @@
 
     /* Top right Status box from PPT */
     .ppt-status-card {
-      position: absolute;
-      top: 24px;
-      right: 36px;
-      width: 130px;
-      border: 1px solid #444492;
-      border-radius: 3px;
+      width: 110px;
+      border: 1.5px solid var(--brand-border);
+      border-radius: 4px;
       overflow: hidden;
       background: #ffffff;
       box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      flex-shrink: 0;
     }
 
     .ppt-status-header {
       background-color: var(--brand-status-header);
       color: #ffffff;
       font-weight: 700;
-      font-size: 13px;
+      font-size: 12px;
       text-align: center;
-      padding: 4px 0;
+      padding: 3px 0;
       letter-spacing: 0.5px;
     }
 
     .ppt-status-body {
-      padding: 10px 0;
+      padding: 6px 0;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -689,10 +687,10 @@
     }
 
     .ppt-status-circle {
-      width: 28px;
-      height: 28px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
-      border: 1px solid #666666;
+      border: 1px solid rgba(0, 0, 0, 0.15);
     }
 
     /* 2-Column Grid matching PPTX */
@@ -700,7 +698,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 22px;
-      margin-top: 10px;
+      margin-top: 4px;
       flex: 1;
     }
 
@@ -1607,20 +1605,20 @@
          PAGE 4: 本周工作 (Task Management - 完全复刻 ppt 样式)
          ==================================================================== -->
     <section class="slide slide-task-mgmt" id="slide4">
-      <!-- Title Area -->
-      <div class="slide-header" style="margin-bottom: 8px;">
+      <!-- Title Area with Integrated Status Card (消除与下方网格重叠) -->
+      <div class="slide-header" style="margin-bottom: 12px; align-items: flex-start;">
         <div class="slide-title-group">
           <h2 class="slide-title" style="font-size: 28px;">Task Management</h2>
           <div class="slide-subtitle" style="font-size: 18px; margin-top: 2px;">Week 16：4.1～4.3，2024</div>
         </div>
-      </div>
 
-      <!-- Top Right Status Card (复刻 PPT Slide 4 右上角 Status 徽标卡) -->
-      <div class="ppt-status-card">
-        <div class="ppt-status-header">Status</div>
-        <div class="ppt-status-body">
-          <!-- Orange/Amber Circle indicating Caution -->
-          <div class="ppt-status-circle" style="background-color: #ED7D31;"></div>
+        <!-- Top Right Status Card (复刻 PPT Slide 4 右上角 Status 徽标卡) -->
+        <div class="ppt-status-card">
+          <div class="ppt-status-header">Status</div>
+          <div class="ppt-status-body">
+            <!-- Orange/Amber Circle indicating Caution -->
+            <div class="ppt-status-circle" style="background-color: #ED7D31;"></div>
+          </div>
         </div>
       </div>
 
