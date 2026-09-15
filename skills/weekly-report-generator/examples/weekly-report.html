@@ -1,0 +1,2489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>项目周报 | Weekly Report</title>
+  <style>
+    /* ==========================================================================
+       Enterprise Theme CSS Custom Properties (风格定义设计系统)
+       ========================================================================== */
+    :root {
+      /* Default: Classic Navy (Astra Blue - 对应原PPT商务蓝风格) */
+      --brand-primary: #005587;
+      --brand-primary-dark: #001847;
+      --brand-primary-light: #e8f2f8;
+      --brand-accent: #4874CB;
+      --brand-accent-sec: #0070C0;
+      --brand-status-header: #245D38;
+      --brand-border: #005587;
+      --brand-table-header: #11375C;
+      --brand-gantt-header: #0070C0;
+      --brand-holiday: #FFC000;
+      --brand-text-main: #001847;
+      --brand-text-body: #1e293b;
+      --brand-bg: #f8fafc;
+      --slide-bg: #ffffff;
+      
+      /* Status indicator colors */
+      --status-good: #00B050;
+      --status-caution: #FFC000;
+      --status-risk: #FF0000;
+
+      /* Slide dimensions (16:9 widescreen standard) */
+      --slide-width: 1280px;
+      --slide-height: 720px;
+      --slide-ratio: 16 / 9;
+    }
+
+    /* Enterprise Themes Presets */
+    [data-theme="tech-blue"] {
+      --brand-primary: #2563eb;
+      --brand-primary-dark: #1e3a8a;
+      --brand-primary-light: #eff6ff;
+      --brand-accent: #3b82f6;
+      --brand-accent-sec: #0284c7;
+      --brand-status-header: #15803d;
+      --brand-border: #2563eb;
+      --brand-table-header: #1e3a8a;
+      --brand-gantt-header: #0284c7;
+      --brand-holiday: #f59e0b;
+      --brand-text-main: #0f172a;
+      --brand-text-body: #334155;
+    }
+
+    [data-theme="corporate-crimson"] {
+      --brand-primary: #b91c1c;
+      --brand-primary-dark: #7f1d1d;
+      --brand-primary-light: #fef2f2;
+      --brand-accent: #ef4444;
+      --brand-accent-sec: #dc2626;
+      --brand-status-header: #166534;
+      --brand-border: #b91c1c;
+      --brand-table-header: #7f1d1d;
+      --brand-gantt-header: #991b1b;
+      --brand-holiday: #f59e0b;
+      --brand-text-main: #450a0a;
+      --brand-text-body: #292524;
+    }
+
+    [data-theme="emerald-forest"] {
+      --brand-primary: #047857;
+      --brand-primary-dark: #064e3b;
+      --brand-primary-light: #ecfdf5;
+      --brand-accent: #10b981;
+      --brand-accent-sec: #059669;
+      --brand-status-header: #064e3b;
+      --brand-border: #047857;
+      --brand-table-header: #064e3b;
+      --brand-gantt-header: #059669;
+      --brand-holiday: #f59e0b;
+      --brand-text-main: #022c22;
+      --brand-text-body: #1c1917;
+    }
+
+    [data-theme="cyber-purple"] {
+      --brand-primary: #7c3aed;
+      --brand-primary-dark: #4c1d95;
+      --brand-primary-light: #f5f3ff;
+      --brand-accent: #8b5cf6;
+      --brand-accent-sec: #6366f1;
+      --brand-status-header: #15803d;
+      --brand-border: #7c3aed;
+      --brand-table-header: #4c1d95;
+      --brand-gantt-header: #6d28d9;
+      --brand-holiday: #f59e0b;
+      --brand-text-main: #2e1065;
+      --brand-text-body: #1e1b4b;
+    }
+
+    [data-theme="minimal-slate"] {
+      --brand-primary: #334155;
+      --brand-primary-dark: #0f172a;
+      --brand-primary-light: #f8fafc;
+      --brand-accent: #475569;
+      --brand-accent-sec: #64748b;
+      --brand-status-header: #14532d;
+      --brand-border: #334155;
+      --brand-table-header: #0f172a;
+      --brand-gantt-header: #334155;
+      --brand-holiday: #eab308;
+      --brand-text-main: #0f172a;
+      --brand-text-body: #1e293b;
+    }
+
+    /* Reset & Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      background-color: var(--brand-bg);
+      color: var(--brand-text-body);
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 60px;
+      padding-bottom: 60px;
+      transition: background-color 0.2s ease;
+    }
+
+    /* Slide Container */
+    .slide-deck {
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+      align-items: center;
+    }
+
+    .slide {
+      width: var(--slide-width);
+      height: var(--slide-height);
+      background-color: var(--slide-bg);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
+      padding: 20px 32px 18px 32px;
+      display: flex;
+      flex-direction: column;
+      border-radius: 4px;
+    }
+
+    /* Slide Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      position: relative;
+      min-height: 40px;
+    }
+
+    .slide-title-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--brand-text-main);
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+    }
+
+    .slide-subtitle {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--brand-text-main);
+      margin-top: 2px;
+    }
+
+    /* Slide Page Number */
+    .slide-footer-num {
+      position: absolute;
+      bottom: 8px;
+      right: 20px;
+      font-size: 10px;
+      color: #94a3b8;
+    }
+
+    /* ==========================================================================
+       SLIDE 1: 封面页 (Cover Page)
+       ========================================================================== */
+    .slide-cover {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 48px 56px;
+      background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+      position: relative;
+    }
+
+    .slide-cover::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background: linear-gradient(90deg, var(--brand-primary-dark), var(--brand-primary), var(--brand-accent-sec));
+    }
+
+    .cover-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .company-badge {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .company-logo-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: var(--brand-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 18px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    }
+
+    .company-info-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .company-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--brand-text-main);
+      letter-spacing: 0.5px;
+    }
+
+    .company-dept {
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    .cover-center-content {
+      margin: auto 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      max-width: 900px;
+    }
+
+    .cover-tag {
+      display: inline-block;
+      padding: 4px 12px;
+      background-color: var(--brand-primary-light);
+      color: var(--brand-primary);
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: 1px solid rgba(0, 85, 135, 0.15);
+    }
+
+    .cover-main-title {
+      font-size: 54px;
+      font-weight: 800;
+      color: var(--brand-text-main);
+      line-height: 1.15;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .cover-sub-title {
+      font-size: 24px;
+      font-weight: 400;
+      color: #475569;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .cover-period-pill {
+      font-size: 14px;
+      color: var(--brand-primary);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .cover-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      padding: 18px 24px;
+      background: #ffffff;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .meta-card {
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #edf2f7;
+      padding-right: 12px;
+    }
+
+    .meta-card:last-child {
+      border-right: none;
+    }
+
+    .meta-label {
+      font-size: 11px;
+      color: #64748b;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .meta-value {
+      font-size: 14px;
+      color: var(--brand-text-main);
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       SLIDE 2: 整体项目计划 (Work Plan — Overview)
+       ========================================================================== */
+    .gantt-legend-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 11px;
+      color: #475569;
+    }
+
+    .gantt-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .gantt-block-sample {
+      width: 14px;
+      height: 10px;
+      border-radius: 2px;
+    }
+
+    .gantt-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+    }
+
+    .gantt-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 10px;
+    }
+
+    .gantt-table th,
+    .gantt-table td {
+      border: 1px solid #cbd5e1;
+      padding: 0.5px 2px;
+      text-align: center;
+      position: relative;
+      height: 17px;
+    }
+
+    /* Column widths */
+    .col-workstream { width: 85px; font-weight: 700; background-color: #ffffff; font-size: 9.5px; }
+    .col-category   { width: 92px; font-weight: 600; background-color: #ffffff; font-size: 9px; }
+    .col-task       { width: 125px; text-align: left !important; padding-left: 5px !important; font-weight: 500; font-size: 9px; }
+    .col-week       { width: calc((100% - 302px) / 15); font-size: 8.5px; }
+
+    /* Gantt Header */
+    .gantt-header-th {
+      background-color: var(--brand-gantt-header);
+      color: #ffffff;
+      font-weight: 700;
+      height: 24px;
+      line-height: 1.1;
+      font-size: 9px;
+      padding: 1px !important;
+    }
+
+    .week-title {
+      font-weight: 700;
+      font-size: 10.5px;
+    }
+
+    .week-date {
+      font-weight: 400;
+      font-size: 8.5px;
+      opacity: 0.9;
+    }
+
+    /* Gantt Cell Highlights */
+    .cell-holiday {
+      background-color: var(--brand-holiday) !important;
+      color: #78350f;
+    }
+
+    .holiday-col-text {
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      letter-spacing: 4px;
+      font-weight: 700;
+      font-size: 11px;
+      color: #78350f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    .cell-current-week {
+      border-left: 2px solid #ef4444 !important;
+      border-right: 2px solid #ef4444 !important;
+    }
+
+    /* Gantt Progress Bars */
+    .gantt-bar-completed {
+      background-color: var(--brand-accent) !important;
+    }
+
+    .gantt-bar-active {
+      background-color: var(--brand-accent-sec) !important;
+    }
+
+    .gantt-bar-planned {
+      background-color: var(--brand-accent-sec) !important;
+    }
+
+    /* Red Star Milestone */
+    .milestone-star {
+      color: #ef4444;
+      font-size: 14px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+      font-weight: bold;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
+    }
+
+    /* We are here pointer */
+    .we-are-here-indicator {
+      position: absolute;
+      bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 800;
+      color: #dc2626;
+      white-space: nowrap;
+      transform: translateX(-40%);
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.92);
+      padding: 1px 4px;
+      border-radius: 2px;
+    }
+
+    .red-arrow-up {
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 9px solid #dc2626;
+      display: inline-block;
+    }
+
+    /* ==========================================================================
+       SLIDE 3: 交付物及状态 (Deliverables / Output Status)
+       ========================================================================== */
+    .status-indicator-legend-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 6px 14px;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    }
+
+    .legend-box-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--brand-text-main);
+      margin-bottom: 2px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
+    }
+
+    .legend-box-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--brand-text-main);
+      font-weight: 500;
+    }
+
+    .status-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+      border: 1px solid rgba(0,0,0,0.15);
+    }
+
+    .status-dot.dot-good    { background-color: var(--status-good); }
+    .status-dot.dot-caution { background-color: var(--status-caution); }
+    .status-dot.dot-risk    { background-color: var(--status-risk); }
+
+    .deliverables-table-wrapper {
+      flex: 1;
+      overflow: hidden;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+    }
+
+    .deliverables-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 12.5px;
+    }
+
+    .deliverables-table th {
+      background-color: var(--brand-table-header);
+      color: #ffffff;
+      font-weight: 700;
+      text-align: left;
+      padding: 10px 14px;
+      border: 1px solid #475569;
+    }
+
+    .deliverables-table td {
+      padding: 9px 14px;
+      border: 1px solid #e2e8f0;
+      color: #1e293b;
+      vertical-align: middle;
+    }
+
+    .deliverables-table tr:nth-child(even) td {
+      background-color: #f1f5f9;
+    }
+
+    .deliverables-table tr:nth-child(odd) td {
+      background-color: #ffffff;
+    }
+
+    .deliverables-table .col-m-name { width: 34%; font-weight: 600; color: #0f172a; }
+    .deliverables-table .col-m-prog { width: 34%; }
+    .deliverables-table .col-m-date { width: 12%; text-align: center; font-variant-numeric: tabular-nums; }
+    .deliverables-table .col-m-stat { width: 10%; text-align: center; }
+    .deliverables-table .col-m-indi { width: 10%; text-align: center; }
+
+    .status-pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .status-pill.completed { background-color: #dcfce7; color: #15803d; }
+    .status-pill.ongoing   { background-color: #fef9c3; color: #a16207; }
+    .status-pill.pending   { background-color: #f1f5f9; color: #64748b; }
+
+    /* ==========================================================================
+       SLIDE 4: 本周工作 (Task Management - 完全复刻 ppt 样式)
+       ========================================================================== */
+    .slide-task-mgmt {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top right Status box from PPT */
+    .ppt-status-card {
+      position: absolute;
+      top: 24px;
+      right: 36px;
+      width: 130px;
+      border: 1px solid #444492;
+      border-radius: 3px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    .ppt-status-header {
+      background-color: var(--brand-status-header);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 13px;
+      text-align: center;
+      padding: 4px 0;
+      letter-spacing: 0.5px;
+    }
+
+    .ppt-status-body {
+      padding: 10px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #ffffff;
+    }
+
+    .ppt-status-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid #666666;
+    }
+
+    /* 2-Column Grid matching PPTX */
+    .task-mgmt-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 10px;
+      flex: 1;
+    }
+
+    .task-mgmt-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* PPT Card Widget */
+    .ppt-card {
+      display: flex;
+      flex-direction: column;
+      border: 1.5px solid var(--brand-border);
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .ppt-card-header {
+      background-color: var(--brand-primary);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 13px;
+      text-align: center;
+      padding: 6px 12px;
+      letter-spacing: 0.2px;
+    }
+
+    .ppt-card-body {
+      padding: 12px 16px;
+      font-size: 12.5px;
+      color: #000000;
+      line-height: 1.7;
+      flex: 1;
+      background: #ffffff;
+    }
+
+    .ppt-list-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .ppt-list-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .ppt-list-num {
+      font-weight: 500;
+      color: #000000;
+      min-width: 14px;
+    }
+
+    .ppt-tag {
+      font-weight: 700;
+      color: #000000;
+    }
+
+    /* Milestones Section in Right Column Bottom */
+    .milestones-section {
+      margin-top: 4px;
+    }
+
+    .milestones-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .milestones-table th {
+      border-top: 1.5px solid #000000;
+      border-bottom: 1.5px solid #000000;
+      padding: 6px 10px;
+      font-weight: 700;
+      color: #000000;
+    }
+
+    .milestones-table th:first-child {
+      text-align: left;
+    }
+
+    .milestones-table th:last-child {
+      text-align: right;
+    }
+
+    .milestones-table td {
+      padding: 10px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .milestones-table td:last-child {
+      text-align: right;
+    }
+
+    /* Bottom Status Legend (复刻 PPT 底部状态图例) */
+    .ppt-bottom-legend {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      margin-top: auto;
+      padding-top: 12px;
+      font-size: 11px;
+      color: #000000;
+    }
+
+    .ppt-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ppt-legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid #666666;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    /* ==========================================================================
+       Interactive Controls Toolbar (屏幕交互栏，打印时自动隐藏)
+       ========================================================================== */
+    .control-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      background: #0f172a;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .control-brand {
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #f8fafc;
+    }
+
+    .control-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      font-size: 12.5px;
+      font-weight: 600;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary {
+      background-color: var(--brand-primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn-export-pdf {
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      color: #ffffff;
+    }
+
+    .btn-export-pdf:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn-secondary {
+      background-color: #334155;
+      color: #f1f5f9;
+    }
+
+    .btn-secondary:hover {
+      background-color: #475569;
+    }
+
+    .select-theme {
+      background-color: #1e293b;
+      color: #ffffff;
+      border: 1px solid #475569;
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    /* Custom Theme Drawer */
+    .custom-theme-drawer {
+      position: fixed;
+      right: 20px;
+      top: 60px;
+      width: 320px;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      border: 1px solid #e2e8f0;
+      padding: 16px;
+      z-index: 1001;
+      display: none;
+    }
+
+    .custom-theme-drawer.active {
+      display: block;
+    }
+
+    .drawer-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .drawer-field {
+      margin-bottom: 12px;
+    }
+
+    .drawer-field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+
+    .color-picker-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .color-picker-row input[type="color"] {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .drawer-field input[type="text"] {
+      width: 100%;
+      padding: 6px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    /* Data Input Modal Styles */
+    .data-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .data-modal-overlay.active {
+      display: flex;
+    }
+
+    .data-modal-card {
+      background: #ffffff;
+      width: 960px;
+      max-width: 95vw;
+      height: 86vh;
+      border-radius: 10px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #cbd5e1;
+    }
+
+    .modal-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+    }
+
+    /* ==========================================================================
+       PRINT & PDF EXPORT STYLES (用于邮件提交的 PDF 完美排版)
+       ========================================================================== */
+    @page {
+      size: 297mm 167.0625mm; /* 16:9 standard landscape presentation proportion */
+      margin: 0;
+    }
+
+    @media print {
+      html, body {
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .control-bar,
+      .custom-theme-drawer {
+        display: none !important;
+      }
+
+      .slide-deck {
+        gap: 0 !important;
+      }
+
+      .slide {
+        width: 100vw !important;
+        height: 100vh !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        page-break-inside: avoid !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+        padding: 20px 32px 18px 32px !important;
+      }
+
+      .slide#slide2 {
+        padding: 14px 28px 12px 28px !important;
+      }
+
+      .slide#slide2 .slide-header {
+        margin-bottom: 6px !important;
+      }
+
+      .slide:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important;
+      }
+    }
+  </style>
+</head>
+<body data-theme="classic-navy">
+
+  <!-- Interactive Control Bar (Auto-hidden in Print/PDF) -->
+  <div class="control-bar">
+    <div class="control-brand">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <line x1="16" y1="13" x2="8" y2="13"></line>
+        <line x1="16" y1="17" x2="8" y2="17"></line>
+        <polyline points="10 9 9 9 8 9"></polyline>
+      </svg>
+      <span>企业周报生成模板 (HTML Weekly Report)</span>
+    </div>
+    <div class="control-actions">
+      <span style="font-size: 12px; color: #94a3b8;">企业风格适配:</span>
+      <select class="select-theme" id="themeSelect" onchange="changeTheme(this.value)">
+        <option value="classic-navy">经典企业蓝 (Astra Blue - 对应原PPT)</option>
+        <option value="tech-blue">现代科技蓝 (Modern Tech Blue)</option>
+        <option value="corporate-crimson">商务中国红 (Huawei / Lenovo Crimson)</option>
+        <option value="emerald-forest">自然与新能源绿 (ESG / Emerald)</option>
+        <option value="cyber-purple">未来数智紫 (Digital AI Purple)</option>
+        <option value="minimal-slate">极简极客灰 (Executive Minimal Slate)</option>
+      </select>
+      <button class="btn btn-primary" onclick="toggleDataModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>
+        📝 输入数据与生成
+      </button>
+      <button class="btn btn-secondary" onclick="toggleCustomDrawer()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        企业自定义风格
+      </button>
+      <button class="btn btn-export-pdf" onclick="window.print()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 6 2 18 2 18 9"></polyline>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+          <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+        导出 PDF / 打印
+      </button>
+    </div>
+  </div>
+
+  <!-- Data Input Modal (交互输入数据与生成周报) -->
+  <div class="data-modal-overlay" id="dataInputModal">
+    <div class="data-modal-card">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 16px; font-weight: 700; color: #0f172a;">📝 周报数据输入与即时生成引擎</span>
+          <span style="font-size: 12px; background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 4px; font-weight: 600;">JSON 驱动 · 自动计算 Timeline</span>
+        </div>
+        <button onclick="toggleDataModal()" style="border: none; background: none; font-size: 20px; cursor: pointer; color: #64748b;">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 16px; display: flex; flex-direction: column; flex: 1; overflow: hidden; gap: 10px;">
+        <div style="font-size: 12px; color: #475569; display: flex; justify-content: space-between;">
+          <span>在此处粘贴或修改周报 JSON（修改任务、起止周、里程碑、状态），点击下方按钮即可一键重新计算生成所有 4 页汇报内容：</span>
+          <a href="#" onclick="resetToSampleData(); return false;" style="color: var(--brand-primary); font-weight: 600; text-decoration: none;">重置为原 PPT 样例数据</a>
+        </div>
+        <textarea id="jsonInputArea" style="flex: 1; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11.5px; line-height: 1.5; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; resize: none; background: #0f172a; color: #f8fafc; outline: none;"></textarea>
+      </div>
+      <div class="modal-footer" style="padding: 12px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+        <span id="jsonStatusMsg" style="font-size: 12px; color: #059669; font-weight: 600;">就绪</span>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-secondary" onclick="toggleDataModal()">取消</button>
+          <button class="btn btn-secondary" onclick="downloadCurrentHtml()">下载此配置 HTML</button>
+          <button class="btn btn-primary" onclick="applyJsonAndRender()" style="padding: 8px 20px;">⚡ 即时计算生成全套周报</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Theme Drawer (Slide-out panel) -->
+  <div class="custom-theme-drawer" id="customThemeDrawer">
+    <div class="drawer-title">
+      <span>企业视觉风格微调</span>
+      <span style="cursor: pointer; font-size: 16px;" onclick="toggleCustomDrawer()">✕</span>
+    </div>
+    <div class="drawer-field">
+      <label>企业 / 团队名称</label>
+      <input type="text" id="inputCompanyName" value="AstraZeneca / 数字化交付中心" oninput="updateCompanyInfo()">
+    </div>
+    <div class="drawer-field">
+      <label>品牌 Logo 缩写</label>
+      <input type="text" id="inputLogoText" value="AZ" oninput="updateCompanyInfo()">
+    </div>
+    <div class="drawer-field">
+      <label>汇报部门</label>
+      <input type="text" id="inputDeptName" value="商业技术交付团队" oninput="updateCompanyInfo()">
+    </div>
+    <div class="drawer-field">
+      <label>主品牌色 (Primary Color)</label>
+      <div class="color-picker-row">
+        <input type="color" id="pickerPrimary" value="#005587" onchange="applyCustomColor('--brand-primary', this.value); applyCustomColor('--brand-border', this.value);">
+        <span id="labelPrimary" style="font-size: 11px; font-family: monospace;">#005587</span>
+      </div>
+    </div>
+    <div class="drawer-field">
+      <label>标题暗色 (Primary Dark / Text)</label>
+      <div class="color-picker-row">
+        <input type="color" id="pickerDark" value="#001847" onchange="applyCustomColor('--brand-primary-dark', this.value); applyCustomColor('--brand-text-main', this.value);">
+        <span id="labelDark" style="font-size: 11px; font-family: monospace;">#001847</span>
+      </div>
+    </div>
+    <div class="drawer-field">
+      <label>甘特图强调色 (Accent Color)</label>
+      <div class="color-picker-row">
+        <input type="color" id="pickerAccent" value="#0070C0" onchange="applyCustomColor('--brand-accent-sec', this.value); applyCustomColor('--brand-gantt-header', this.value);">
+        <span id="labelAccent" style="font-size: 11px; font-family: monospace;">#0070C0</span>
+      </div>
+    </div>
+    <button class="btn btn-primary" style="width: 100%; margin-top: 8px; justify-content: center;" onclick="toggleCustomDrawer()">
+      完成配置
+    </button>
+  </div>
+
+  <!-- All 4 Slides Deck -->
+  <div class="slide-deck">
+
+    <!-- ====================================================================
+         PAGE 1: 封面页 (Cover Page)
+         ==================================================================== -->
+    <section class="slide slide-cover" id="slide1">
+      <div class="cover-top-bar">
+        <div class="company-badge">
+          <div class="company-logo-icon" id="logoIconBadge">AZ</div>
+          <div class="company-info-text">
+            <span class="company-name" id="displayCompanyName">AstraZeneca / 数字化交付中心</span>
+            <span class="company-dept" id="displayDeptName">商业技术交付团队</span>
+          </div>
+        </div>
+        <div style="font-size: 12px; color: #64748b; font-weight: 600;">
+          CONFIDENTIAL · 内部汇报
+        </div>
+      </div>
+
+      <div class="cover-center-content">
+        <div class="cover-tag">Project Weekly Progress</div>
+        <h1 class="cover-main-title">Weekly Report</h1>
+        <h2 class="cover-sub-title" id="displayProjectTitle">手机端搭建与 Web 端优化项目</h2>
+        <div class="cover-period-pill">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span id="displayReportPeriod">汇报周期：Week 16 (2024.04.01 ～ 2024.04.03)</span>
+        </div>
+      </div>
+
+      <div class="cover-meta-grid">
+        <div class="meta-card">
+          <span class="meta-label">项目编号 / Code</span>
+          <span class="meta-value">PRJ-2024-AZ-Q1</span>
+        </div>
+        <div class="meta-card">
+          <span class="meta-label">当前进度状态 / Status</span>
+          <span class="meta-value" style="color: #d97706; display: flex; align-items: center; gap: 6px;">
+            <span class="status-dot dot-caution" style="width: 8px; height: 8px;"></span>
+            受控推进中
+          </span>
+        </div>
+        <div class="meta-card">
+          <span class="meta-label">汇报团队 / Reporter</span>
+          <span class="meta-value" id="displayReporter">项目交付组 (AZ Team)</span>
+        </div>
+        <div class="meta-card">
+          <span class="meta-label">发布日期 / Date</span>
+          <span class="meta-value">2024-04-03</span>
+        </div>
+      </div>
+
+      <div class="slide-footer-num">1</div>
+    </section>
+
+    <!-- ====================================================================
+         PAGE 2: 整体项目计划 (Work Plan — Overview)
+         ==================================================================== -->
+    <section class="slide" id="slide2">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h2 class="slide-title">Work Plan —Overview</h2>
+          <span class="slide-subtitle" style="font-size: 13px; color: #64748b; font-weight: 500;">端到端执行计划及进度跟踪 (W6 - W20)</span>
+        </div>
+        <div class="gantt-legend-bar">
+          <div class="gantt-legend-item">
+            <span class="milestone-star">★</span>
+            <span>关键里程碑</span>
+          </div>
+          <div class="gantt-legend-item">
+            <span class="gantt-block-sample gantt-bar-completed"></span>
+            <span>前期已完成阶段</span>
+          </div>
+          <div class="gantt-legend-item">
+            <span class="gantt-block-sample gantt-bar-active"></span>
+            <span>当前在途/后续计划</span>
+          </div>
+          <div class="gantt-legend-item">
+            <span class="gantt-block-sample cell-holiday"></span>
+            <span>特殊假期时段</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="gantt-container">
+        <table class="gantt-table">
+        <thead>
+            <tr><th class="gantt-header-th col-workstream">Workstream</th><th class="gantt-header-th col-category">Category</th><th class="gantt-header-th col-task">Tasks</th><th class="gantt-header-th col-week"><div class="week-title">W6</div><div class="week-date">1.22-1.26</div></th><th class="gantt-header-th col-week"><div class="week-title">W7</div><div class="week-date">1.29-2.2</div></th><th class="gantt-header-th col-week"><div class="week-title">W8</div><div class="week-date">2.4-2.8</div></th><th class="gantt-header-th col-week" style="background-color: #d97706;"><div class="week-title">W9</div><div class="week-date">2.12-2.17</div></th><th class="gantt-header-th col-week"><div class="week-title">W10</div><div class="week-date">2.18-2.23</div></th><th class="gantt-header-th col-week"><div class="week-title">W11</div><div class="week-date">2.26-3.1</div></th><th class="gantt-header-th col-week"><div class="week-title">W12</div><div class="week-date">3.4-3.8</div></th><th class="gantt-header-th col-week"><div class="week-title">W13</div><div class="week-date">3.11-3.15</div></th><th class="gantt-header-th col-week"><div class="week-title">W14</div><div class="week-date">3.18-3.22</div></th><th class="gantt-header-th col-week"><div class="week-title">W15</div><div class="week-date">3.25-3.29</div></th><th class="gantt-header-th col-week"><div class="week-title">W16</div><div class="week-date">4.1-4.5</div></th><th class="gantt-header-th col-week"><div class="week-title">W17</div><div class="week-date">4.8-4.12</div></th><th class="gantt-header-th col-week"><div class="week-title">W18</div><div class="week-date">4.15-4.19</div></th><th class="gantt-header-th col-week"><div class="week-title">W19</div><div class="week-date">4.22-4.26</div></th><th class="gantt-header-th col-week"><div class="week-title">W20</div><div class="week-date">4.29-5.3</div></th></tr>
+        </thead>
+        <tbody>
+            <tr><td rowspan="13" class="col-workstream" style="background:#f8fafc; font-weight:700;">手机端搭建</td><td rowspan="1" class="col-category">项目启动</td><td class="col-task">项目启动</td><td></td><td></td><td></td><td rowspan="26" class="cell-holiday"><div class="holiday-col-text">春节假期</div></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td rowspan="3" class="col-category">需求收集</td><td class="col-task">手机端接入确认</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td class="col-task">功能梳理及确认</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td class="col-task">环境准备</td><td></td><td></td><td><span class="milestone-star">★</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td rowspan="2" class="col-category">系统设计</td><td class="col-task">原型设计与确认</td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td class="col-task">高保真确认</td><td></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td rowspan="3" class="col-category">系统开发&测试</td><td class="col-task">系统开发</td><td></td><td></td><td></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td><span class="milestone-star">★</span></td><td></td><td></td><td></td></tr>
+            <tr><td class="col-task">掌上AZ集成</td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td></td><td><span class="milestone-star">★</span></td><td></td><td></td></tr>
+            <tr><td class="col-task">SIT</td><td></td><td></td><td><span class="milestone-star">★</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td></td><td></td><td></td></tr>
+            <tr><td rowspan="2" class="col-category">UAT</td><td class="col-task">UAT准备</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td></td><td></td><td></td></tr>
+            <tr><td class="col-task">系统UAT</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td></td><td></td></tr>
+            <tr><td rowspan="2" class="col-category">Go-live</td><td class="col-task">上线准备&部署</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td></td><td></td></tr>
+            <tr><td class="col-task">系统上线</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td></td></tr>
+            <tr><td rowspan="13" class="col-workstream" style="background:#f8fafc; font-weight:700;">Web端优化</td><td rowspan="1" class="col-category">需求梳理</td><td class="col-task">功能梳理及确认</td><td class="gantt-bar-completed"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td rowspan="2" class="col-category">重点功能设计</td><td class="col-task">原型设计与确认</td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td class="col-task">高保真设计与确认</td><td></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="milestone-star">★</span></td><td></td><td></td><td></td></tr>
+            <tr><td rowspan="2" class="col-category">重点功能开发&测试</td><td class="col-task">系统功能搭建</td><td></td><td></td><td></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td></td><td><span class="milestone-star">★</span></td><td></td><td></td></tr>
+            <tr><td class="col-task">SIT</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td></td><td></td><td></td></tr>
+            <tr><td rowspan="2" class="col-category">其他功能设计</td><td class="col-task">原型设计与确认</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td class="col-task">高保真设计与确认</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td></td><td></td><td></td></tr>
+            <tr><td rowspan="2" class="col-category">其他功能开发&测试</td><td class="col-task">系统功能搭建</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td class="gantt-bar-planned"></td><td class="gantt-bar-planned"></td></tr>
+            <tr><td class="col-task">SIT</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td rowspan="2" class="col-category">UAT</td><td class="col-task">UAT准备</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td></td><td></td><td></td></tr>
+            <tr><td class="col-task">系统UAT</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td></td><td></td></tr>
+            <tr><td rowspan="2" class="col-category">Go-live</td><td class="col-task">上线准备&部署</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td></td><td></td></tr>
+            <tr><td class="col-task">系统上线</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td style="position: relative;">
+                <div class="we-are-here-indicator" style="left: -140px; bottom: 2px;">
+                  <span class="red-arrow-up"></span>
+                  <span>We are here</span>
+                </div>
+                </td><td></td><td></td><td class="gantt-bar-planned"></td><td></td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="slide-footer-num">2</div>
+    </section>
+
+    <!-- ====================================================================
+         PAGE 3: 交付物及状态 (Deliverables / Output Status)
+         ==================================================================== -->
+    <section class="slide" id="slide3">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h2 class="slide-title">Deliverables / Output Status</h2>
+          <span class="slide-subtitle" style="font-size: 13px; color: #64748b; font-weight: 500;">关键交付节点与成果物健康度评估</span>
+        </div>
+        <!-- Status Indicator Legend Card (复刻 PPT Slide 3 右上角) -->
+        <div class="status-indicator-legend-box">
+          <div class="legend-box-title">Status Indicator</div>
+          <div class="legend-box-row">
+            <span class="status-dot dot-risk"></span>
+            <span>High Risk</span>
+          </div>
+          <div class="legend-box-row">
+            <span class="status-dot dot-caution"></span>
+            <span>Caution</span>
+          </div>
+          <div class="legend-box-row">
+            <span class="status-dot dot-good"></span>
+            <span>No Risk</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="deliverables-table-wrapper">
+        <table class="deliverables-table">
+          <thead>
+            <tr>
+              <th class="col-m-name">Milestone</th>
+              <th class="col-m-prog">Progress</th>
+              <th class="col-m-date">Date</th>
+              <th class="col-m-stat">Status</th>
+              <th class="col-m-indi">Indicator</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-m-name">项目启动</td>
+              <td class="col-m-prog">已完成</td>
+              <td class="col-m-date">2023.12.18</td>
+              <td class="col-m-stat"><span class="status-pill completed">已完成</span></td>
+              <td class="col-m-indi"><span class="status-dot dot-good"></span></td>
+            </tr>
+            <tr>
+              <td class="col-m-name">环境确认</td>
+              <td class="col-m-prog">和掌上 AZ 完成对接方案沟通和确认</td>
+              <td class="col-m-date">2024.1.5</td>
+              <td class="col-m-stat"><span class="status-pill completed">已完成</span></td>
+              <td class="col-m-indi"><span class="status-dot dot-good"></span></td>
+            </tr>
+            <tr>
+              <td class="col-m-name">需求确认</td>
+              <td class="col-m-prog">完成功能梳理</td>
+              <td class="col-m-date">2024.1.5</td>
+              <td class="col-m-stat"><span class="status-pill completed">已完成</span></td>
+              <td class="col-m-indi"><span class="status-dot dot-good"></span></td>
+            </tr>
+            <tr>
+              <td class="col-m-name">手机端&web端重点功能系统设计确认</td>
+              <td class="col-m-prog">系统设计完成</td>
+              <td class="col-m-date">2024.2.8</td>
+              <td class="col-m-stat"><span class="status-pill completed">已完成</span></td>
+              <td class="col-m-indi"><span class="status-dot dot-good"></span></td>
+            </tr>
+            <tr>
+              <td class="col-m-name">手机端&web端重点功能系统开发完成</td>
+              <td class="col-m-prog">完成行业大会和临床研究模块搭建，手机端调整中。</td>
+              <td class="col-m-date">2024.4.12</td>
+              <td class="col-m-stat"><span class="status-pill ongoing">进行中</span></td>
+              <td class="col-m-indi"><span class="status-dot dot-caution"></span></td>
+            </tr>
+            <tr>
+              <td class="col-m-name">手机端&web端重点功能系统UAT</td>
+              <td class="col-m-prog">-</td>
+              <td class="col-m-date">2024.4.19</td>
+              <td class="col-m-stat"><span class="status-pill pending">未开始</span></td>
+              <td class="col-m-indi"><span style="color:#94a3b8;">-</span></td>
+            </tr>
+            <tr>
+              <td class="col-m-name">手机端&web端重点功能系统Go-live</td>
+              <td class="col-m-prog">-</td>
+              <td class="col-m-date">2024.4.26</td>
+              <td class="col-m-stat"><span class="status-pill pending">未开始</span></td>
+              <td class="col-m-indi"><span style="color:#94a3b8;">-</span></td>
+            </tr>
+            <tr>
+              <td class="col-m-name">Web端其他功能设计确认</td>
+              <td class="col-m-prog">-</td>
+              <td class="col-m-date">2024.4.5</td>
+              <td class="col-m-stat"><span class="status-pill pending">未开始</span></td>
+              <td class="col-m-indi"><span style="color:#94a3b8;">-</span></td>
+            </tr>
+            <tr>
+              <td class="col-m-name">Web端其他功能开发完成</td>
+              <td class="col-m-prog">-</td>
+              <td class="col-m-date">2024.5.30</td>
+              <td class="col-m-stat"><span class="status-pill pending">未开始</span></td>
+              <td class="col-m-indi"><span style="color:#94a3b8;">-</span></td>
+            </tr>
+            <tr>
+              <td class="col-m-name">Web端其他功能UAT</td>
+              <td class="col-m-prog">-</td>
+              <td class="col-m-date">2024.6.8</td>
+              <td class="col-m-stat"><span class="status-pill pending">未开始</span></td>
+              <td class="col-m-indi"><span style="color:#94a3b8;">-</span></td>
+            </tr>
+            <tr>
+              <td class="col-m-name">Web端其他功能Go-live</td>
+              <td class="col-m-prog">-</td>
+              <td class="col-m-date">2024.6.15</td>
+              <td class="col-m-stat"><span class="status-pill pending">未开始</span></td>
+              <td class="col-m-indi"><span style="color:#94a3b8;">-</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="slide-footer-num">3</div>
+    </section>
+
+    <!-- ====================================================================
+         PAGE 4: 本周工作 (Task Management - 完全复刻 ppt 样式)
+         ==================================================================== -->
+    <section class="slide slide-task-mgmt" id="slide4">
+      <!-- Title Area -->
+      <div class="slide-header" style="margin-bottom: 8px;">
+        <div class="slide-title-group">
+          <h2 class="slide-title" style="font-size: 28px;">Task Management</h2>
+          <div class="slide-subtitle" style="font-size: 18px; margin-top: 2px;">Week 16：4.1～4.3，2024</div>
+        </div>
+      </div>
+
+      <!-- Top Right Status Card (复刻 PPT Slide 4 右上角 Status 徽标卡) -->
+      <div class="ppt-status-card">
+        <div class="ppt-status-header">Status</div>
+        <div class="ppt-status-body">
+          <!-- Orange/Amber Circle indicating Caution -->
+          <div class="ppt-status-circle" style="background-color: #ED7D31;"></div>
+        </div>
+      </div>
+
+      <!-- Main 2-Column Layout (复刻 PPT Slide 4 核心网格) -->
+      <div class="task-mgmt-grid">
+
+        <!-- Left Column -->
+        <div class="task-mgmt-col">
+          <!-- Card 1: Key tasks from previous weeks -->
+          <div class="ppt-card" style="min-height: 220px;">
+            <div class="ppt-card-header">Key tasks from previous weeks</div>
+            <div class="ppt-card-body">
+              <div class="ppt-list-item">
+                <span class="ppt-list-num">1.</span>
+                <div><span class='ppt-tag'>【系统开发】</span>系统开发，手机端功能收尾。</div>
+              </div>
+              <div class="ppt-list-item">
+                <span class="ppt-list-num">2.</span>
+                <div><span class='ppt-tag'>【变更处理】</span>首页设计基于讨论做了更新，待确认。</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Key next steps for next week -->
+          <div class="ppt-card" style="min-height: 180px;">
+            <div class="ppt-card-header">Key next steps for next week</div>
+            <div class="ppt-card-body">
+              <div class="ppt-list-item">
+                <span class="ppt-list-num">1.</span>
+                <div><span class='ppt-tag'>【系统实现】</span>手机端功能联调，掌上AZ&翻译API。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="task-mgmt-col">
+          <!-- Card 1: Risk Management -->
+          <div class="ppt-card" style="min-height: 220px;">
+            <div class="ppt-card-header">Risk Management</div>
+            <div class="ppt-card-body">
+              <div class="ppt-list-item">
+                <span class="ppt-list-num">1.</span>
+                <div>首页部分功能变更，整体timeline预计4月底前可以完成。</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Key Milestones Table -->
+          <div class="milestones-section">
+            <table class="milestones-table">
+              <thead>
+                <tr>
+                  <th>Key Milestones(Next 2 Weeks)</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>-</td>
+                  <td>-</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Status Legend (复刻 PPT Slide 4 底部状态图例) -->
+      <div class="ppt-bottom-legend">
+        <div class="ppt-legend-item">
+          <span class="ppt-legend-dot" style="background-color: #00B050;"></span>
+          <span>如期进行</span>
+        </div>
+        <div class="ppt-legend-item">
+          <span class="ppt-legend-dot" style="background-color: #FFFF00;"></span>
+          <span>有问题/延期，但不影响项目进度</span>
+        </div>
+        <div class="ppt-legend-item">
+          <span class="ppt-legend-dot" style="background-color: #FF0000;"></span>
+          <span>重大问题，影响项目进度</span>
+        </div>
+      </div>
+
+      <div class="slide-footer-num">4</div>
+    </section>
+
+  </div>
+
+    // Global Report Data State
+    let currentReportData = null;
+
+    // Default Sample Data (Fallback & Reset)
+    const DEFAULT_SAMPLE_DATA = {
+      "theme": "classic-navy",
+      "company": {
+        "name": "AstraZeneca / 数字化交付中心",
+        "logoText": "AZ",
+        "department": "商业技术交付团队"
+      },
+      "project": {
+        "title": "手机端搭建与 Web 端优化项目",
+        "reportTitle": "Weekly Report",
+        "projectCode": "PRJ-2024-AZ-Q1",
+        "period": "Week 16 (2024.04.01 ～ 2024.04.03)",
+        "reporter": "项目交付组 (AZ Team)",
+        "reportDate": "2024-04-03",
+        "confidential": "CONFIDENTIAL · 内部汇报",
+        "overallStatusText": "受控推进中",
+        "overallStatus": "caution"
+      },
+      "timeline": {
+        "title": "Work Plan —Overview",
+        "subtitle": "端到端执行计划及进度跟踪 (W6 - W20)",
+        "currentWeek": "W16",
+        "weAreHereText": "We are here",
+        "weeks": [
+          { "id": "W6", "name": "W6", "dates": "1.22-1.26" },
+          { "id": "W7", "name": "W7", "dates": "1.29-2.2" },
+          { "id": "W8", "name": "W8", "dates": "2.4-2.8" },
+          { "id": "W9", "name": "W9", "dates": "2.12-2.17", "isHoliday": true, "holidayName": "春节假期" },
+          { "id": "W10", "name": "W10", "dates": "2.18-2.23" },
+          { "id": "W11", "name": "W11", "dates": "2.26-3.1" },
+          { "id": "W12", "name": "W12", "dates": "3.4-3.8" },
+          { "id": "W13", "name": "W13", "dates": "3.11-3.15" },
+          { "id": "W14", "name": "W14", "dates": "3.18-3.22" },
+          { "id": "W15", "name": "W15", "dates": "3.25-3.29" },
+          { "id": "W16", "name": "W16", "dates": "4.1-4.5" },
+          { "id": "W17", "name": "W17", "dates": "4.8-4.12" },
+          { "id": "W18", "name": "W18", "dates": "4.15-4.19" },
+          { "id": "W19", "name": "W19", "dates": "4.22-4.26" },
+          { "id": "W20", "name": "W20", "dates": "4.29-5.3" }
+        ],
+        "tasks": [
+          { "workstream": "手机端搭建", "category": "项目启动", "task": "项目启动" },
+          { "workstream": "手机端搭建", "category": "需求收集", "task": "手机端接入确认" },
+          { "workstream": "手机端搭建", "category": "需求收集", "task": "功能梳理及确认" },
+          { "workstream": "手机端搭建", "category": "需求收集", "task": "环境准备", "milestone": "W8" },
+          { "workstream": "手机端搭建", "category": "系统设计", "task": "原型设计与确认", "start": "W6", "end": "W7", "status": "completed" },
+          { "workstream": "手机端搭建", "category": "系统设计", "task": "高保真确认", "start": "W7", "end": "W8", "status": "completed" },
+          {
+            "workstream": "手机端搭建",
+            "category": "系统开发&测试",
+            "task": "系统开发",
+            "spans": [
+              { "start": "W10", "end": "W13", "status": "completed" },
+              { "start": "W14", "end": "W16", "status": "active" }
+            ],
+            "milestone": "W17"
+          },
+          {
+            "workstream": "手机端搭建",
+            "category": "系统开发&测试",
+            "task": "掌上AZ集成",
+            "spans": [
+              { "start": "W12", "end": "W13", "status": "completed" },
+              { "start": "W14", "end": "W16", "status": "active" }
+            ],
+            "milestone": "W18"
+          },
+          { "workstream": "手机端搭建", "category": "系统开发&测试", "task": "SIT", "start": "W17", "end": "W17", "status": "planned", "milestone": "W8" },
+          { "workstream": "手机端搭建", "category": "UAT", "task": "UAT准备", "start": "W16", "end": "W17", "status": "active" },
+          { "workstream": "手机端搭建", "category": "UAT", "task": "系统UAT", "start": "W18", "end": "W18", "status": "planned" },
+          { "workstream": "手机端搭建", "category": "Go-live", "task": "上线准备&部署", "start": "W18", "end": "W18", "status": "planned" },
+          { "workstream": "手机端搭建", "category": "Go-live", "task": "系统上线", "start": "W19", "end": "W19", "status": "planned" },
+
+          { "workstream": "Web端优化", "category": "需求梳理", "task": "功能梳理及确认", "start": "W6", "end": "W6", "status": "completed" },
+          { "workstream": "Web端优化", "category": "重点功能设计", "task": "原型设计与确认", "start": "W6", "end": "W8", "status": "completed" },
+          { "workstream": "Web端优化", "category": "重点功能设计", "task": "高保真设计与确认", "start": "W7", "end": "W8", "status": "completed", "milestone": "W17" },
+          {
+            "workstream": "Web端优化",
+            "category": "重点功能开发&测试",
+            "task": "系统功能搭建",
+            "spans": [
+              { "start": "W10", "end": "W13", "status": "completed" },
+              { "start": "W14", "end": "W16", "status": "active" }
+            ],
+            "milestone": "W18"
+          },
+          { "workstream": "Web端优化", "category": "重点功能开发&测试", "task": "SIT", "start": "W17", "end": "W17", "status": "planned" },
+          { "workstream": "Web端优化", "category": "其他功能设计", "task": "原型设计与确认", "start": "W15", "end": "W16", "status": "active" },
+          { "workstream": "Web端优化", "category": "其他功能设计", "task": "高保真设计与确认", "start": "W16", "end": "W17", "status": "active" },
+          { "workstream": "Web端优化", "category": "其他功能开发&测试", "task": "系统功能搭建", "start": "W18", "end": "W20", "status": "planned" },
+          { "workstream": "Web端优化", "category": "其他功能开发&测试", "task": "SIT" },
+          { "workstream": "Web端优化", "category": "UAT", "task": "UAT准备", "start": "W17", "end": "W17", "status": "planned" },
+          { "workstream": "Web端优化", "category": "UAT", "task": "系统UAT", "start": "W18", "end": "W18", "status": "planned" },
+          { "workstream": "Web端优化", "category": "Go-live", "task": "上线准备&部署", "start": "W18", "end": "W18", "status": "planned" },
+          { "workstream": "Web端优化", "category": "Go-live", "task": "系统上线", "start": "W19", "end": "W19", "status": "planned" }
+        ]
+      },
+      "deliverables": {
+        "title": "Deliverables / Output Status",
+        "subtitle": "关键交付节点与成果物健康度评估",
+        "items": [
+          { "milestone": "项目启动", "progress": "已完成", "date": "2023.12.18", "status": "已完成", "risk": "good" },
+          { "milestone": "环境确认", "progress": "和掌上 AZ 完成对接方案沟通和确认", "date": "2024.1.5", "status": "已完成", "risk": "good" },
+          { "milestone": "需求确认", "progress": "完成功能梳理", "date": "2024.1.5", "status": "已完成", "risk": "good" },
+          { "milestone": "手机端&web端重点功能系统设计确认", "progress": "系统设计完成", "date": "2024.2.8", "status": "已完成", "risk": "good" },
+          { "milestone": "手机端&web端重点功能系统开发完成", "progress": "完成行业大会和临床研究模块搭建，手机端调整中。", "date": "2024.4.12", "status": "进行中", "risk": "caution" },
+          { "milestone": "手机端&web端重点功能系统UAT", "progress": "-", "date": "2024.4.19", "status": "未开始", "risk": "none" },
+          { "milestone": "手机端&web端重点功能系统Go-live", "progress": "-", "date": "2024.4.26", "status": "未开始", "risk": "none" },
+          { "milestone": "Web端其他功能设计确认", "progress": "-", "date": "2024.4.5", "status": "未开始", "risk": "none" },
+          { "milestone": "Web端其他功能开发完成", "progress": "-", "date": "2024.5.30", "status": "未开始", "risk": "none" },
+          { "milestone": "Web端其他功能UAT", "progress": "-", "date": "2024.6.8", "status": "未开始", "risk": "none" },
+          { "milestone": "Web端其他功能Go-live", "progress": "-", "date": "2024.6.15", "status": "未开始", "risk": "none" }
+        ]
+      },
+      "thisWeek": {
+        "title": "Task Management",
+        "subtitle": "Week 16：4.1～4.3，2024",
+        "overallStatus": "caution",
+        "previousTasks": [
+          { "tag": "系统开发", "content": "系统开发，手机端功能收尾。" },
+          { "tag": "变更处理", "content": "首页设计基于讨论做了更新，待确认。" }
+        ],
+        "nextSteps": [
+          { "tag": "系统实现", "content": "手机端功能联调，掌上AZ&翻译API。" }
+        ],
+        "risks": [
+          { "tag": "", "content": "首页部分功能变更，整体timeline预计4月底前可以完成。" }
+        ],
+        "milestones": [
+          { "name": "-", "date": "-" }
+        ]
+      }
+    };
+
+    // Modal Control
+    function toggleDataModal() {
+      const modal = document.getElementById('dataInputModal');
+      const isActive = modal.classList.toggle('active');
+      if (isActive) {
+        document.getElementById('jsonInputArea').value = JSON.stringify(currentReportData || DEFAULT_SAMPLE_DATA, null, 2);
+        document.getElementById('jsonStatusMsg').textContent = "就绪 · 支持即时渲染与计算";
+        document.getElementById('jsonStatusMsg').style.color = "#059669";
+      }
+    }
+
+    function resetToSampleData() {
+      document.getElementById('jsonInputArea').value = JSON.stringify(DEFAULT_SAMPLE_DATA, null, 2);
+      document.getElementById('jsonStatusMsg').textContent = "已重置为原 PPT 样例数据";
+      document.getElementById('jsonStatusMsg').style.color = "#2563eb";
+    }
+
+    function applyJsonAndRender() {
+      try {
+        const text = document.getElementById('jsonInputArea').value;
+        const parsed = JSON.parse(text);
+        currentReportData = parsed;
+        renderAll(currentReportData);
+        document.getElementById('jsonStatusMsg').textContent = "✅ 全套周报重新渲染完成！";
+        document.getElementById('jsonStatusMsg').style.color = "#059669";
+        setTimeout(() => {
+          toggleDataModal();
+        }, 600);
+      } catch (err) {
+        document.getElementById('jsonStatusMsg').textContent = "❌ JSON 格式错误: " + err.message;
+        document.getElementById('jsonStatusMsg').style.color = "#dc2626";
+      }
+    }
+
+    // Download configured standalone HTML
+    function downloadCurrentHtml() {
+      const clonedDoc = document.documentElement.cloneNode(true);
+      // Embed latest data in script
+      let dataScript = clonedDoc.querySelector('#weekly-report-data');
+      if (!dataScript) {
+        dataScript = document.createElement('script');
+        dataScript.id = 'weekly-report-data';
+        dataScript.type = 'application/json';
+        clonedDoc.querySelector('body').appendChild(dataScript);
+      }
+      dataScript.textContent = JSON.stringify(currentReportData || DEFAULT_SAMPLE_DATA, null, 2);
+
+      const blob = new Blob(["<!DOCTYPE html>\n" + clonedDoc.outerHTML], { type: "text/html;charset=utf-8" });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = "weekly-report-custom.html";
+      a.click();
+    }
+
+    // =========================================================================
+    // Core Dynamic Generation Engine (动态生成全套页面与 Timeline)
+    // =========================================================================
+    function renderAll(data) {
+      if (!data) return;
+      currentReportData = data;
+
+      // 1. Theme
+      if (data.theme) {
+        changeTheme(data.theme);
+        const sel = document.getElementById('themeSelect');
+        if (sel) sel.value = data.theme;
+      }
+
+      // 2. Cover (Slide 1)
+      renderCover(data);
+
+      // 3. Timeline / Work Plan (Slide 2)
+      renderTimeline(data.timeline || data.slide2_plan);
+
+      // 4. Deliverables (Slide 3)
+      renderDeliverables(data.deliverables || data.slide3_deliverables);
+
+      // 5. This Week / Task Management (Slide 4)
+      renderThisWeek(data.thisWeek || data.slide4_tasks);
+    }
+
+    // Render Slide 1: Cover
+    function renderCover(data) {
+      const comp = data.company || {};
+      const proj = data.project || {};
+      
+      if (comp.name) document.getElementById('displayCompanyName').textContent = comp.name;
+      if (comp.logoText) document.getElementById('logoIconBadge').textContent = comp.logoText;
+      if (comp.department) document.getElementById('displayDeptName').textContent = comp.department;
+      
+      if (proj.title) document.getElementById('displayProjectTitle').textContent = proj.title;
+      if (proj.period) document.getElementById('displayReportPeriod').textContent = "汇报周期：" + proj.period;
+      if (proj.reporter) document.getElementById('displayReporter').textContent = proj.reporter;
+
+      // Fill in input values in drawer
+      if (comp.name) document.getElementById('inputCompanyName').value = comp.name;
+      if (comp.logoText) document.getElementById('inputLogoText').value = comp.logoText;
+      if (comp.department) document.getElementById('inputDeptName').value = comp.department;
+    }
+
+    // Render Slide 2: Timeline (Work Plan — Overview)
+    function renderTimeline(timelineData) {
+      if (!timelineData) return;
+      const weeks = timelineData.weeks || [];
+      const tasks = timelineData.tasks || timelineData.rows || [];
+      const currentWeekId = timelineData.currentWeek || "W16";
+      const weAreHereText = timelineData.weAreHereText || "We are here";
+      
+      const holidayWeek = weeks.find(w => w.isHoliday);
+      const holidayWeekId = holidayWeek ? holidayWeek.id : null;
+      const holidayName = holidayWeek ? (holidayWeek.holidayName || "假期") : "假期";
+
+      // 1. Render THEAD
+      const thead = document.querySelector('#slide2 .gantt-table thead');
+      if (thead) {
+        let ths = `
+          <tr>
+            <th class="gantt-header-th col-workstream">Workstream</th>
+            <th class="gantt-header-th col-category">Category</th>
+            <th class="gantt-header-th col-task">Tasks</th>
+        `;
+        weeks.forEach(w => {
+          let style = '';
+          if (w.isHoliday) style = ' style="background-color: #d97706;"';
+          else if (w.id === currentWeekId) style = ' style="background-color: var(--brand-primary-dark);"';
+          ths += `
+            <th class="gantt-header-th col-week"${style}>
+              <div class="week-title">${w.name || w.id}</div>
+              <div class="week-date">${w.dates || ''}</div>
+            </th>
+          `;
+        });
+        ths += `</tr>`;
+        thead.innerHTML = ths;
+      }
+
+      // 2. Calculate rowspans for workstreams and categories
+      const workstreamCounts = {};
+      const wsCatCounts = {};
+      tasks.forEach(t => {
+        const ws = t.workstream || "默认工作流";
+        const cat = t.category || "通用";
+        workstreamCounts[ws] = (workstreamCounts[ws] || 0) + 1;
+        const key = `${ws}___${cat}`;
+        wsCatCounts[key] = (wsCatCounts[key] || 0) + 1;
+      });
+
+      const renderedWs = new Set();
+      const renderedCat = new Set();
+      const weekIds = weeks.map(w => w.id);
+
+      // 3. Render TBODY
+      const tbody = document.querySelector('#slide2 .gantt-table tbody');
+      if (tbody) {
+        let rowsHtml = '';
+        tasks.forEach((t, rowIdx) => {
+          const ws = t.workstream || "默认工作流";
+          const cat = t.category || "通用";
+          const taskName = t.task || "";
+          const wsCatKey = `${ws}___${cat}`;
+
+          // Support both spans and direct start/end
+          let spans = t.spans || [];
+          if (!spans.length && t.start && t.end) {
+            spans = [{ start: t.start, end: t.end, status: t.status || "completed" }];
+          }
+
+          // Stars
+          let stars = t.stars || [];
+          if (t.milestone) {
+            if (typeof t.milestone === 'string') stars.push(t.milestone);
+            else if (t.milestone === true && t.end) stars.push(t.end);
+          }
+
+          let cells = '';
+
+          // Workstream rowspan cell
+          if (!renderedWs.has(ws)) {
+            renderedWs.add(ws);
+            cells += `<td rowspan="${workstreamCounts[ws]}" class="col-workstream" style="background:#f8fafc; font-weight:700;">${ws}</td>`;
+          }
+
+          // Category rowspan cell
+          if (!renderedCat.has(wsCatKey)) {
+            renderedCat.add(wsCatKey);
+            cells += `<td rowspan="${wsCatCounts[wsCatKey]}" class="col-category">${cat}</td>`;
+          }
+
+          // Task name
+          cells += `<td class="col-task">${taskName}</td>`;
+
+          // Week cells
+          weeks.forEach((w, wIdx) => {
+            const wId = w.id;
+            // Holiday column
+            if (wId === holidayWeekId) {
+              if (rowIdx === 0) {
+                cells += `<td rowspan="${tasks.length}" class="cell-holiday"><div class="holiday-col-text">${holidayName}</div></td>`;
+              }
+              return;
+            }
+
+            // Check span
+            let cellClass = '';
+            for (let s of spans) {
+              const startIdx = weekIds.indexOf(s.start);
+              const endIdx = weekIds.indexOf(s.end);
+              if (startIdx !== -1 && endIdx !== -1 && wIdx >= startIdx && wIdx <= endIdx) {
+                const status = (s.status || s.type || "completed").toLowerCase();
+                if (status === "completed" || status === "done") cellClass = "gantt-bar-completed";
+                else if (status === "active" || status === "ongoing") cellClass = "gantt-bar-active";
+                else cellClass = "gantt-bar-planned";
+                break;
+              }
+            }
+
+            // Milestone star
+            let content = '';
+            if (stars.includes(wId)) {
+              content = '<span class="milestone-star">★</span>';
+            }
+
+            // We are here indicator
+            if (rowIdx === tasks.length - 1 && wId === currentWeekId) {
+              content += `
+                <div class="we-are-here-indicator" style="left: -140px; bottom: 2px;">
+                  <span class="red-arrow-up"></span>
+                  <span>${weAreHereText}</span>
+                </div>
+              `;
+            }
+
+            const clsAttr = cellClass ? ` class="${cellClass}"` : '';
+            const posAttr = (rowIdx === tasks.length - 1 && wId === currentWeekId) ? ' style="position: relative;"' : '';
+            cells += `<td${clsAttr}${posAttr}>${content}</td>`;
+          });
+
+          rowsHtml += `<tr>${cells}</tr>`;
+        });
+        tbody.innerHTML = rowsHtml;
+      }
+    }
+
+    // Render Slide 3: Deliverables
+    function renderDeliverables(delivData) {
+      if (!delivData) return;
+      const items = delivData.items || [];
+      const tbody = document.querySelector('#slide3 .deliverables-table tbody');
+      if (tbody) {
+        let rowsHtml = '';
+        items.forEach(item => {
+          const status = item.status || "未开始";
+          let pillCls = "pending";
+          if (status.includes("完成") || status.toLowerCase() === "completed") pillCls = "completed";
+          else if (status.includes("进行") || status.toLowerCase() === "ongoing") pillCls = "ongoing";
+
+          let dotHtml = '<span style="color:#94a3b8;">-</span>';
+          const risk = (item.risk || "none").toLowerCase();
+          if (risk === "good" || risk === "norisk") dotHtml = '<span class="status-dot dot-good"></span>';
+          else if (risk === "caution" || risk === "warning") dotHtml = '<span class="status-dot dot-caution"></span>';
+          else if (risk === "risk" || risk === "danger") dotHtml = '<span class="status-dot dot-risk"></span>';
+
+          rowsHtml += `
+            <tr>
+              <td class="col-m-name">${item.milestone || ''}</td>
+              <td class="col-m-prog">${item.progress || '-'}</td>
+              <td class="col-m-date">${item.date || ''}</td>
+              <td class="col-m-stat"><span class="status-pill ${pillCls}">${status}</span></td>
+              <td class="col-m-indi">${dotHtml}</td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = rowsHtml;
+      }
+    }
+
+    // Render Slide 4: This Week (Task Management)
+    function renderThisWeek(thisWeekData) {
+      if (!thisWeekData) return;
+
+      // Subtitle
+      if (thisWeekData.subtitle) {
+        const sub = document.querySelector('#slide4 .slide-subtitle');
+        if (sub) sub.textContent = thisWeekData.subtitle;
+      }
+
+      // Status Circle
+      const circle = document.querySelector('#slide4 .ppt-status-circle');
+      if (circle) {
+        const status = (thisWeekData.overallStatus || "caution").toLowerCase();
+        let color = "#ED7D31"; // caution
+        if (status === "good") color = "#00B050";
+        else if (status === "risk") color = "#FF0000";
+        circle.style.backgroundColor = color;
+      }
+
+      // Previous Tasks
+      const prevBox = document.querySelector('#slide4 .task-mgmt-col:first-child .ppt-card:first-child .ppt-card-body');
+      if (prevBox) {
+        const tasks = thisWeekData.previousTasks || [];
+        if (tasks.length) {
+          prevBox.innerHTML = tasks.map((t, idx) => `
+            <div class="ppt-list-item">
+              <span class="ppt-list-num">${idx + 1}.</span>
+              <div>${t.tag ? `<span class="ppt-tag">【${t.tag}】</span>` : ''}${t.content || ''}</div>
+            </div>
+          `).join('');
+        } else {
+          prevBox.innerHTML = '<div style="color:#94a3b8;">暂无内容</div>';
+        }
+      }
+
+      // Next Steps
+      const nextBox = document.querySelector('#slide4 .task-mgmt-col:first-child .ppt-card:last-child .ppt-card-body');
+      if (nextBox) {
+        const tasks = thisWeekData.nextSteps || [];
+        if (tasks.length) {
+          nextBox.innerHTML = tasks.map((t, idx) => `
+            <div class="ppt-list-item">
+              <span class="ppt-list-num">${idx + 1}.</span>
+              <div>${t.tag ? `<span class="ppt-tag">【${t.tag}】</span>` : ''}${t.content || ''}</div>
+            </div>
+          `).join('');
+        } else {
+          nextBox.innerHTML = '<div style="color:#94a3b8;">暂无内容</div>';
+        }
+      }
+
+      // Risks
+      const riskBox = document.querySelector('#slide4 .task-mgmt-col:last-child .ppt-card:first-child .ppt-card-body');
+      if (riskBox) {
+        const tasks = thisWeekData.risks || [];
+        if (tasks.length) {
+          riskBox.innerHTML = tasks.map((t, idx) => `
+            <div class="ppt-list-item">
+              <span class="ppt-list-num">${idx + 1}.</span>
+              <div>${t.tag ? `<span class="ppt-tag">【${t.tag}】</span>` : ''}${t.content || ''}</div>
+            </div>
+          `).join('');
+        } else {
+          riskBox.innerHTML = '<div style="color:#94a3b8;">暂无风险</div>';
+        }
+      }
+
+      // Milestones table
+      const msTableTbody = document.querySelector('#slide4 .milestones-table tbody');
+      if (msTableTbody) {
+        const ms = thisWeekData.milestones || [];
+        if (ms.length) {
+          msTableTbody.innerHTML = ms.map(m => `
+            <tr>
+              <td>${m.name || '-'}</td>
+              <td>${m.date || '-'}</td>
+            </tr>
+          `).join('');
+        } else {
+          msTableTbody.innerHTML = '<tr><td>-</td><td>-</td></tr>';
+        }
+      }
+    }
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Check if data script embedded
+      const dataScript = document.getElementById('weekly-report-data');
+      if (dataScript) {
+        try {
+          currentReportData = JSON.parse(dataScript.textContent);
+          renderAll(currentReportData);
+        } catch (e) {
+          console.error("Failed to parse embedded weekly-report-data:", e);
+          currentReportData = DEFAULT_SAMPLE_DATA;
+          renderAll(currentReportData);
+        }
+      } else {
+        currentReportData = DEFAULT_SAMPLE_DATA;
+        renderAll(currentReportData);
+      }
+
+      // Check URL theme parameter
+      const params = new URLSearchParams(window.location.search);
+      const urlTheme = params.get('theme');
+      if (urlTheme) {
+        const select = document.getElementById('themeSelect');
+        if (select) {
+          select.value = urlTheme;
+          changeTheme(urlTheme);
+        }
+      }
+
+      checkViewport();
+    });
+
+    window.addEventListener('resize', checkViewport);
+  </script>
+
+  <script id="weekly-report-data" type="application/json">
+{
+  "theme": "classic-navy",
+  "company": {
+    "name": "AstraZeneca / 数字化交付中心",
+    "logoText": "AZ",
+    "department": "商业技术交付团队"
+  },
+  "project": {
+    "title": "手机端搭建与 Web 端优化项目",
+    "reportTitle": "Weekly Report",
+    "projectCode": "PRJ-2024-AZ-Q1",
+    "period": "Week 16 (2024.04.01 ～ 2024.04.03)",
+    "reporter": "项目交付组 (AZ Team)",
+    "reportDate": "2024-04-03",
+    "confidential": "CONFIDENTIAL · 内部汇报",
+    "overallStatusText": "受控推进中",
+    "overallStatus": "caution"
+  },
+  "timeline": {
+    "title": "Work Plan —Overview",
+    "subtitle": "端到端执行计划及进度跟踪 (W6 - W20)",
+    "currentWeek": "W16",
+    "weAreHereText": "We are here",
+    "weeks": [
+      {
+        "id": "W6",
+        "name": "W6",
+        "dates": "1.22-1.26"
+      },
+      {
+        "id": "W7",
+        "name": "W7",
+        "dates": "1.29-2.2"
+      },
+      {
+        "id": "W8",
+        "name": "W8",
+        "dates": "2.4-2.8"
+      },
+      {
+        "id": "W9",
+        "name": "W9",
+        "dates": "2.12-2.17",
+        "isHoliday": true,
+        "holidayName": "春节假期"
+      },
+      {
+        "id": "W10",
+        "name": "W10",
+        "dates": "2.18-2.23"
+      },
+      {
+        "id": "W11",
+        "name": "W11",
+        "dates": "2.26-3.1"
+      },
+      {
+        "id": "W12",
+        "name": "W12",
+        "dates": "3.4-3.8"
+      },
+      {
+        "id": "W13",
+        "name": "W13",
+        "dates": "3.11-3.15"
+      },
+      {
+        "id": "W14",
+        "name": "W14",
+        "dates": "3.18-3.22"
+      },
+      {
+        "id": "W15",
+        "name": "W15",
+        "dates": "3.25-3.29"
+      },
+      {
+        "id": "W16",
+        "name": "W16",
+        "dates": "4.1-4.5"
+      },
+      {
+        "id": "W17",
+        "name": "W17",
+        "dates": "4.8-4.12"
+      },
+      {
+        "id": "W18",
+        "name": "W18",
+        "dates": "4.15-4.19"
+      },
+      {
+        "id": "W19",
+        "name": "W19",
+        "dates": "4.22-4.26"
+      },
+      {
+        "id": "W20",
+        "name": "W20",
+        "dates": "4.29-5.3"
+      }
+    ],
+    "tasks": [
+      {
+        "workstream": "手机端搭建",
+        "category": "项目启动",
+        "task": "项目启动"
+      },
+      {
+        "workstream": "手机端搭建",
+        "category": "需求收集",
+        "task": "手机端接入确认"
+      },
+      {
+        "workstream": "手机端搭建",
+        "category": "需求收集",
+        "task": "功能梳理及确认"
+      },
+      {
+        "workstream": "手机端搭建",
+        "category": "需求收集",
+        "task": "环境准备",
+        "milestone": "W8"
+      },
+      {
+        "workstream": "手机端搭建",
+        "category": "系统设计",
+        "task": "原型设计与确认",
+        "start": "W6",
+        "end": "W7",
+        "status": "completed"
+      },
+      {
+        "workstream": "手机端搭建",
+        "category": "系统设计",
+        "task": "高保真确认",
+        "start": "W7",
+        "end": "W8",
+        "status": "completed"
+      },
+      {
+        "workstream": "手机端搭建",
+        "category": "系统开发&测试",
+        "task": "系统开发",
+        "spans": [
+          {
+            "start": "W10",
+            "end": "W13",
+            "status": "completed"
+          },
+          {
+            "start": "W14",
+            "end": "W16",
+            "status": "active"
+          }
+        ],
+        "milestone": "W17"
+      },
+      {
+        "workstream": "手机端搭建",
+        "category": "系统开发&测试",
+        "task": "掌上AZ集成",
+        "spans": [
+          {
+            "start": "W12",
+            "end": "W13",
+            "status": "completed"
+          },
+          {
+            "start": "W14",
+            "end": "W16",
+            "status": "active"
+          }
+        ],
+        "milestone": "W18"
+      },
+      {
+        "workstream": "手机端搭建",
+        "category": "系统开发&测试",
+        "task": "SIT",
+        "start": "W17",
+        "end": "W17",
+        "status": "planned",
+        "milestone": "W8"
+      },
+      {
+        "workstream": "手机端搭建",
+        "category": "UAT",
+        "task": "UAT准备",
+        "start": "W16",
+        "end": "W17",
+        "status": "active"
+      },
+      {
+        "workstream": "手机端搭建",
+        "category": "UAT",
+        "task": "系统UAT",
+        "start": "W18",
+        "end": "W18",
+        "status": "planned"
+      },
+      {
+        "workstream": "手机端搭建",
+        "category": "Go-live",
+        "task": "上线准备&部署",
+        "start": "W18",
+        "end": "W18",
+        "status": "planned"
+      },
+      {
+        "workstream": "手机端搭建",
+        "category": "Go-live",
+        "task": "系统上线",
+        "start": "W19",
+        "end": "W19",
+        "status": "planned"
+      },
+      {
+        "workstream": "Web端优化",
+        "category": "需求梳理",
+        "task": "功能梳理及确认",
+        "start": "W6",
+        "end": "W6",
+        "status": "completed"
+      },
+      {
+        "workstream": "Web端优化",
+        "category": "重点功能设计",
+        "task": "原型设计与确认",
+        "start": "W6",
+        "end": "W8",
+        "status": "completed"
+      },
+      {
+        "workstream": "Web端优化",
+        "category": "重点功能设计",
+        "task": "高保真设计与确认",
+        "start": "W7",
+        "end": "W8",
+        "status": "completed",
+        "milestone": "W17"
+      },
+      {
+        "workstream": "Web端优化",
+        "category": "重点功能开发&测试",
+        "task": "系统功能搭建",
+        "spans": [
+          {
+            "start": "W10",
+            "end": "W13",
+            "status": "completed"
+          },
+          {
+            "start": "W14",
+            "end": "W16",
+            "status": "active"
+          }
+        ],
+        "milestone": "W18"
+      },
+      {
+        "workstream": "Web端优化",
+        "category": "重点功能开发&测试",
+        "task": "SIT",
+        "start": "W17",
+        "end": "W17",
+        "status": "planned"
+      },
+      {
+        "workstream": "Web端优化",
+        "category": "其他功能设计",
+        "task": "原型设计与确认",
+        "start": "W15",
+        "end": "W16",
+        "status": "active"
+      },
+      {
+        "workstream": "Web端优化",
+        "category": "其他功能设计",
+        "task": "高保真设计与确认",
+        "start": "W16",
+        "end": "W17",
+        "status": "active"
+      },
+      {
+        "workstream": "Web端优化",
+        "category": "其他功能开发&测试",
+        "task": "系统功能搭建",
+        "start": "W18",
+        "end": "W20",
+        "status": "planned"
+      },
+      {
+        "workstream": "Web端优化",
+        "category": "其他功能开发&测试",
+        "task": "SIT"
+      },
+      {
+        "workstream": "Web端优化",
+        "category": "UAT",
+        "task": "UAT准备",
+        "start": "W17",
+        "end": "W17",
+        "status": "planned"
+      },
+      {
+        "workstream": "Web端优化",
+        "category": "UAT",
+        "task": "系统UAT",
+        "start": "W18",
+        "end": "W18",
+        "status": "planned"
+      },
+      {
+        "workstream": "Web端优化",
+        "category": "Go-live",
+        "task": "上线准备&部署",
+        "start": "W18",
+        "end": "W18",
+        "status": "planned"
+      },
+      {
+        "workstream": "Web端优化",
+        "category": "Go-live",
+        "task": "系统上线",
+        "start": "W19",
+        "end": "W19",
+        "status": "planned"
+      }
+    ]
+  },
+  "deliverables": {
+    "title": "Deliverables / Output Status",
+    "subtitle": "关键交付节点与成果物健康度评估",
+    "items": [
+      {
+        "milestone": "项目启动",
+        "progress": "已完成",
+        "date": "2023.12.18",
+        "status": "已完成",
+        "risk": "good"
+      },
+      {
+        "milestone": "环境确认",
+        "progress": "和掌上 AZ 完成对接方案沟通和确认",
+        "date": "2024.1.5",
+        "status": "已完成",
+        "risk": "good"
+      },
+      {
+        "milestone": "需求确认",
+        "progress": "完成功能梳理",
+        "date": "2024.1.5",
+        "status": "已完成",
+        "risk": "good"
+      },
+      {
+        "milestone": "手机端&web端重点功能系统设计确认",
+        "progress": "系统设计完成",
+        "date": "2024.2.8",
+        "status": "已完成",
+        "risk": "good"
+      },
+      {
+        "milestone": "手机端&web端重点功能系统开发完成",
+        "progress": "完成行业大会和临床研究模块搭建，手机端调整中。",
+        "date": "2024.4.12",
+        "status": "进行中",
+        "risk": "caution"
+      },
+      {
+        "milestone": "手机端&web端重点功能系统UAT",
+        "progress": "-",
+        "date": "2024.4.19",
+        "status": "未开始",
+        "risk": "none"
+      },
+      {
+        "milestone": "手机端&web端重点功能系统Go-live",
+        "progress": "-",
+        "date": "2024.4.26",
+        "status": "未开始",
+        "risk": "none"
+      },
+      {
+        "milestone": "Web端其他功能设计确认",
+        "progress": "-",
+        "date": "2024.4.5",
+        "status": "未开始",
+        "risk": "none"
+      },
+      {
+        "milestone": "Web端其他功能开发完成",
+        "progress": "-",
+        "date": "2024.5.30",
+        "status": "未开始",
+        "risk": "none"
+      },
+      {
+        "milestone": "Web端其他功能UAT",
+        "progress": "-",
+        "date": "2024.6.8",
+        "status": "未开始",
+        "risk": "none"
+      },
+      {
+        "milestone": "Web端其他功能Go-live",
+        "progress": "-",
+        "date": "2024.6.15",
+        "status": "未开始",
+        "risk": "none"
+      }
+    ]
+  },
+  "thisWeek": {
+    "title": "Task Management",
+    "subtitle": "Week 16：4.1～4.3，2024",
+    "overallStatus": "caution",
+    "previousTasks": [
+      {
+        "tag": "系统开发",
+        "content": "系统开发，手机端功能收尾。"
+      },
+      {
+        "tag": "变更处理",
+        "content": "首页设计基于讨论做了更新，待确认。"
+      }
+    ],
+    "nextSteps": [
+      {
+        "tag": "系统实现",
+        "content": "手机端功能联调，掌上AZ&翻译API。"
+      }
+    ],
+    "risks": [
+      {
+        "tag": "",
+        "content": "首页部分功能变更，整体timeline预计4月底前可以完成。"
+      }
+    ],
+    "milestones": [
+      {
+        "name": "-",
+        "date": "-"
+      }
+    ]
+  }
+}
+  </script>
+
+</body>
+</html>

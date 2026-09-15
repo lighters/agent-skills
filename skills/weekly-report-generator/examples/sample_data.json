@@ -1,0 +1,133 @@
+{
+  "theme": "classic-navy",
+  "company": {
+    "name": "AstraZeneca / 数字化交付中心",
+    "logoText": "AZ",
+    "department": "商业技术交付团队"
+  },
+  "project": {
+    "title": "手机端搭建与 Web 端优化项目",
+    "reportTitle": "Weekly Report",
+    "projectCode": "PRJ-2024-AZ-Q1",
+    "period": "Week 16 (2024.04.01 ～ 2024.04.03)",
+    "reporter": "项目交付组 (AZ Team)",
+    "reportDate": "2024-04-03",
+    "confidential": "CONFIDENTIAL · 内部汇报",
+    "overallStatusText": "受控推进中",
+    "overallStatus": "caution"
+  },
+  "timeline": {
+    "title": "Work Plan —Overview",
+    "subtitle": "端到端执行计划及进度跟踪 (W6 - W20)",
+    "currentWeek": "W16",
+    "weAreHereText": "We are here",
+    "weeks": [
+      { "id": "W6", "name": "W6", "dates": "1.22-1.26" },
+      { "id": "W7", "name": "W7", "dates": "1.29-2.2" },
+      { "id": "W8", "name": "W8", "dates": "2.4-2.8" },
+      { "id": "W9", "name": "W9", "dates": "2.12-2.17", "isHoliday": true, "holidayName": "春节假期" },
+      { "id": "W10", "name": "W10", "dates": "2.18-2.23" },
+      { "id": "W11", "name": "W11", "dates": "2.26-3.1" },
+      { "id": "W12", "name": "W12", "dates": "3.4-3.8" },
+      { "id": "W13", "name": "W13", "dates": "3.11-3.15" },
+      { "id": "W14", "name": "W14", "dates": "3.18-3.22" },
+      { "id": "W15", "name": "W15", "dates": "3.25-3.29" },
+      { "id": "W16", "name": "W16", "dates": "4.1-4.5" },
+      { "id": "W17", "name": "W17", "dates": "4.8-4.12" },
+      { "id": "W18", "name": "W18", "dates": "4.15-4.19" },
+      { "id": "W19", "name": "W19", "dates": "4.22-4.26" },
+      { "id": "W20", "name": "W20", "dates": "4.29-5.3" }
+    ],
+    "tasks": [
+      { "workstream": "手机端搭建", "category": "项目启动", "task": "项目启动" },
+      { "workstream": "手机端搭建", "category": "需求收集", "task": "手机端接入确认" },
+      { "workstream": "手机端搭建", "category": "需求收集", "task": "功能梳理及确认" },
+      { "workstream": "手机端搭建", "category": "需求收集", "task": "环境准备", "milestone": "W8" },
+      { "workstream": "手机端搭建", "category": "系统设计", "task": "原型设计与确认", "start": "W6", "end": "W7", "status": "completed" },
+      { "workstream": "手机端搭建", "category": "系统设计", "task": "高保真确认", "start": "W7", "end": "W8", "status": "completed" },
+      {
+        "workstream": "手机端搭建",
+        "category": "系统开发&测试",
+        "task": "系统开发",
+        "spans": [
+          { "start": "W10", "end": "W13", "status": "completed" },
+          { "start": "W14", "end": "W16", "status": "active" }
+        ],
+        "milestone": "W17"
+      },
+      {
+        "workstream": "手机端搭建",
+        "category": "系统开发&测试",
+        "task": "掌上AZ集成",
+        "spans": [
+          { "start": "W12", "end": "W13", "status": "completed" },
+          { "start": "W14", "end": "W16", "status": "active" }
+        ],
+        "milestone": "W18"
+      },
+      { "workstream": "手机端搭建", "category": "系统开发&测试", "task": "SIT", "start": "W17", "end": "W17", "status": "planned", "milestone": "W8" },
+      { "workstream": "手机端搭建", "category": "UAT", "task": "UAT准备", "start": "W16", "end": "W17", "status": "active" },
+      { "workstream": "手机端搭建", "category": "UAT", "task": "系统UAT", "start": "W18", "end": "W18", "status": "planned" },
+      { "workstream": "手机端搭建", "category": "Go-live", "task": "上线准备&部署", "start": "W18", "end": "W18", "status": "planned" },
+      { "workstream": "手机端搭建", "category": "Go-live", "task": "系统上线", "start": "W19", "end": "W19", "status": "planned" },
+
+      { "workstream": "Web端优化", "category": "需求梳理", "task": "功能梳理及确认", "start": "W6", "end": "W6", "status": "completed" },
+      { "workstream": "Web端优化", "category": "重点功能设计", "task": "原型设计与确认", "start": "W6", "end": "W8", "status": "completed" },
+      { "workstream": "Web端优化", "category": "重点功能设计", "task": "高保真设计与确认", "start": "W7", "end": "W8", "status": "completed", "milestone": "W17" },
+      {
+        "workstream": "Web端优化",
+        "category": "重点功能开发&测试",
+        "task": "系统功能搭建",
+        "spans": [
+          { "start": "W10", "end": "W13", "status": "completed" },
+          { "start": "W14", "end": "W16", "status": "active" }
+        ],
+        "milestone": "W18"
+      },
+      { "workstream": "Web端优化", "category": "重点功能开发&测试", "task": "SIT", "start": "W17", "end": "W17", "status": "planned" },
+      { "workstream": "Web端优化", "category": "其他功能设计", "task": "原型设计与确认", "start": "W15", "end": "W16", "status": "active" },
+      { "workstream": "Web端优化", "category": "其他功能设计", "task": "高保真设计与确认", "start": "W16", "end": "W17", "status": "active" },
+      { "workstream": "Web端优化", "category": "其他功能开发&测试", "task": "系统功能搭建", "start": "W18", "end": "W20", "status": "planned" },
+      { "workstream": "Web端优化", "category": "其他功能开发&测试", "task": "SIT" },
+      { "workstream": "Web端优化", "category": "UAT", "task": "UAT准备", "start": "W17", "end": "W17", "status": "planned" },
+      { "workstream": "Web端优化", "category": "UAT", "task": "系统UAT", "start": "W18", "end": "W18", "status": "planned" },
+      { "workstream": "Web端优化", "category": "Go-live", "task": "上线准备&部署", "start": "W18", "end": "W18", "status": "planned" },
+      { "workstream": "Web端优化", "category": "Go-live", "task": "系统上线", "start": "W19", "end": "W19", "status": "planned" }
+    ]
+  },
+  "deliverables": {
+    "title": "Deliverables / Output Status",
+    "subtitle": "关键交付节点与成果物健康度评估",
+    "items": [
+      { "milestone": "项目启动", "progress": "已完成", "date": "2023.12.18", "status": "已完成", "risk": "good" },
+      { "milestone": "环境确认", "progress": "和掌上 AZ 完成对接方案沟通和确认", "date": "2024.1.5", "status": "已完成", "risk": "good" },
+      { "milestone": "需求确认", "progress": "完成功能梳理", "date": "2024.1.5", "status": "已完成", "risk": "good" },
+      { "milestone": "手机端&web端重点功能系统设计确认", "progress": "系统设计完成", "date": "2024.2.8", "status": "已完成", "risk": "good" },
+      { "milestone": "手机端&web端重点功能系统开发完成", "progress": "完成行业大会和临床研究模块搭建，手机端调整中。", "date": "2024.4.12", "status": "进行中", "risk": "caution" },
+      { "milestone": "手机端&web端重点功能系统UAT", "progress": "-", "date": "2024.4.19", "status": "未开始", "risk": "none" },
+      { "milestone": "手机端&web端重点功能系统Go-live", "progress": "-", "date": "2024.4.26", "status": "未开始", "risk": "none" },
+      { "milestone": "Web端其他功能设计确认", "progress": "-", "date": "2024.4.5", "status": "未开始", "risk": "none" },
+      { "milestone": "Web端其他功能开发完成", "progress": "-", "date": "2024.5.30", "status": "未开始", "risk": "none" },
+      { "milestone": "Web端其他功能UAT", "progress": "-", "date": "2024.6.8", "status": "未开始", "risk": "none" },
+      { "milestone": "Web端其他功能Go-live", "progress": "-", "date": "2024.6.15", "status": "未开始", "risk": "none" }
+    ]
+  },
+  "thisWeek": {
+    "title": "Task Management",
+    "subtitle": "Week 16：4.1～4.3，2024",
+    "overallStatus": "caution",
+    "previousTasks": [
+      { "tag": "系统开发", "content": "系统开发，手机端功能收尾。" },
+      { "tag": "变更处理", "content": "首页设计基于讨论做了更新，待确认。" }
+    ],
+    "nextSteps": [
+      { "tag": "系统实现", "content": "手机端功能联调，掌上AZ&翻译API。" }
+    ],
+    "risks": [
+      { "tag": "", "content": "首页部分功能变更，整体timeline预计4月底前可以完成。" }
+    ],
+    "milestones": [
+      { "name": "-", "date": "-" }
+    ]
+  }
+}
