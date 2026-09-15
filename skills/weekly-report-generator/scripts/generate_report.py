@@ -7,6 +7,7 @@ Part of the weekly-report-generator Antigravity skill.
 
 import json
 import os
+import re
 import sys
 import argparse
 from pathlib import Path
@@ -242,13 +243,16 @@ def generate_report(data_path, output_path, theme="classic-navy"):
     
     data = load_json(data_path)
     if not theme:
-        theme = data.get("theme", "classic-navy")
+        theme = data.get("theme", "astrazeneca")
+    data["theme"] = theme
 
     with open(template_path, "r", encoding="utf-8") as f:
         html = f.read()
 
-    # Apply theme
+    # Apply theme to body and select
     html = html.replace('body data-theme="classic-navy"', f'body data-theme="{theme}"')
+    html = html.replace('body data-theme="astrazeneca"', f'body data-theme="{theme}"')
+    html = re.sub(r'<option value="' + re.escape(theme) + r'">', f'<option value="{theme}" selected>', html)
 
     # Get sub-sections
     company = data.get("company", {})
@@ -279,7 +283,6 @@ def generate_report(data_path, output_path, theme="classic-navy"):
     gantt_tbody = build_gantt_rows_html(timeline)
     
     # Replace the thead and tbody in slide 2
-    import re
     html = re.sub(
         r'<table class="gantt-table">\s*<thead>.*?</thead>\s*<tbody>.*?</tbody>\s*</table>',
         f'<table class="gantt-table">\n        <thead>{gantt_thead}\n        </thead>\n        <tbody>\n{gantt_tbody}\n        </tbody>\n      </table>',
@@ -361,7 +364,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate Weekly Report HTML")
     parser.add_argument("--data", default=None, help="Path to JSON data file")
     parser.add_argument("--output", default="weekly-report.html", help="Path to output HTML file")
-    parser.add_argument("--theme", default="classic-navy", help="Theme ID (classic-navy, tech-blue, corporate-crimson, emerald-forest, cyber-purple, minimal-slate)")
+    parser.add_argument("--theme", default=None, help="Theme ID (astrazeneca, novartis, bayer, jnj, novo-nordisk, vercel-minimal)")
     args = parser.parse_args()
 
     base_dir = Path(__file__).resolve().parent.parent

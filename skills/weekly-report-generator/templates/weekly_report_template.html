@@ -1900,8 +1900,70 @@
       const blob = new Blob(["<!DOCTYPE html>\n" + clonedDoc.outerHTML], { type: "text/html;charset=utf-8" });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = "weekly-report-custom.html";
+      const currentTheme = document.body.getAttribute('data-theme') || 'astrazeneca';
+      a.download = `weekly-report-${currentTheme}.html`;
       a.click();
+    }
+
+    // =========================================================================
+    // Theme Management & Dynamic Switching (企业风格动态适配)
+    // =========================================================================
+    function changeTheme(themeName) {
+      if (!themeName) return;
+      document.body.setAttribute('data-theme', themeName);
+      
+      // Clean up any custom inline styles on body so the theme CSS rules take full effect
+      document.body.removeAttribute('style');
+
+      if (currentReportData) {
+        currentReportData.theme = themeName;
+      }
+
+      const sel = document.getElementById('themeSelect');
+      if (sel && sel.value !== themeName) {
+        sel.value = themeName;
+      }
+    }
+
+    // Custom Theme Slide-out Drawer
+    function toggleCustomDrawer() {
+      const drawer = document.getElementById('customThemeDrawer');
+      if (drawer) {
+        drawer.classList.toggle('active');
+      }
+    }
+
+    function applyCustomColor(varName, val) {
+      document.body.style.setProperty(varName, val);
+      if (varName === '--brand-primary') {
+        const lbl = document.getElementById('labelPrimary');
+        if (lbl) lbl.innerText = val;
+      } else if (varName === '--brand-primary-dark') {
+        const lbl = document.getElementById('labelDark');
+        if (lbl) lbl.innerText = val;
+      } else if (varName === '--brand-accent-sec') {
+        const lbl = document.getElementById('labelAccent');
+        if (lbl) lbl.innerText = val;
+      }
+    }
+
+    function updateCompanyInfo() {
+      const company = document.getElementById('inputCompanyName')?.value;
+      const logo = document.getElementById('inputLogoText')?.value;
+      const dept = document.getElementById('inputDeptName')?.value;
+
+      if (company) {
+        const cEl = document.querySelector('.cover-company');
+        if (cEl) cEl.textContent = company;
+      }
+      if (logo) {
+        const lEl = document.querySelector('.cover-logo-text');
+        if (lEl) lEl.textContent = logo;
+      }
+      if (dept) {
+        const dEl = document.querySelector('.cover-meta-item:first-child span');
+        if (dEl) dEl.textContent = dept;
+      }
     }
 
     // =========================================================================
@@ -2229,21 +2291,20 @@
         renderAll(currentReportData);
       }
 
-      // Check URL theme parameter
+      // Check URL theme parameter or sync select from body
       const params = new URLSearchParams(window.location.search);
       const urlTheme = params.get('theme');
+      const select = document.getElementById('themeSelect');
       if (urlTheme) {
-        const select = document.getElementById('themeSelect');
-        if (select) {
-          select.value = urlTheme;
-          changeTheme(urlTheme);
+        if (select) select.value = urlTheme;
+        changeTheme(urlTheme);
+      } else {
+        const bodyTheme = document.body.getAttribute('data-theme');
+        if (select && bodyTheme) {
+          select.value = bodyTheme;
         }
       }
-
-      checkViewport();
     });
-
-    window.addEventListener('resize', checkViewport);
   </script>
 </body>
 </html>
