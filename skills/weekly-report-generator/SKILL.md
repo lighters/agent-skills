@@ -125,12 +125,12 @@ python3 scripts/export_pdf.py \
 
 ## 3. 企业主题适配说明
 支持通过 `--theme` 参数或页面下拉菜单切换：
-- `classic-navy`: 经典企业蓝 (对应原 PPT 阿斯利康 Astra 风格)
-- `tech-blue`: 现代科技蓝
-- `corporate-crimson`: 商务中国红 (华为/联想)
-- `emerald-forest`: 自然与新能源绿 (ESG)
-- `cyber-purple`: 未来数智紫 (AI)
-- `minimal-slate`: 极简极客灰
+- `astrazeneca` (或 `classic-navy`): 阿斯利康 (AstraZeneca · 经典深蓝 `#003865` 与洋红 `#D0006F`，对应原 PPT)
+- `novartis`: 诺华 (Novartis · 经典钴蓝 `#0460A9` 与活力暖橙 `#E74A21`)
+- `bayer`: 拜耳 (Bayer · 经典深蓝 `#00617F` 与生机绿 `#89D329`)
+- `jnj`: 强生 (Johnson & Johnson · 2023品牌热情红 `#D71600` 与深红 `#8A0000`)
+- `novo-nordisk`: 诺和诺德 (Novo Nordisk · 真实纯蓝 `#001965` 与海蓝 `#005AD2`)
+- `vercel-minimal`: Vercel 极简风 (Vercel Design System · 黑白无衬线字体与纯黑高反差卡片)
 
 ---
 

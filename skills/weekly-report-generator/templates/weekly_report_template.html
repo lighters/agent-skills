@@ -36,80 +36,131 @@
       --slide-ratio: 16 / 9;
     }
 
-    /* Enterprise Themes Presets */
-    [data-theme="tech-blue"] {
-      --brand-primary: #2563eb;
-      --brand-primary-dark: #1e3a8a;
-      --brand-primary-light: #eff6ff;
-      --brand-accent: #3b82f6;
-      --brand-accent-sec: #0284c7;
-      --brand-status-header: #15803d;
-      --brand-border: #2563eb;
-      --brand-table-header: #1e3a8a;
-      --brand-gantt-header: #0284c7;
-      --brand-holiday: #f59e0b;
-      --brand-text-main: #0f172a;
-      --brand-text-body: #334155;
-    }
-
-    [data-theme="corporate-crimson"] {
-      --brand-primary: #b91c1c;
-      --brand-primary-dark: #7f1d1d;
-      --brand-primary-light: #fef2f2;
-      --brand-accent: #ef4444;
-      --brand-accent-sec: #dc2626;
-      --brand-status-header: #166534;
-      --brand-border: #b91c1c;
-      --brand-table-header: #7f1d1d;
-      --brand-gantt-header: #991b1b;
-      --brand-holiday: #f59e0b;
-      --brand-text-main: #450a0a;
-      --brand-text-body: #292524;
-    }
-
-    [data-theme="emerald-forest"] {
-      --brand-primary: #047857;
-      --brand-primary-dark: #064e3b;
-      --brand-primary-light: #ecfdf5;
-      --brand-accent: #10b981;
-      --brand-accent-sec: #059669;
-      --brand-status-header: #064e3b;
-      --brand-border: #047857;
-      --brand-table-header: #064e3b;
-      --brand-gantt-header: #059669;
-      --brand-holiday: #f59e0b;
-      --brand-text-main: #022c22;
-      --brand-text-body: #1c1917;
-    }
-
-    [data-theme="cyber-purple"] {
-      --brand-primary: #7c3aed;
-      --brand-primary-dark: #4c1d95;
-      --brand-primary-light: #f5f3ff;
-      --brand-accent: #8b5cf6;
-      --brand-accent-sec: #6366f1;
-      --brand-status-header: #15803d;
-      --brand-border: #7c3aed;
-      --brand-table-header: #4c1d95;
-      --brand-gantt-header: #6d28d9;
-      --brand-holiday: #f59e0b;
-      --brand-text-main: #2e1065;
-      --brand-text-body: #1e1b4b;
-    }
-
-    [data-theme="minimal-slate"] {
-      --brand-primary: #334155;
-      --brand-primary-dark: #0f172a;
-      --brand-primary-light: #f8fafc;
-      --brand-accent: #475569;
-      --brand-accent-sec: #64748b;
-      --brand-status-header: #14532d;
-      --brand-border: #334155;
-      --brand-table-header: #0f172a;
-      --brand-gantt-header: #334155;
-      --brand-holiday: #eab308;
-      --brand-text-main: #0f172a;
+    /* Enterprise Themes Presets (5大医药巨头 + Vercel 极简风) */
+    [data-theme="astrazeneca"],
+    [data-theme="classic-navy"] {
+      --brand-primary: #003865;
+      --brand-primary-dark: #001847;
+      --brand-primary-light: #e8eff5;
+      --brand-accent: #D0006F;
+      --brand-accent-sec: #005587;
+      --brand-status-header: #245D38;
+      --brand-border: #003865;
+      --brand-table-header: #00205B;
+      --brand-gantt-header: #005587;
+      --brand-holiday: #F0AB00;
+      --brand-text-main: #001847;
       --brand-text-body: #1e293b;
+      --brand-bg: #f8fafc;
+    }
+
+    [data-theme="novartis"] {
+      --brand-primary: #0460A9;
+      --brand-primary-dark: #002B49;
+      --brand-primary-light: #fff4ec;
+      --brand-accent: #E74A21;
+      --brand-accent-sec: #0460A9;
+      --brand-status-header: #15803D;
+      --brand-border: #0460A9;
+      --brand-table-header: #002B49;
+      --brand-gantt-header: #0460A9;
+      --brand-holiday: #F8B22A;
+      --brand-text-main: #002B49;
+      --brand-text-body: #1e293b;
+      --brand-bg: #faf7f4;
+    }
+
+    [data-theme="bayer"] {
+      --brand-primary: #00617F;
+      --brand-primary-dark: #10384F;
+      --brand-primary-light: #edf8fd;
+      --brand-accent: #89D329;
+      --brand-accent-sec: #00BCFF;
+      --brand-status-header: #004422;
+      --brand-border: #00617F;
+      --brand-table-header: #10384F;
+      --brand-gantt-header: #00617F;
+      --brand-holiday: #F59E0B;
+      --brand-text-main: #10384F;
+      --brand-text-body: #1e293b;
+      --brand-bg: #f5f9fc;
+    }
+
+    [data-theme="jnj"] {
+      --brand-primary: #D71600;
+      --brand-primary-dark: #8A0000;
+      --brand-primary-light: #fef2f2;
+      --brand-accent: #0F2C59;
+      --brand-accent-sec: #D71600;
+      --brand-status-header: #15803D;
+      --brand-border: #D71600;
+      --brand-table-header: #8A0000;
+      --brand-gantt-header: #D71600;
+      --brand-holiday: #F59E0B;
+      --brand-text-main: #450A0A;
+      --brand-text-body: #292524;
+      --brand-bg: #fafafa;
+    }
+
+    [data-theme="novo-nordisk"] {
+      --brand-primary: #001965;
+      --brand-primary-dark: #001140;
+      --brand-primary-light: #f0f4fa;
+      --brand-accent: #005AD2;
+      --brand-accent-sec: #005AD2;
+      --brand-status-header: #001965;
+      --brand-border: #001965;
+      --brand-table-header: #001965;
+      --brand-gantt-header: #001965;
+      --brand-holiday: #D4AF37;
+      --brand-text-main: #001140;
+      --brand-text-body: #1e293b;
+      --brand-bg: #f8fafc;
+    }
+
+    [data-theme="vercel-minimal"] {
+      --brand-primary: #000000;
+      --brand-primary-dark: #000000;
+      --brand-primary-light: #f4f4f5;
+      --brand-accent: #0070F3;
+      --brand-accent-sec: #18181b;
+      --brand-status-header: #18181b;
+      --brand-border: #000000;
+      --brand-table-header: #000000;
+      --brand-gantt-header: #18181b;
+      --brand-holiday: #F5A623;
+      --brand-text-main: #000000;
+      --brand-text-body: #27272a;
+      --brand-bg: #f4f4f5;
+      --slide-bg: #ffffff;
+    }
+
+    /* Vercel Minimal Aesthetic Refinements */
+    [data-theme="vercel-minimal"] .slide {
+      box-shadow: 0 0 0 1px #e4e4e7, 0 10px 20px -5px rgba(0, 0, 0, 0.04);
+      border-radius: 8px;
+    }
+    [data-theme="vercel-minimal"] .ppt-card {
+      border: 1px solid #18181b;
+      border-radius: 6px;
+    }
+    [data-theme="vercel-minimal"] .ppt-card-header {
+      background: #000000;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    [data-theme="vercel-minimal"] .ppt-status-card {
+      border: 1px solid #18181b;
+      border-radius: 6px;
+    }
+    [data-theme="vercel-minimal"] .cover-tag {
+      background: #000000;
+      color: #ffffff;
+      border: none;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+    }
+    [data-theme="vercel-minimal"] .cover-main-title {
+      letter-spacing: -0.04em;
     }
 
     /* Reset & Base Styles */
@@ -977,7 +1028,10 @@
       }
 
       .control-bar,
-      .custom-theme-drawer {
+      .custom-theme-drawer,
+      .data-modal-overlay,
+      script,
+      noscript {
         display: none !important;
       }
 
@@ -1032,12 +1086,12 @@
     <div class="control-actions">
       <span style="font-size: 12px; color: #94a3b8;">企业风格适配:</span>
       <select class="select-theme" id="themeSelect" onchange="changeTheme(this.value)">
-        <option value="classic-navy">经典企业蓝 (Astra Blue - 对应原PPT)</option>
-        <option value="tech-blue">现代科技蓝 (Modern Tech Blue)</option>
-        <option value="corporate-crimson">商务中国红 (Huawei / Lenovo Crimson)</option>
-        <option value="emerald-forest">自然与新能源绿 (ESG / Emerald)</option>
-        <option value="cyber-purple">未来数智紫 (Digital AI Purple)</option>
-        <option value="minimal-slate">极简极客灰 (Executive Minimal Slate)</option>
+        <option value="astrazeneca">阿斯利康 (AstraZeneca · 经典深蓝与洋红)</option>
+        <option value="novartis">诺华 (Novartis · 钴蓝与活力暖橙)</option>
+        <option value="bayer">拜耳 (Bayer · 经典深蓝与生机绿)</option>
+        <option value="jnj">强生 (Johnson & Johnson · 2023热情红)</option>
+        <option value="novo-nordisk">诺和诺德 (Novo Nordisk · 真实纯蓝与海蓝)</option>
+        <option value="vercel-minimal">Vercel 极简风 (Vercel Design System · 黑白无衬线)</option>
       </select>
       <button class="btn btn-primary" onclick="toggleDataModal()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1656,6 +1710,7 @@
 
   </div>
 
+  <script>
     // Global Report Data State
     let currentReportData = null;
 

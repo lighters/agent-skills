@@ -1,0 +1,209 @@
+{
+  "theme": "vercel-minimal",
+  "company": {
+    "name": "Vercel / Design Engineering",
+    "logoText": "▲",
+    "department": "Platform Core & DX Engineering"
+  },
+  "project": {
+    "title": "Next.js 15 & Turbopack Infrastructure Migration",
+    "reportTitle": "Weekly Report",
+    "projectCode": "PRJ-VERCEL-DX-Q1",
+    "period": "Week 16 (2024.04.01 ～ 2024.04.05)",
+    "reporter": "Vercel DX & Core Infra Team",
+    "reportDate": "2024-04-05",
+    "confidential": "INTERNAL · VERCEL CONFIDENTIAL",
+    "overallStatusText": "On Track",
+    "overallStatus": "good"
+  },
+  "timeline": {
+    "title": "Work Plan —Overview",
+    "subtitle": "Turbopack Core & AI SDK DX Delivery Schedule (W1 - W8)",
+    "currentWeek": "W4",
+    "weAreHereText": "We are here",
+    "weeks": [
+      { "id": "W1", "name": "W1", "dates": "3.11-3.15" },
+      { "id": "W2", "name": "W2", "dates": "3.18-3.22" },
+      { "id": "W3", "name": "W3", "dates": "3.25-3.29" },
+      { "id": "W4", "name": "W4", "dates": "4.1-4.5" },
+      { "id": "W5", "name": "W5", "dates": "4.8-4.12" },
+      { "id": "W6", "name": "W6", "dates": "4.15-4.19", "isHoliday": true, "holidayName": "Sprint Review" },
+      { "id": "W7", "name": "W7", "dates": "4.22-4.26" },
+      { "id": "W8", "name": "W8", "dates": "4.29-5.3" }
+    ],
+    "tasks": [
+      {
+        "workstream": "Turbopack Engine",
+        "category": "Core Compiler",
+        "task": "Rust AST Incremental Cache",
+        "start": "W1",
+        "end": "W3",
+        "status": "completed",
+        "milestone": "W3"
+      },
+      {
+        "workstream": "Turbopack Engine",
+        "category": "Core Compiler",
+        "task": "HMR Fast Invalidation Protocol",
+        "start": "W2",
+        "end": "W4",
+        "status": "active"
+      },
+      {
+        "workstream": "Turbopack Engine",
+        "category": "App Router",
+        "task": "Route Group & Layout Caching",
+        "start": "W3",
+        "end": "W5",
+        "status": "active",
+        "milestone": "W5"
+      },
+      {
+        "workstream": "Turbopack Engine",
+        "category": "App Router",
+        "task": "Server Actions Binding Verification",
+        "start": "W5",
+        "end": "W7",
+        "status": "planned"
+      },
+      {
+        "workstream": "AI & Edge Runtime",
+        "category": "Streaming SDK",
+        "task": "Generative UI Protocol RFC",
+        "start": "W1",
+        "end": "W2",
+        "status": "completed",
+        "milestone": "W2"
+      },
+      {
+        "workstream": "AI & Edge Runtime",
+        "category": "Streaming SDK",
+        "task": "Multi-agent Tool Calling Pipeline",
+        "start": "W3",
+        "end": "W4",
+        "status": "active",
+        "milestone": "W4"
+      },
+      {
+        "workstream": "AI & Edge Runtime",
+        "category": "Edge Compute",
+        "task": "Cold-start Latency Optimization (<15ms)",
+        "start": "W4",
+        "end": "W6",
+        "status": "active"
+      },
+      {
+        "workstream": "AI & Edge Runtime",
+        "category": "Edge Compute",
+        "task": "Global Edge K/V Cache Propagation",
+        "start": "W7",
+        "end": "W8",
+        "status": "planned",
+        "milestone": "W8"
+      },
+      {
+        "workstream": "Geist Design System",
+        "category": "Tokens & UI",
+        "task": "High-contrast Monochrome Token Matrix",
+        "start": "W1",
+        "end": "W3",
+        "status": "completed"
+      },
+      {
+        "workstream": "Geist Design System",
+        "category": "Tokens & UI",
+        "task": "Micro-interaction & Accessible Dialogs",
+        "start": "W4",
+        "end": "W5",
+        "status": "active"
+      },
+      {
+        "workstream": "Geist Design System",
+        "category": "Tokens & UI",
+        "task": "Production Polish & Release Notes",
+        "start": "W7",
+        "end": "W8",
+        "status": "planned",
+        "milestone": "W8"
+      }
+    ]
+  },
+  "deliverables": {
+    "title": "Deliverables / Output Status",
+    "subtitle": "Core DX Milestones & Infrastructure Health Tracking",
+    "items": [
+      {
+        "milestone": "Turbopack Beta for Next.js App Router",
+        "progress": "Passing 98.4% of Next.js integration test suite.",
+        "date": "2024.03.29",
+        "status": "已完成",
+        "risk": "good"
+      },
+      {
+        "milestone": "AI SDK 3.1 Streaming & Tool Calling Spec",
+        "progress": "Spec frozen, reference implementation merged.",
+        "date": "2024.04.05",
+        "status": "已完成",
+        "risk": "good"
+      },
+      {
+        "milestone": "Edge Compute Cold-start Reduction",
+        "progress": "Global median down to 14.2ms, evaluating p99 tails.",
+        "date": "2024.04.19",
+        "status": "进行中",
+        "risk": "good"
+      },
+      {
+        "milestone": "Geist Design System v2 Token Release",
+        "progress": "Components updated, dark/light contrast validated.",
+        "date": "2024.04.26",
+        "status": "进行中",
+        "risk": "good"
+      },
+      {
+        "milestone": "Next.js Conf Keynote Preview Release",
+        "progress": "Scheduled deployment to production canaries.",
+        "date": "2024.05.03",
+        "status": "未开始",
+        "risk": "none"
+      }
+    ]
+  },
+  "thisWeek": {
+    "title": "Task Management",
+    "subtitle": "Week 16: April 1 ~ April 5, 2024",
+    "overallStatus": "good",
+    "previousTasks": [
+      {
+        "tag": "Turbopack",
+        "content": "Rust incremental AST cache merged, dev server cold startup 5.2x faster."
+      },
+      {
+        "tag": "Geist UI",
+        "content": "Monochrome design token hierarchy verified against WCAG AAA standards."
+      }
+    ],
+    "nextSteps": [
+      {
+        "tag": "AI SDK",
+        "content": "Finalize Generative UI stream protocol and multi-agent callback handlers."
+      },
+      {
+        "tag": "Edge Infra",
+        "content": "Deploy edge cache canary nodes across APAC and EMEA regions."
+      }
+    ],
+    "risks": [
+      {
+        "tag": "Compatibility",
+        "content": "Custom Babel macros in legacy customer repositories require graceful fallback."
+      }
+    ],
+    "milestones": [
+      {
+        "name": "Turbopack App Router Canary Release",
+        "date": "2024.04.12"
+      }
+    ]
+  }
+}
