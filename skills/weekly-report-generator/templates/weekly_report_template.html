@@ -519,9 +519,10 @@
       filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
     }
 
-    /* We are here pointer */
+    /* We are here pointer — centered on the current-week <td> */
     .we-are-here-indicator {
       position: absolute;
+      left: 50%;
       bottom: 2px;
       display: flex;
       align-items: center;
@@ -530,11 +531,12 @@
       font-weight: 800;
       color: #dc2626;
       white-space: nowrap;
-      transform: translateX(-40%);
+      transform: translateX(-50%);
       z-index: 10;
       background: rgba(255, 255, 255, 0.92);
       padding: 1px 4px;
       border-radius: 2px;
+      pointer-events: none;
     }
 
     .red-arrow-up {
@@ -1007,6 +1009,98 @@
       background: #f8fafc;
     }
 
+
+    /* ==========================================================================
+       PRESENTATION / DECK MODE (toggleable; default = normal scroll)
+       ========================================================================== */
+    body.presentation-mode {
+      padding: 0 !important;
+      margin: 0 !important;
+      background: #0b1220 !important;
+      overflow: hidden !important;
+      height: 100vh !important;
+      width: 100vw !important;
+    }
+
+    body.presentation-mode .control-bar {
+      opacity: 0.15;
+      transition: opacity 0.2s ease;
+    }
+    body.presentation-mode .control-bar:hover,
+    body.presentation-mode .control-bar:focus-within {
+      opacity: 1;
+    }
+
+    body.presentation-mode .slide-deck {
+      gap: 0;
+      width: 100vw;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+    }
+
+    body.presentation-mode .slide {
+      display: none;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+      transform-origin: center center;
+    }
+
+    body.presentation-mode .slide.is-active-slide {
+      display: flex;
+    }
+
+    .presentation-hud {
+      display: none;
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1100;
+      align-items: center;
+      gap: 10px;
+      background: rgba(15, 23, 42, 0.88);
+      color: #f8fafc;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+      backdrop-filter: blur(8px);
+    }
+
+    body.presentation-mode .presentation-hud {
+      display: flex;
+    }
+
+    .presentation-hud button {
+      background: #334155;
+      color: #f8fafc;
+      border: none;
+      border-radius: 999px;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .presentation-hud button:hover {
+      background: #475569;
+    }
+
+    .presentation-hud .pres-hint {
+      color: #94a3b8;
+      font-weight: 500;
+      font-size: 11px;
+      margin-left: 4px;
+    }
+
+    body.presentation-mode .custom-theme-drawer,
+    body.presentation-mode .data-modal-overlay {
+      z-index: 1200;
+    }
+
     /* ==========================================================================
        PRINT & PDF EXPORT STYLES (用于邮件提交的 PDF 完美排版)
        ========================================================================== */
@@ -1029,9 +1123,26 @@
       .control-bar,
       .custom-theme-drawer,
       .data-modal-overlay,
+      .presentation-hud,
       script,
       noscript {
         display: none !important;
+      }
+
+      /* Reset deck mode so every slide still prints as its own page */
+      body.presentation-mode,
+      body.presentation-mode .slide-deck {
+        display: block !important;
+        height: auto !important;
+        width: 100% !important;
+        overflow: visible !important;
+        background: #ffffff !important;
+        padding: 0 !important;
+        gap: 0 !important;
+      }
+
+      body.presentation-mode .slide {
+        display: flex !important;
       }
 
       .slide-deck {
@@ -1106,6 +1217,14 @@
         </svg>
         企业自定义风格
       </button>
+      <button class="btn btn-secondary" id="btnPresentation" onclick="togglePresentationMode()" title="演示模式 (P)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+        演示模式
+      </button>
       <button class="btn btn-export-pdf" onclick="window.print()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="6 9 6 2 18 2 18 9"></polyline>
@@ -1115,6 +1234,17 @@
         导出 PDF / 打印
       </button>
     </div>
+  </div>
+
+
+  <!-- Presentation mode HUD (hidden unless body.presentation-mode) -->
+  <div class="presentation-hud" id="presentationHud" aria-live="polite">
+    <button type="button" onclick="presentationPrev()" title="上一页 (←)">‹</button>
+    <span id="presentationPageLabel">1 / 4</span>
+    <button type="button" onclick="presentationNext()" title="下一页 (→ / Space)">›</button>
+    <button type="button" onclick="togglePresentationFullscreen()" title="全屏 (F)">⛶</button>
+    <button type="button" onclick="togglePresentationMode(false)" title="退出 (Esc)">✕</button>
+    <span class="pres-hint">← → Space · Esc 退出 · F 全屏</span>
   </div>
 
   <!-- Data Input Modal (交互输入数据与生成周报) -->
@@ -1465,7 +1595,7 @@
               <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td>
               <td style="position: relative;">
                 <!-- We are here pointer -->
-                <div class="we-are-here-indicator" style="left: -140px; bottom: 2px;">
+                <div class="we-are-here-indicator">
                   <span class="red-arrow-up"></span>
                   <span>We are here</span>
                 </div>
@@ -2107,7 +2237,17 @@
             // Holiday column
             if (wId === holidayWeekId) {
               if (rowIdx === 0) {
-                cells += `<td rowspan="${tasks.length}" class="cell-holiday"><div class="holiday-col-text">${holidayName}</div></td>`;
+                let holidayContent = `<div class="holiday-col-text">${holidayName}</div>`;
+                let holidayStyle = '';
+                if (wId === currentWeekId) {
+                  holidayContent += `
+                    <div class="we-are-here-indicator" data-week="${wId}">
+                      <span class="red-arrow-up"></span>
+                      <span>${weAreHereText}</span>
+                    </div>`;
+                  holidayStyle = ' style="position: relative;"';
+                }
+                cells += `<td rowspan="${tasks.length}" class="cell-holiday"${holidayStyle}>${holidayContent}</td>`;
               }
               return;
             }
@@ -2135,7 +2275,7 @@
             // We are here indicator
             if (rowIdx === tasks.length - 1 && wId === currentWeekId) {
               content += `
-                <div class="we-are-here-indicator" style="left: -140px; bottom: 2px;">
+                <div class="we-are-here-indicator" data-week="${wId}">
                   <span class="red-arrow-up"></span>
                   <span>${weAreHereText}</span>
                 </div>
@@ -2271,6 +2411,136 @@
       }
     }
 
+
+    // ========================================================================
+    // Presentation / Deck Mode
+    // Default = normal scroll. Toggle via toolbar, "P", or URL ?present=1
+    // Keys: ←/→, Space (next); Esc exit; F fullscreen. Click sides optional.
+    // Print/PDF ignores deck mode (all slides still print one-per-page).
+    // ========================================================================
+    const PRESENTATION_SLIDE_IDS = ['slide1', 'slide2', 'slide3', 'slide4'];
+    let presentationIndex = 0;
+    let presentationActive = false;
+
+    function getPresentationSlides() {
+      return PRESENTATION_SLIDE_IDS
+        .map(id => document.getElementById(id))
+        .filter(Boolean);
+    }
+
+    function updatePresentationUI() {
+      const slides = getPresentationSlides();
+      slides.forEach((slide, idx) => {
+        slide.classList.toggle('is-active-slide', presentationActive && idx === presentationIndex);
+      });
+      const label = document.getElementById('presentationPageLabel');
+      if (label) label.textContent = `${presentationIndex + 1} / ${slides.length || 4}`;
+      const btn = document.getElementById('btnPresentation');
+      if (btn) {
+        const icon = btn.querySelector('svg');
+        const iconHtml = icon ? icon.outerHTML : '';
+        btn.innerHTML = iconHtml + (presentationActive ? ' 退出演示' : ' 演示模式');
+      }
+    }
+
+    function goToPresentationSlide(index) {
+      const slides = getPresentationSlides();
+      if (!slides.length) return;
+      presentationIndex = Math.max(0, Math.min(index, slides.length - 1));
+      updatePresentationUI();
+    }
+
+    function presentationNext() {
+      const slides = getPresentationSlides();
+      if (presentationIndex < slides.length - 1) goToPresentationSlide(presentationIndex + 1);
+    }
+
+    function presentationPrev() {
+      if (presentationIndex > 0) goToPresentationSlide(presentationIndex - 1);
+    }
+
+    function togglePresentationMode(force) {
+      presentationActive = (typeof force === 'boolean') ? force : !presentationActive;
+      document.body.classList.toggle('presentation-mode', presentationActive);
+      if (presentationActive) {
+        const slides = getPresentationSlides();
+        let best = 0;
+        const mid = window.scrollY + window.innerHeight / 2;
+        slides.forEach((s, i) => {
+          const top = s.offsetTop;
+          const bottom = top + s.offsetHeight;
+          if (mid >= top && mid <= bottom) best = i;
+        });
+        goToPresentationSlide(best);
+      } else {
+        const slides = getPresentationSlides();
+        slides.forEach(s => s.classList.remove('is-active-slide'));
+        if (slides[presentationIndex]) {
+          slides[presentationIndex].scrollIntoView({ block: 'start', behavior: 'smooth' });
+        }
+        if (document.fullscreenElement) {
+          document.exitFullscreen().catch(() => {});
+        }
+        updatePresentationUI();
+      }
+    }
+
+    function togglePresentationFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    function isTypingTarget(el) {
+      if (!el) return false;
+      const tag = (el.tagName || '').toLowerCase();
+      return tag === 'input' || tag === 'textarea' || tag === 'select' || el.isContentEditable;
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (isTypingTarget(e.target)) return;
+      if ((e.key === 'p' || e.key === 'P') && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        if (!presentationActive) {
+          e.preventDefault();
+          togglePresentationMode(true);
+          return;
+        }
+      }
+      if (!presentationActive) return;
+
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        togglePresentationMode(false);
+      } else if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+        e.preventDefault();
+        presentationNext();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        presentationPrev();
+      } else if (e.key === 'f' || e.key === 'F') {
+        e.preventDefault();
+        togglePresentationFullscreen();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goToPresentationSlide(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goToPresentationSlide(getPresentationSlides().length - 1);
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!presentationActive) return;
+      if (e.target.closest('.control-bar, .presentation-hud, .custom-theme-drawer, .data-modal-overlay, button, a, select, textarea, input')) return;
+      const slide = e.target.closest('.slide.is-active-slide');
+      if (!slide) return;
+      const rect = slide.getBoundingClientRect();
+      if (e.clientX > rect.left + rect.width * 0.55) presentationNext();
+      else if (e.clientX < rect.left + rect.width * 0.45) presentationPrev();
+    });
+
     // Initialize on page load
     window.addEventListener('DOMContentLoaded', () => {
       // Check if data script embedded
@@ -2301,6 +2571,10 @@
         if (select && bodyTheme) {
           select.value = bodyTheme;
         }
+      }
+
+      if (params.get('present') === '1' || params.get('presentation') === '1') {
+        togglePresentationMode(true);
       }
     });
   </script>

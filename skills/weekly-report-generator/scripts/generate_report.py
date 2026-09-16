@@ -94,7 +94,17 @@ def build_gantt_rows_html(timeline_data):
             # Special Holiday Column (rendered once with full rowspan across all tasks)
             if w_id == holiday_week_id:
                 if row_idx == 0:
-                    row_cells.append(f'<td rowspan="{len(tasks)}" class="cell-holiday"><div class="holiday-col-text">{holiday_name}</div></td>')
+                    holiday_content = f'<div class="holiday-col-text">{holiday_name}</div>'
+                    holiday_style = ''
+                    if w_id == current_week_id:
+                        holiday_content += f"""
+                <div class="we-are-here-indicator" data-week="{w_id}">
+                  <span class="red-arrow-up"></span>
+                  <span>{we_are_here_text}</span>
+                </div>
+                """
+                        holiday_style = ' style="position: relative;"'
+                    row_cells.append(f'<td rowspan="{len(tasks)}" class="cell-holiday"{holiday_style}>{holiday_content}</td>')
                 continue # Handled by vertical rowspan on row 0
 
             # Determine if this week falls into any task span
@@ -121,10 +131,10 @@ def build_gantt_rows_html(timeline_data):
             if w_id in stars:
                 cell_content = '<span class="milestone-star">★</span>'
             
-            # Check "We are here" indicator (positioned on the last row under current week)
+            # Check "We are here" indicator (in current-week cell; CSS left:50% centers it)
             if row_idx == len(tasks) - 1 and w_id == current_week_id:
                 cell_content += f'''
-                <div class="we-are-here-indicator" style="left: -140px; bottom: 2px;">
+                <div class="we-are-here-indicator" data-week="{w_id}">
                   <span class="red-arrow-up"></span>
                   <span>{we_are_here_text}</span>
                 </div>
@@ -146,6 +156,7 @@ def build_gantt_thead_html(timeline_data):
         '<th class="gantt-header-th col-category">Category</th>',
         '<th class="gantt-header-th col-task">Tasks</th>'
     ]
+    current_week_id = timeline_data.get("currentWeek")
     for w in weeks:
         w_id = w.get("id", "")
         w_name = w.get("name", w_id)
@@ -153,7 +164,7 @@ def build_gantt_thead_html(timeline_data):
         extra_style = ""
         if w.get("isHoliday"):
             extra_style = ' style="background-color: #d97706;"'
-        elif w.get("isCurrent"):
+        elif w.get("isCurrent") or (current_week_id and w_id == current_week_id):
             extra_style = ' style="background-color: var(--brand-primary-dark);"'
         ths.append(f'<th class="gantt-header-th col-week"{extra_style}><div class="week-title">{w_name}</div><div class="week-date">{w_date}</div></th>')
     return "\n            <tr>" + "".join(ths) + "</tr>"
