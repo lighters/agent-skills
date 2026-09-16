@@ -72,9 +72,20 @@ When constructing `timeline.weeks[]`, agents MUST strictly follow these business
 - `timeline.tasks[]`: `{ workstream, category, task, start, end, status, milestone? }` or `spans[]` for multi-phase bars
 - task `status`: `completed` | `active` | `planned`
 
-## Deliverables / This week (summary)
+## Slide 3 (Deliverables / Output Status) Guidance (CRITICAL for Agents)
 
-- `deliverables.items[]`: `{ milestone, progress, date, status, risk }` with risk `good` | `caution` | `risk` | `none`
+- **Purpose & Scope**: Focus **strictly on major project deliverables and key strategic milestones** (主要交付物与核心里程碑跟进，如各阶段成果确认、系统开发完成、SIT/UAT 验收签收、系统正式上线 Go-Live 等).
+- **DO NOT write granular task progress here**: Everyday tactical tasks, operational bug fixes, or low-level implementation details **belong on Slide 4 (`thisWeek`)**, NEVER on Slide 3.
+- `deliverables.items[]`: `{ milestone, progress, date, status, risk }`
+  - `milestone`: Major deliverable or milestone gate name (e.g. `手机端&web端重点功能系统开发完成`, `业务验收测试(UAT)签收`)
+  - `progress`: High-level summary of deliverables readiness (1-2 sentences, or `-` if pending)
+  - `date`: Target delivery date (`YYYY.M.D`)
+  - `status`: `已完成` | `进行中` | `未开始` (or `completed` | `active` | `planned`)
+  - `risk`: `good` (🟢) | `caution` (🟡) | `risk` (🔴) | `none` (-)
+
+## Slide 4 (This Week / Task Management) Guidance
+
+- **Purpose & Scope**: Tactical weekly execution tasks, operational progress, next week steps, and immediate risks.
 - `thisWeek`: `subtitle`, `overallStatus`, `previousTasks`, `nextSteps`, `risks`, `milestones`
 
 

@@ -54,12 +54,12 @@ This document describes the structured JSON schema used to feed the Weekly Repor
   },
   "slide3_deliverables": {
     "title": "Deliverables / Output Status",
-    "subtitle": "string",
+    "subtitle": "string - e.g. '关键交付节点与成果物健康度评估'",
     "items": [
       {
-        "milestone": "string - Milestone name",
-        "progress": "string - Details on current progress",
-        "date": "string - Expected date",
+        "milestone": "string - Major deliverable or strategic milestone gate (e.g. '需求基线确认', '核心系统开发完成', 'UAT业务验收签收'). DO NOT write low-level tactical tasks or bug fixes here.",
+        "progress": "string - High-level summary of deliverables readiness or blockers (1-2 sentences, or '-' if pending)",
+        "date": "string - Target delivery date (YYYY.M.D or M.D)",
         "status": "已完成 | 进行中 | 未开始",
         "risk": "good | caution | risk | none"
       }
@@ -120,3 +120,13 @@ This document describes the structured JSON schema used to feed the Weekly Repor
      - `"isHoliday": true`
      - `"holidayName": "<假期名称>"` (e.g. `"国庆假期"`, `"春节假期"`)
    - The Gantt renderer displays a golden vertical span with the holiday name centered vertically across all task rows.
+
+## Deliverables vs Task Management Rules (Slide 3 vs Slide 4)
+
+1. **Slide 3 (Deliverables / Output Status)**:
+   - Strictly for **Major Deliverables & Key Strategic Milestones** (需求基线确认、系统设计确认、核心系统开发完成、全链路SIT测试完成、UAT验收通过、生产发布Go-Live等).
+   - Target audience: Executives, Sponsors, and PMO.
+   - **DO NOT write granular task progress here**: Avoid bug fixes, individual API debugging notes, or daily meeting logs.
+2. **Slide 4 (This Week / Task Management)**:
+   - Strictly for **Tactical Execution Tasks & Operational Progress** (`previousTasks`, `nextSteps`, `risks`).
+   - Detail-level technical tasks, operational adjustments, and immediate risks belong here.
