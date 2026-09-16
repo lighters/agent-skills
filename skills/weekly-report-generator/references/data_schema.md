@@ -36,7 +36,7 @@ This document describes the structured JSON schema used to feed the Weekly Repor
     "weAreHereLabel": "We are here",
     "weeks": [
       { "id": "W6", "name": "W6", "dates": "1.22-1.26" },
-      { "id": "W9", "name": "W9", "dates": "2.12-2.17", "isHoliday": true, "holidayName": "春节假期" },
+      { "id": "W9", "name": "W9", "dates": "2.12-2.16", "isHoliday": true, "holidayName": "春节假期" },
       { "id": "W16", "name": "W16", "dates": "4.1-4.5", "isCurrent": true }
     ],
     "rows": [
@@ -107,3 +107,16 @@ This document describes the structured JSON schema used to feed the Weekly Repor
 - `emerald-forest`: Green energy, ESG, healthcare style (`#047857`, `#064e3b`).
 - `cyber-purple`: AI, tech, cloud innovation purple (`#7c3aed`, `#4c1d95`).
 - `minimal-slate`: Monochrome minimalist executive slate (`#334155`, `#0f172a`).
+
+## Work Plan Timeline Date & Holiday Rules
+
+1. **Monday to Friday Constraint**:
+   - `timeline.weeks[].dates` for regular weeks MUST represent **Monday to Friday** (`周一至周五`), format `M.D-M.D` (e.g. `9.14-9.18`).
+   - Start date weekday = 0 (Monday), End date weekday = 4 (Friday).
+   - Use Python `datetime` to compute exact dates based on target year and month. Never guess or hallucinate weekdays.
+
+2. **Statutory Holiday Rules**:
+   - For weeks falling on statutory holidays (e.g. 国庆节, 春节, 劳动节, 中秋节, 端午节, 清明节, 元旦):
+     - `"isHoliday": true`
+     - `"holidayName": "<假期名称>"` (e.g. `"国庆假期"`, `"春节假期"`)
+   - The Gantt renderer displays a golden vertical span with the holiday name centered vertically across all task rows.

@@ -9,12 +9,131 @@ import json
 import os
 import re
 import sys
+import datetime
 import argparse
 from pathlib import Path
 
 def load_json(path):
     with open(path, 'r', encoding='utf-8') as f:
         return json.load(f)
+
+def validate_timeline_dates(timeline_data, project_data, auto_fix=False, strict=False):
+    """
+    Validates work plan timeline weeks against standard business calendar rules:
+    1. Standard work weeks MUST be Monday to Friday (周一至周五).
+    2. Format: 'M.D-M.D' (or 'YYYY.M.D-YYYY.M.D', 'M/D-M/D').
+    3. Statutory holidays (isHoliday: true) MUST have a non-empty holidayName (e.g. '国庆假期', '春节假期').
+    4. Provides detailed diagnostic warnings with suggested Monday-to-Friday spans.
+    5. Optionally auto-fixes dates in place if auto_fix=True.
+    """
+    weeks = timeline_data.get("weeks", [])
+    if not weeks:
+        return []
+
+    # Infer target year
+    year = None
+    report_date = str(project_data.get("reportDate", ""))
+    m_yr = re.search(r"(\d{4})", report_date)
+    if m_yr:
+        year = int(m_yr.group(1))
+    else:
+        period = str(project_data.get("period", ""))
+        m_yr = re.search(r"(\d{4})", period)
+        if m_yr:
+            year = int(m_yr.group(1))
+    if not year:
+        year = datetime.date.today().year
+
+    weekdays_cn = ["周一 (Mon)", "周二 (Tue)", "周三 (Wed)", "周四 (Thu)", "周五 (Fri)", "周六 (Sat)", "周日 (Sun)"]
+    issues = []
+    fixed_count = 0
+
+    date_pattern = re.compile(
+        r'^(?:(\d{4})[./-])?(\d{1,2})[./-月](\d{1,2})[日]?\s*[-~～至到]\s*(?:(\d{4})[./-])?(\d{1,2})[./-月](\d{1,2})[日]?$'
+    )
+
+    for idx, w in enumerate(weeks):
+        w_id = w.get("id", f"Week-{idx+1}")
+        dates_str = str(w.get("dates", "")).strip()
+        is_holiday = w.get("isHoliday", False)
+        holiday_name = str(w.get("holidayName", "")).strip()
+
+        if is_holiday and not holiday_name:
+            issues.append(f"Week '{w_id}': marked 'isHoliday: true' but 'holidayName' is missing. Please specify the statutory holiday (e.g. '国庆假期', '春节假期').")
+
+        if not dates_str:
+            issues.append(f"Week '{w_id}': 'dates' is empty. Expected Monday-to-Friday format 'M.D-M.D'.")
+            continue
+
+        m = date_pattern.match(dates_str)
+        if not m:
+            issues.append(f"Week '{w_id}': Unable to parse dates '{dates_str}'. Expected format: 'M.D-M.D' (e.g. '9.14-9.18').")
+            continue
+
+        y1, m1, d1, y2, m2, d2 = m.groups()
+        yr1 = int(y1) if y1 else year
+        yr2 = int(y2) if y2 else (yr1 + 1 if int(m2) < int(m1) else yr1)
+
+        try:
+            dt1 = datetime.date(yr1, int(m1), int(d1))
+            dt2 = datetime.date(yr2, int(m2), int(d2))
+        except ValueError as e:
+            issues.append(f"Week '{w_id}': Invalid calendar date in '{dates_str}': {e}")
+            continue
+
+        if dt2 < dt1:
+            issues.append(f"Week '{w_id}': End date ({dt2}) is earlier than start date ({dt1}).")
+            continue
+
+        # Standard work week check (non-holiday)
+        if not is_holiday:
+            start_wd = dt1.weekday()
+            end_wd = dt2.weekday()
+            if start_wd != 0 or end_wd != 4:
+                # Calculate correct Monday and Friday:
+                # If end date is already Friday, Monday is 4 days prior
+                if end_wd == 4:
+                    friday = dt2
+                    monday = friday - datetime.timedelta(days=4)
+                # If start date is Sunday (weekday 6, mistakenly used as week start), Monday is next day
+                elif start_wd == 6:
+                    monday = dt1 + datetime.timedelta(days=1)
+                    friday = monday + datetime.timedelta(days=4)
+                # Otherwise, align to start date's Monday
+                else:
+                    monday = dt1 - datetime.timedelta(days=start_wd)
+                    friday = monday + datetime.timedelta(days=4)
+
+                expected_str = f"{monday.month}.{monday.day}-{friday.month}.{friday.day}"
+
+                msg = (
+                    f"Week '{w_id}' ('{dates_str}'): Start {dt1} is {weekdays_cn[start_wd]} (expected Monday), "
+                    f"end {dt2} is {weekdays_cn[end_wd]} (expected Friday). "
+                    f"Work plan standard requires Monday-to-Friday. Suggested: '{expected_str}'"
+                )
+                issues.append(msg)
+
+                if auto_fix:
+                    w["dates"] = expected_str
+                    fixed_count += 1
+
+    if fixed_count > 0:
+        print(f"🔧 [Date Auto-Fix] Automatically adjusted {fixed_count} week(s) to exact Monday-to-Friday dates.")
+
+    if issues:
+        print("\n" + "=" * 76, file=sys.stderr)
+        print("⚠️  [Work Plan Timeline Date Validation Warnings]", file=sys.stderr)
+        print("   Each regular week in Work Plan must represent Monday to Friday (周一至周五),", file=sys.stderr)
+        print("   and statutory holidays must have a clear holidayName annotation.", file=sys.stderr)
+        print("-" * 76, file=sys.stderr)
+        for issue in issues:
+            print(f"   • {issue}", file=sys.stderr)
+        print("=" * 76 + "\n", file=sys.stderr)
+
+        if strict:
+            raise ValueError(f"Timeline date validation failed with {len(issues)} issue(s). Use --fix-dates to auto-correct.")
+
+    return issues
 
 def build_gantt_rows_html(timeline_data):
     """
@@ -43,8 +162,7 @@ def build_gantt_rows_html(timeline_data):
     tbody_lines = []
     
     week_ids = [w["id"] for w in weeks]
-    holiday_week_id = next((w["id"] for w in weeks if w.get("isHoliday")), None)
-    holiday_name = next((w.get("holidayName", "假期") for w in weeks if w.get("isHoliday")), "假期")
+    holiday_weeks = {w["id"]: w.get("holidayName", "假期") for w in weeks if w.get("isHoliday")}
     current_week_id = timeline_data.get("currentWeek", "W16")
     we_are_here_text = timeline_data.get("weAreHereText", "We are here")
 
@@ -92,8 +210,9 @@ def build_gantt_rows_html(timeline_data):
         # Week columns
         for w_idx, w_id in enumerate(week_ids):
             # Special Holiday Column (rendered once with full rowspan across all tasks)
-            if w_id == holiday_week_id:
+            if w_id in holiday_weeks:
                 if row_idx == 0:
+                    holiday_name = holiday_weeks[w_id]
                     holiday_content = f'<div class="holiday-col-text">{holiday_name}</div>'
                     holiday_style = ''
                     if w_id == current_week_id:
@@ -248,7 +367,7 @@ def build_task_mgmt_components(tasks_data):
         "ms_html": "\n".join(ms_rows) if ms_rows else "<tr><td>-</td><td>-</td></tr>"
     }
 
-def generate_report(data_path, output_path, theme="classic-navy"):
+def generate_report(data_path, output_path, theme="classic-navy", auto_fix_dates=False, strict_dates=False):
     base_dir = Path(__file__).resolve().parent.parent
     template_path = base_dir / "templates" / "weekly_report_template.html"
     
@@ -257,6 +376,16 @@ def generate_report(data_path, output_path, theme="classic-navy"):
         theme = data.get("theme", "astrazeneca")
     data["theme"] = theme
 
+    # Get sub-sections
+    company = data.get("company", {})
+    project = data.get("project", {})
+    timeline = data.get("timeline", data.get("slide2_plan", {}))
+    deliverables = data.get("deliverables", data.get("slide3_deliverables", {}))
+    this_week = data.get("thisWeek", data.get("slide4_tasks", {}))
+
+    # Validate work plan timeline dates
+    validate_timeline_dates(timeline, project, auto_fix=auto_fix_dates, strict=strict_dates)
+
     with open(template_path, "r", encoding="utf-8") as f:
         html = f.read()
 
@@ -264,13 +393,6 @@ def generate_report(data_path, output_path, theme="classic-navy"):
     html = html.replace('body data-theme="classic-navy"', f'body data-theme="{theme}"')
     html = html.replace('body data-theme="astrazeneca"', f'body data-theme="{theme}"')
     html = re.sub(r'<option value="' + re.escape(theme) + r'">', f'<option value="{theme}" selected>', html)
-
-    # Get sub-sections
-    company = data.get("company", {})
-    project = data.get("project", {})
-    timeline = data.get("timeline", data.get("slide2_plan", {}))
-    deliverables = data.get("deliverables", data.get("slide3_deliverables", {}))
-    this_week = data.get("thisWeek", data.get("slide4_tasks", {}))
 
     # 1. Slide 1 (Cover) replacements
     html = html.replace("AstraZeneca / 数字化交付中心", company.get("name", "企业数字化创新交付中心"))
@@ -376,9 +498,21 @@ if __name__ == "__main__":
     parser.add_argument("--data", default=None, help="Path to JSON data file")
     parser.add_argument("--output", default="weekly-report.html", help="Path to output HTML file")
     parser.add_argument("--theme", default=None, help="Theme ID (astrazeneca, novartis, bayer, jnj, novo-nordisk, vercel-minimal)")
+    parser.add_argument("--check-dates", action="store_true", help="Only validate timeline dates and report issues without generating HTML")
+    parser.add_argument("--fix-dates", action="store_true", help="Auto-adjust non-holiday timeline dates to exact Monday-to-Friday")
+    parser.add_argument("--strict-dates", action="store_true", help="Fail with non-zero exit code if timeline date validation finds any issue")
     args = parser.parse_args()
 
     base_dir = Path(__file__).resolve().parent.parent
     data_file = args.data if args.data else str(base_dir / "examples" / "sample_data.json")
     
-    generate_report(data_file, args.output, args.theme)
+    if args.check_dates:
+        data = load_json(data_file)
+        timeline = data.get("timeline", data.get("slide2_plan", {}))
+        project = data.get("project", {})
+        issues = validate_timeline_dates(timeline, project, auto_fix=args.fix_dates, strict=args.strict_dates)
+        if not issues:
+            print("✅ All Work Plan timeline dates strictly conform to Monday-to-Friday and statutory holiday rules.")
+        sys.exit(1 if issues and not args.fix_dates else 0)
+
+    generate_report(data_file, args.output, args.theme, auto_fix_dates=args.fix_dates, strict_dates=args.strict_dates)

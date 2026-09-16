@@ -50,6 +50,28 @@
 
 Timeline 是核心复杂图表，支持**按周时间轴**定义、**多工作流与任务分组**、**执行阶段条带**、**特殊假期金色高亮列**、**关键里程碑星标（★）**以及**当前周（We are here）指针**。
 
+#### 核心规范：Work Plan 周日期（周一至周五）与法定节假日约束（Agent 必读）
+
+为确保周报项目计划时间轴的专业性与准确性，所有 Agent 在生成 `timeline.weeks[]` 时必须严格遵循以下日历约束：
+
+1. **严格周一至周五标准工作周**：
+   - 每一周的 `dates` 必须代表**周一到周五**的日期区间，标准格式为 `M.D-M.D`（如 `9.14-9.18`、`10.12-10.16`），跨年时可写作 `YYYY.M.D-YYYY.M.D`。
+   - 起始日期必须为**周一**（Python `weekday() == 0`），结束日期必须为**周五**（Python `weekday() == 4`）。
+   - **禁止凭空捏造日历日期**（例如将周二至周六误当作工作周）。Agent 在填充日期前请通过 Python `datetime` 计算准确的周一与周五：
+     ```python
+     import datetime
+     d = datetime.date(2026, 9, 16)
+     mon = d - datetime.timedelta(days=d.weekday()) # 周一
+     fri = mon + datetime.timedelta(days=4)          # 周五
+     dates = f"{mon.month}.{mon.day}-{fri.month}.{fri.day}" # "9.14-9.18"
+     ```
+
+2. **法定节假日规范标注 (`isHoliday` & `holidayName`)**：
+   - 当项目跨越国家法定节假日（如国庆假期、春节假期、劳动节、中秋节、端午节、清明节、元旦等）且该周整体放假调休时：
+     - 必须设置 `"isHoliday": true`
+     - 必须设置 `"holidayName": "国庆假期"`（或 `"春节假期"` 等）
+   - 引擎会自动将节假日列高亮为金色贯通条带，并垂直居中呈现假期名称。
+
 #### Timeline 输入结构：
 
 ```json
@@ -60,13 +82,13 @@ Timeline 是核心复杂图表，支持**按周时间轴**定义、**多工作�
     "currentWeek": "W16",                       // 当前周标识，自动生成 "▲ We are here" 指针
     "weAreHereText": "We are here",             // 指针说明文本
 
-    // 1. 时间轴周定义 (按列排序)
+    // 1. 时间轴周定义 (按列排序，严格周一至周五或法定节假日)
     "weeks": [
       { "id": "W6", "name": "W6", "dates": "1.22-1.26" },
       { "id": "W7", "name": "W7", "dates": "1.29-2.2" },
-      { "id": "W8", "name": "W8", "dates": "2.4-2.8" },
-      { "id": "W9", "name": "W9", "dates": "2.12-2.17", "isHoliday": true, "holidayName": "春节假期" },
-      { "id": "W10", "name": "W10", "dates": "2.18-2.23" },
+      { "id": "W8", "name": "W8", "dates": "2.5-2.9" },
+      { "id": "W9", "name": "W9", "dates": "2.12-2.16", "isHoliday": true, "holidayName": "春节假期" },
+      { "id": "W10", "name": "W10", "dates": "2.19-2.23" },
       { "id": "W11", "name": "W11", "dates": "2.26-3.1" },
       { "id": "W12", "name": "W12", "dates": "3.4-3.8" },
       { "id": "W13", "name": "W13", "dates": "3.11-3.15" },
@@ -108,7 +130,7 @@ Timeline 是核心复杂图表，支持**按周时间轴**定义、**多工作�
 
 #### Timeline 自动生成逻辑：
 1. **自动单元格合并 (`rowspan`)**：生成引擎会扫描 `workstream` 与 `category`，自动计算合并跨度，无需手动写 HTML `rowspan`。
-2. **特殊假期列自动识别**：只要 `isHoliday: true`，该列会被自动渲染为纵向金色条带，并垂直居中显示 `holidayName`（如“春节假期”）。
+2. **特殊假期列自动识别**：只要 `isHoliday: true`，该列会被自动渲染为纵向金色条带，并垂直居中显示 `holidayName`（如“春节假期”）。支持时间轴中包含多个节假日周。
 3. **指针自动定位**：在 `currentWeek` 所在列的底部自动锚定红箭头与 `We are here`。
 4. **里程碑星标渲染**：若指定了 `milestone: "Wxx"`，系统会在该任务的对应周格中渲染红星 ★。
 
@@ -186,10 +208,20 @@ Timeline 是核心复杂图表，支持**按周时间轴**定义、**多工作�
 
 ### 方式 A：使用 Python 脚本生成 (推荐 Agent 使用)
 ```bash
+# 1. 常规生成（脚本会自动校验周一至周五日期与节假日标注，若有问题会输出高亮警示与推导建议）
 python3 scripts/generate_report.py \
   --data your_weekly_data.json \
   --theme classic-navy \
   --output weekly-report.html
+
+# 2. 仅进行时间轴日期与节假日合法性校验（不生成 HTML）：
+python3 scripts/generate_report.py --data your_weekly_data.json --check-dates
+
+# 3. 自动将非节假日日期纠正对齐为周一至周五标准区间：
+python3 scripts/generate_report.py --data your_weekly_data.json --fix-dates --output weekly-report.html
+
+# 4. 严格校验模式（若日期非周一至周五直接报错中断）：
+python3 scripts/generate_report.py --data your_weekly_data.json --strict-dates
 ```
 
 ### 方式 B：在网页中实时输入并生成 (交互预览)

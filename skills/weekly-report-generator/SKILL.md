@@ -36,10 +36,39 @@ python3 scripts/export_pdf.py \
 
 Themes: `astrazeneca` / `classic-navy`, `novartis`, `bayer`, `jnj`, `novo-nordisk`, `vercel-minimal`.
 
+## Work Plan Date & Holiday Constraints (CRITICAL for Agents)
+
+When constructing `timeline.weeks[]`, agents MUST strictly follow these business calendar rules:
+
+1. **Strict Monday-to-Friday Work Weeks (周一至周五约束)**:
+   - Every standard work week in `timeline.weeks[].dates` MUST represent **Monday to Friday** (`周一至周五`).
+   - Format: `M.D-M.D` (e.g. `9.14-9.18`, `10.12-10.16`), or `YYYY.M.D-YYYY.M.D` across year boundaries.
+   - Start day MUST be **Monday** (`weekday() == 0`).
+   - End day MUST be **Friday** (`weekday() == 4`).
+   - **DO NOT guess calendar days!** Verify with Python before writing the JSON:
+     ```python
+     import datetime
+     d = datetime.date(2026, 9, 16)
+     mon = d - datetime.timedelta(days=d.weekday())  # Monday
+     fri = mon + datetime.timedelta(days=4)           # Friday
+     # Dates string: f"{mon.month}.{mon.day}-{fri.month}.{fri.day}" -> "9.14-9.18"
+     ```
+
+2. **Statutory Holiday Annotation (法定节假日标注)**:
+   - When a week corresponds to a statutory holiday (如国庆假期、春节假期、劳动节、中秋节、端午节、清明节、元旦等):
+     - Set `"isHoliday": true`
+     - Set `"holidayName": "<假期名称>"` (e.g. `"国庆假期"`, `"春节假期"`)
+     - The Gantt chart automatically renders the holiday week as a golden vertical highlight column with the holiday name vertically centered. Regular task bars do not occupy holiday columns.
+
+3. **Date Validation & Auto-Fix CLI**:
+   - Validate dates without generating: `python3 scripts/generate_report.py --data <file.json> --check-dates`
+   - Auto-align non-holiday dates to Monday-Friday: `python3 scripts/generate_report.py --data <file.json> --fix-dates`
+   - Strict mode: `python3 scripts/generate_report.py --data <file.json> --strict-dates`
+
 ## Timeline JSON (summary)
 
 - `timeline.currentWeek`: week id for the "We are here" pointer
-- `timeline.weeks[]`: `{ id, name, dates, isHoliday?, holidayName? }`
+- `timeline.weeks[]`: `{ id, name, dates, isHoliday?, holidayName? }` (strictly Mon-Fri, or statutory holiday)
 - `timeline.tasks[]`: `{ workstream, category, task, start, end, status, milestone? }` or `spans[]` for multi-phase bars
 - task `status`: `completed` | `active` | `planned`
 

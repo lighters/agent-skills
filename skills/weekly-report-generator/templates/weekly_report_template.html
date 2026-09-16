@@ -1895,9 +1895,9 @@
         "weeks": [
           { "id": "W6", "name": "W6", "dates": "1.22-1.26" },
           { "id": "W7", "name": "W7", "dates": "1.29-2.2" },
-          { "id": "W8", "name": "W8", "dates": "2.4-2.8" },
-          { "id": "W9", "name": "W9", "dates": "2.12-2.17", "isHoliday": true, "holidayName": "春节假期" },
-          { "id": "W10", "name": "W10", "dates": "2.18-2.23" },
+          { "id": "W8", "name": "W8", "dates": "2.5-2.9" },
+          { "id": "W9", "name": "W9", "dates": "2.12-2.16", "isHoliday": true, "holidayName": "春节假期" },
+          { "id": "W10", "name": "W10", "dates": "2.19-2.23" },
           { "id": "W11", "name": "W11", "dates": "2.26-3.1" },
           { "id": "W12", "name": "W12", "dates": "3.4-3.8" },
           { "id": "W13", "name": "W13", "dates": "3.11-3.15" },
@@ -2173,9 +2173,10 @@
       const currentWeekId = timelineData.currentWeek || "W16";
       const weAreHereText = timelineData.weAreHereText || "We are here";
       
-      const holidayWeek = weeks.find(w => w.isHoliday);
-      const holidayWeekId = holidayWeek ? holidayWeek.id : null;
-      const holidayName = holidayWeek ? (holidayWeek.holidayName || "假期") : "假期";
+      const holidayMap = {};
+      weeks.forEach(w => {
+        if (w.isHoliday) holidayMap[w.id] = w.holidayName || "假期";
+      });
 
       // 1. Render THEAD
       const thead = document.querySelector('#slide2 .gantt-table thead');
@@ -2260,8 +2261,9 @@
           weeks.forEach((w, wIdx) => {
             const wId = w.id;
             // Holiday column
-            if (wId === holidayWeekId) {
+            if (holidayMap[wId]) {
               if (rowIdx === 0) {
+                const holidayName = holidayMap[wId];
                 let holidayContent = `<div class="holiday-col-text">${holidayName}</div>`;
                 let holidayStyle = '';
                 if (wId === currentWeekId) {
