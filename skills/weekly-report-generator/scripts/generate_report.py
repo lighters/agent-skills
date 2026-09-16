@@ -412,6 +412,37 @@ def generate_report(data_path, output_path, theme="classic-navy", auto_fix_dates
     dot_color = "#059669" if overall_status == "good" else ("#dc2626" if overall_status == "risk" else "#d97706")
 
     # 2. Slide 2 (Timeline Gantt) generation
+    timeline_title = timeline.get("title", "Work Plan —Overview")
+    weeks = timeline.get("weeks", [])
+    if weeks:
+        w_first = weeks[0].get("name", weeks[0].get("id", ""))
+        w_last = weeks[-1].get("name", weeks[-1].get("id", ""))
+        auto_range = f"({w_first} - {w_last})" if w_first and w_last else ""
+    else:
+        auto_range = ""
+
+    raw_tl_sub = timeline.get("subtitle", "")
+    if not raw_tl_sub:
+        timeline_subtitle = f"端到端执行计划及进度跟踪 {auto_range}".strip() if auto_range else "端到端执行计划及进度跟踪"
+    elif "(W6 - W20)" in raw_tl_sub and auto_range and auto_range != "(W6 - W20)":
+        timeline_subtitle = raw_tl_sub.replace("(W6 - W20)", auto_range)
+    else:
+        timeline_subtitle = raw_tl_sub
+
+    # Replace title & subtitle in Slide 2
+    html = re.sub(
+        r'(<section class="slide" id="slide2">.*?<h2 class="slide-title">).*?(</h2>)',
+        f'\\1{timeline_title}\\2',
+        html,
+        flags=re.DOTALL
+    )
+    html = re.sub(
+        r'(<section class="slide" id="slide2">.*?<span class="slide-subtitle"[^>]*>).*?(</span>)',
+        f'\\1{timeline_subtitle}\\2',
+        html,
+        flags=re.DOTALL
+    )
+
     gantt_thead = build_gantt_thead_html(timeline)
     gantt_tbody = build_gantt_rows_html(timeline)
     
@@ -424,6 +455,23 @@ def generate_report(data_path, output_path, theme="classic-navy", auto_fix_dates
     )
 
     # 3. Slide 3 (Deliverables) generation
+    deliv_title = deliverables.get("title", "Deliverables / Output Status")
+    deliv_subtitle = deliverables.get("subtitle", "关键交付节点与成果物健康度评估")
+
+    # Replace title & subtitle in Slide 3
+    html = re.sub(
+        r'(<section class="slide" id="slide3">.*?<h2 class="slide-title">).*?(</h2>)',
+        f'\\1{deliv_title}\\2',
+        html,
+        flags=re.DOTALL
+    )
+    html = re.sub(
+        r'(<section class="slide" id="slide3">.*?<span class="slide-subtitle"[^>]*>).*?(</span>)',
+        f'\\1{deliv_subtitle}\\2',
+        html,
+        flags=re.DOTALL
+    )
+
     deliv_tbody = build_deliverables_tbody_html(deliverables)
     html = re.sub(
         r'<table class="deliverables-table">\s*<thead>.*?</thead>\s*<tbody>.*?</tbody>\s*</table>',
@@ -435,11 +483,21 @@ def generate_report(data_path, output_path, theme="classic-navy", auto_fix_dates
     # 4. Slide 4 (This week / Task Management) generation
     tm_comps = build_task_mgmt_components(this_week)
     
-    # Subtitle
+    tw_title = this_week.get("title", "Task Management")
+    tw_subtitle = this_week.get("subtitle", "Week 16")
+
+    # Replace title & subtitle in Slide 4
     html = re.sub(
-        r'<div class="slide-subtitle" style="font-size: 18px; margin-top: 2px;">.*?</div>',
-        f'<div class="slide-subtitle" style="font-size: 18px; margin-top: 2px;">{this_week.get("subtitle", "Week 16")}</div>',
-        html
+        r'(<section [^>]*id="slide4"[^>]*>.*?<h2 class="slide-title"[^>]*>).*?(</h2>)',
+        f'\\1{tw_title}\\2',
+        html,
+        flags=re.DOTALL
+    )
+    html = re.sub(
+        r'(<section [^>]*id="slide4"[^>]*>.*?<div class="slide-subtitle"[^>]*>).*?(</div>)',
+        f'\\1{tw_subtitle}\\2',
+        html,
+        flags=re.DOTALL
     )
 
     # Status circle color

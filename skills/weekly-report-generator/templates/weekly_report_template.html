@@ -2173,6 +2173,27 @@
       const currentWeekId = timelineData.currentWeek || "W16";
       const weAreHereText = timelineData.weAreHereText || "We are here";
       
+      // Update Slide 2 Title & Subtitle
+      if (timelineData.title) {
+        const titleEl = document.querySelector('#slide2 .slide-title');
+        if (titleEl) titleEl.textContent = timelineData.title;
+      }
+      let subText = timelineData.subtitle;
+      if (weeks.length) {
+        const firstW = weeks[0].name || weeks[0].id || '';
+        const lastW = weeks[weeks.length - 1].name || weeks[weeks.length - 1].id || '';
+        const rangeStr = `(${firstW} - ${lastW})`;
+        if (!subText) {
+          subText = `端到端执行计划及进度跟踪 ${rangeStr}`;
+        } else if (subText.includes('(W6 - W20)') && rangeStr !== '(W6 - W20)') {
+          subText = subText.replace('(W6 - W20)', rangeStr);
+        }
+      }
+      if (subText) {
+        const subEl = document.querySelector('#slide2 .slide-subtitle');
+        if (subEl) subEl.textContent = subText;
+      }
+
       const holidayMap = {};
       weeks.forEach(w => {
         if (w.isHoliday) holidayMap[w.id] = w.holidayName || "假期";
@@ -2323,6 +2344,17 @@
     // Render Slide 3: Deliverables
     function renderDeliverables(delivData) {
       if (!delivData) return;
+
+      // Update Slide 3 Title & Subtitle
+      if (delivData.title) {
+        const titleEl = document.querySelector('#slide3 .slide-title');
+        if (titleEl) titleEl.textContent = delivData.title;
+      }
+      const subEl = document.querySelector('#slide3 .slide-subtitle');
+      if (subEl) {
+        subEl.textContent = delivData.subtitle || "关键交付节点与成果物健康度评估";
+      }
+
       const items = delivData.items || [];
       const tbody = document.querySelector('#slide3 .deliverables-table tbody');
       if (tbody) {
@@ -2357,7 +2389,11 @@
     function renderThisWeek(thisWeekData) {
       if (!thisWeekData) return;
 
-      // Subtitle
+      // Title & Subtitle
+      if (thisWeekData.title) {
+        const titleEl = document.querySelector('#slide4 .slide-title');
+        if (titleEl) titleEl.textContent = thisWeekData.title;
+      }
       if (thisWeekData.subtitle) {
         const sub = document.querySelector('#slide4 .slide-subtitle');
         if (sub) sub.textContent = thisWeekData.subtitle;
