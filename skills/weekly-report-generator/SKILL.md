@@ -7,7 +7,7 @@ description: >-
 ---
 # Weekly Report Generator（企业高阶周报生成器）
 
-Package root on this computer: `/home/box/agent-data/workflows/weekly-report-generator`
+Directory: `skills/weekly-report-generator`
 
 Source: https://github.com/lighters/agent-skills (`skills/weekly-report-generator`)
 
@@ -15,23 +15,23 @@ Produce presentation-grade HTML + PDF weekly reports (4 slides: Cover, Gantt Wor
 
 ## Before generating
 
-1. Read the input format guide: `/home/box/agent-data/workflows/weekly-report-generator/references/input_format_guide.md`
-2. Optionally skim `/home/box/agent-data/workflows/weekly-report-generator/examples/sample_data.json`
+1. Read the input format guide: `skills/weekly-report-generator/references/input_format_guide.md`
+2. Optionally skim `skills/weekly-report-generator/examples/sample_data.json`
 3. Build a JSON data file for the target project/week (cover, timeline, deliverables, thisWeek). Do not invent status — pull from the project's task source of truth.
 
 ## Generate
 
 ```bash
-cd /home/box/agent-data/workflows/weekly-report-generator
+cd skills/weekly-report-generator
 
 python3 scripts/generate_report.py \
-  --data /path/to/data.json \
+  --data examples/sample_data.json \
   --theme classic-navy \
-  --output /workspace/weekly-report.html
+  --output weekly-report.html
 
 python3 scripts/export_pdf.py \
-  --input /workspace/weekly-report.html \
-  --output /workspace/weekly-report.pdf
+  --input weekly-report.html \
+  --output weekly-report.pdf
 ```
 
 Themes: `astrazeneca` / `classic-navy`, `novartis`, `bayer`, `jnj`, `novo-nordisk`, `vercel-minimal`.
