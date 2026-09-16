@@ -587,6 +587,27 @@ def generate_report(data_path, output_path, theme="classic-navy", auto_fix_dates
     html = html.replace('body data-theme="astrazeneca"', f'body data-theme="{theme}"')
     html = re.sub(r'<option value="' + re.escape(theme) + r'">', f'<option value="{theme}" selected>', html)
 
+    # Custom theme color override from JSON
+    custom_theme = data.get("customTheme", {})
+    if custom_theme:
+        custom_vars = []
+        if "primary" in custom_theme:
+            custom_vars.append(f"--brand-primary: {custom_theme['primary']} !important;")
+            custom_vars.append(f"--brand-border: {custom_theme['primary']} !important;")
+        if "primaryDark" in custom_theme:
+            custom_vars.append(f"--brand-primary-dark: {custom_theme['primaryDark']} !important;")
+            custom_vars.append(f"--brand-text-main: {custom_theme['primaryDark']} !important;")
+        if "accent" in custom_theme:
+            custom_vars.append(f"--brand-accent-sec: {custom_theme['accent']} !important;")
+            custom_vars.append(f"--brand-gantt-header: {custom_theme['accent']} !important;")
+        if "holiday" in custom_theme:
+            custom_vars.append(f"--brand-holiday: {custom_theme['holiday']} !important;")
+        if "bg" in custom_theme:
+            custom_vars.append(f"--brand-bg: {custom_theme['bg']} !important;")
+        if custom_vars:
+            style_override = f"\n  <style id=\"custom-theme-override\">\n    :root, body {{\n      " + "\n      ".join(custom_vars) + "\n    }\n  </style>"
+            html = html.replace("</head>", f"{style_override}\n</head>")
+
     # 1. Slide 1 (Cover) replacements
     html = html.replace("AstraZeneca / 数字化交付中心", company.get("name", "企业数字化创新交付中心"))
     html = html.replace("商业技术交付团队", company.get("department", "技术交付团队"))

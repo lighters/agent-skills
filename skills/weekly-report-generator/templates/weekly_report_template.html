@@ -2473,6 +2473,28 @@
         if (sel) sel.value = data.theme;
       }
 
+      if (data.customTheme) {
+        const ct = data.customTheme;
+        if (ct.primary) {
+          applyCustomColor('--brand-primary', ct.primary);
+          applyCustomColor('--brand-border', ct.primary);
+        }
+        if (ct.primaryDark) {
+          applyCustomColor('--brand-primary-dark', ct.primaryDark);
+          applyCustomColor('--brand-text-main', ct.primaryDark);
+        }
+        if (ct.accent) {
+          applyCustomColor('--brand-accent-sec', ct.accent);
+          applyCustomColor('--brand-gantt-header', ct.accent);
+        }
+        if (ct.holiday) {
+          applyCustomColor('--brand-holiday', ct.holiday);
+        }
+        if (ct.bg) {
+          applyCustomColor('--brand-bg', ct.bg);
+        }
+      }
+
       // 2. Cover (Slide 1)
       renderCover(data);
 
