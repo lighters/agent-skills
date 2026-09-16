@@ -96,7 +96,45 @@ This document describes the structured JSON schema used to feed the Weekly Repor
         "date": "YYYY.MM.DD or '-'"
       }
     ]
-  }
+  },
+  "discussionSlides": [
+    {
+      "title": "string - Discussion slide main title",
+      "subtitle": "string - Discussion slide subtitle or decision scope",
+      "badge": "string - Optional header badge (e.g. '方案决策', '流程规范')",
+      "category": "string - Optional category pill (e.g. '架构选型', '协作机制')",
+      "layout": "comparison | cards | agenda | deep-dive | table | custom",
+      "columns": 2, // optional column count for comparison/cards (2, 3, or 4)
+      "cards": [
+        {
+          "title": "string - Card title (e.g. '方案 A：企业级自建网关服务 (推荐)')",
+          "badge": "string - Card badge (e.g. '推荐方案', '备选方案')",
+          "badgeType": "recommended | alternative | warning | neutral",
+          "summary": "string - Callout summary box text",
+          "items": [
+            { "label": "string", "text": "string" }
+          ],
+          "points": ["string bullet point"],
+          "verdict": "string - Green highlight bottom verdict box"
+        }
+      ],
+      "sections": [
+        {
+          "title": "string - Left side banner title (e.g. '1. 现状痛点')",
+          "content": "string - Right side description narrative"
+        }
+      ],
+      "table": {
+        "headers": ["string header"],
+        "rows": [["string cell"]]
+      },
+      "html": "string - Custom raw HTML snippet if layout == 'custom'",
+      "conclusion": {
+        "badge": "string - Bottom callout badge (default: '周会决议 / 待决策项')",
+        "text": "string - Meeting decision / action item / sign-off request"
+      }
+    }
+  ]
 }
 ```
 
@@ -130,3 +168,18 @@ This document describes the structured JSON schema used to feed the Weekly Repor
 2. **Slide 4 (This Week / Task Management)**:
    - Strictly for **Tactical Execution Tasks & Operational Progress** (`previousTasks`, `nextSteps`, `risks`).
    - Detail-level technical tasks, operational adjustments, and immediate risks belong here.
+
+## Slide 5+ (Discussion & Proposal Slides) Rules
+
+1. **Purpose**:
+   - Provide meeting participants with deep-dive technical or strategic proposals requiring alignment or sign-off.
+   - Preserves the 4-slide foundation while enabling infinite extensible presentation pages.
+2. **Layout Types**:
+   - `comparison`: 2 to 4 cards comparing alternative architectures or solutions with badges, trade-offs, and bottom verdicts.
+   - `cards`: Multi-column card matrix for workstream deep-dives.
+   - `agenda` / `deep-dive`: Horizontal split cards (title block + narrative content) for structured problem-solving.
+   - `table`: Multi-column matrix evaluation table.
+   - `custom`: Custom HTML snippet.
+3. **Conclusion Callout**:
+   - Optional bottom box summarizing key decisions, sign-off requests, or action items for the weekly meeting.
+

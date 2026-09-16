@@ -8,7 +8,7 @@
 
 | 技能名称 (Skill) | 目录路径 | 描述说明 | 依赖环境 |
 | :--- | :--- | :--- | :--- |
-| **`weekly-report-generator`** | [`skills/weekly-report-generator`](./skills/weekly-report-generator) | **企业高保真周报生成器**：1:1 复刻高管汇报级 PPT 排版，支持端到端 Timeline 甘特图自动排版、交付物红黄绿健康度跟踪、全屏无黑边演示模式、工作周日期智能校验、多企业主题及 16:9 矢量 PDF 导出。 | Python 3.8+ / Google Chrome (可选) |
+| **`weekly-report-generator`** | [`skills/weekly-report-generator`](./skills/weekly-report-generator) | **企业高保真周报生成器**：1:1 复刻高管汇报级 PPT 排版，支持 4 页标准结构 + 自由扩展 Slide 5+ 方案研讨与议题决议页、端到端 Timeline 甘特图自动排版、交付物红黄绿健康度跟踪、全屏无黑边演示模式、工作周日期智能校验、多企业主题及 16:9 矢量 PDF 导出。 | Python 3.8+ / Google Chrome (可选) |
 
 ---
 
@@ -41,12 +41,14 @@ cp -R /path/to/agent-skills/skills/weekly-report-generator .agents/skills/
 
 ### 1. 核心能力与亮点
 
-1. **PPT 样式 1:1 高保真还原**：
+1. **PPT 样式 1:1 高保真还原（4 页基础骨架 + Slide 5+ 方案研讨扩展）**：
    - **Slide 1 封面页**：企业 Branding、徽标、项目编号、汇报周期、汇报人、机密等级与整体健康度徽章。
    - **Slide 2 整体项目计划 (Work Plan / Timeline)**：端到端甘特图、跨多周任务条带映射、`We are here` 当前周动态红箭头指针、法定节假日金色高亮列、关键里程碑红星（★）。
    - **Slide 3 交付物及状态 (Deliverables / Output Status)**：聚焦项目**主要交付物与核心里程碑门禁**，支持红黄绿风险状态指示（`Good` / `Caution` / `High Risk`）。
    - **Slide 4 本周工作 (Task Management)**：聚焦微观战术任务执行，完全复刻双列卡片（前期工作 / 下周计划 / 风险管理 / 未来两周里程碑）+ 状态徽标。
+   - **Slide 5+ 方案研讨与议题扩展页 (Discussion & Proposal Slides)**：周报后可按需追加任意多页议题页，支持 **方案比选 (`comparison`)**、**卡片矩阵 (`cards`)**、**议题深研 (`agenda`)**、**评估矩阵表格 (`table`)** 与 **自由 HTML (`custom`)** 等多种专业排版，配备方案推荐徽标与底部周会决议卡片。
 2. **全屏无黑边演播模式 (Presentation Deck Mode)**：
+   - 支持动态 1 至 N 页全屏演播，自动识别总页数并同步更新翻页状态（`1 / N`）。
    - 点击顶部工具栏 **「📽️ 演示模式」**（或按快捷键 `P`，或 URL 附带 `?present=1`）进入演播模式。
    - 响应式等比铺满浏览器视口（自适应屏幕分辨率，彻底消除黑边与背景留白）。
    - 快捷键支持：`←` / `→` 或 `Space` 翻页，`F` 进入全屏，`Esc` 退出；鼠标点击左/右半屏直接切页。

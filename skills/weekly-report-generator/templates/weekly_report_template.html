@@ -823,6 +823,306 @@
     }
 
     /* ==========================================================================
+       SLIDE 5+: 方案讨论与扩展页 (Discussion & Proposal Slides)
+       ========================================================================== */
+    .slide-discussion {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .discussion-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 11.5px;
+      font-weight: 700;
+      background-color: var(--brand-primary);
+      color: #ffffff;
+      letter-spacing: 0.3px;
+    }
+
+    .discussion-category-pill {
+      font-size: 12px;
+      font-weight: 700;
+      color: #475569;
+      background: #f1f5f9;
+      padding: 4px 12px;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+
+    .discussion-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      margin-top: 6px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+
+    /* Discussion Grids */
+    .discussion-grid {
+      display: grid;
+      gap: 16px;
+      flex: 1;
+      height: 100%;
+    }
+
+    .grid-cols-2 { grid-template-columns: 1fr 1fr; }
+    .grid-cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .grid-cols-4 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 12px; }
+
+    /* Discussion Card */
+    .discussion-card {
+      display: flex;
+      flex-direction: column;
+      border: 1.5px solid var(--brand-border);
+      background: #ffffff;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+
+    .discussion-card-header {
+      background-color: var(--brand-primary);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 13.5px;
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      letter-spacing: 0.2px;
+    }
+
+    .card-header-title {
+      font-weight: 700;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .card-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+
+    .badge-recommended, .badge-success {
+      background-color: #dcfce7;
+      color: #15803d;
+      border: 1px solid #86efac;
+    }
+
+    .badge-alternative, .badge-info {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #7dd3fc;
+    }
+
+    .badge-warning {
+      background-color: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+
+    .badge-neutral {
+      background-color: #f1f5f9;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+    }
+
+    .discussion-card-body {
+      padding: 12px 14px;
+      font-size: 12px;
+      color: #1e293b;
+      line-height: 1.65;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #ffffff;
+      overflow-y: auto;
+    }
+
+    .card-summary {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #0f172a;
+      background-color: #f8fafc;
+      padding: 6px 10px;
+      border-radius: 4px;
+      border-left: 3px solid var(--brand-primary);
+    }
+
+    .card-items {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .discussion-item-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12px;
+      padding: 4px 6px;
+      background: #fafafa;
+      border-radius: 3px;
+    }
+
+    .item-label {
+      font-weight: 700;
+      color: var(--brand-text-main);
+      min-width: 65px;
+      flex-shrink: 0;
+    }
+
+    .item-text {
+      color: #334155;
+      flex: 1;
+    }
+
+    .card-verdict {
+      margin-top: auto;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 11.5px;
+      color: #166534;
+      line-height: 1.5;
+    }
+
+    .discussion-points-list {
+      margin: 0;
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      color: #334155;
+    }
+
+    .discussion-points-list li {
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    /* Agenda Layout */
+    .discussion-agenda-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .agenda-row-card {
+      display: flex;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      flex: 1;
+    }
+
+    .agenda-row-side {
+      width: 140px;
+      background: var(--brand-primary);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .agenda-row-content {
+      padding: 12px 18px;
+      font-size: 12.5px;
+      color: #1e293b;
+      line-height: 1.7;
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Table Matrix Layout */
+    .discussion-table-wrapper {
+      flex: 1;
+      overflow: hidden;
+      border-radius: 4px;
+      border: 1.5px solid var(--brand-border);
+      background: #ffffff;
+    }
+
+    .discussion-matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .discussion-matrix-table th {
+      background: var(--brand-primary);
+      color: #ffffff;
+      padding: 8px 12px;
+      text-align: left;
+      font-weight: 700;
+    }
+
+    .discussion-matrix-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+      line-height: 1.6;
+    }
+
+    .discussion-matrix-table tr:nth-child(even) td {
+      background-color: #f8fafc;
+    }
+
+    /* Discussion Bottom Conclusion Box */
+    .discussion-conclusion-box {
+      margin-top: 4px;
+      background: #eff6ff;
+      border: 1.5px solid #bfdbfe;
+      border-radius: 4px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12.5px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    .conclusion-badge {
+      font-weight: 700;
+      color: #1d4ed8;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .conclusion-text {
+      color: #1e3a8a;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    /* ==========================================================================
        Interactive Controls Toolbar (屏幕交互栏，打印时自动隐藏)
        ========================================================================== */
     .control-bar {
@@ -2000,7 +2300,47 @@
         "milestones": [
           { "name": "-", "date": "-" }
         ]
-      }
+      },
+      "discussionSlides": [
+        {
+          "title": "方案研讨：掌上 AZ 与第三方翻译 API 架构选型",
+          "subtitle": "核心议题与技术方案权衡 (Week 16 决策项)",
+          "badge": "方案决策",
+          "category": "架构选型",
+          "layout": "comparison",
+          "columns": 2,
+          "cards": [
+            {
+              "title": "方案 A：企业级自建网关服务 (推荐)",
+              "badge": "推荐方案",
+              "badgeType": "recommended",
+              "summary": "在内网统一接入 API 代理，集中鉴权、缓存、数据脱敏、审计与限流。",
+              "items": [
+                { "label": "核心优势", "text": "敏感数据不出境与合规内控、降低各端接入复杂度、支持熔断降级。" },
+                { "label": "潜在短板", "text": "初期部署需 1.5 周，需配置独立专线与域名证书。" },
+                { "label": "资源预估", "text": "后端开发 2 人周，网关运维支持 3 天。" }
+              ],
+              "verdict": "结论：作为长期标准基础设施首选，符合企业安全基线，建议本期采纳落地。"
+            },
+            {
+              "title": "方案 B：前端直连云端翻译 SDK",
+              "badge": "备选方案",
+              "badgeType": "alternative",
+              "summary": "前端直接集成翻译供应商 SDK，通过短期临时凭证完成调用。",
+              "items": [
+                { "label": "核心优势", "text": "开发周期短，仅需 2-3 天即可完成全平台上线。" },
+                { "label": "潜在短板", "text": "凭证泄露风险高，无法进行集中数据脱敏与调用量审计。" },
+                { "label": "资源预估", "text": "前端开发 0.5 人周，免网关开发。" }
+              ],
+              "verdict": "结论：仅适用于轻量非涉密 PoC，不符合企业安全合规基线，不建议生产采用。"
+            }
+          ],
+          "conclusion": {
+            "badge": "周会决议待确认",
+            "text": "本周会重点评审自建网关之脱敏合规路径与排期，请架构师 @Leo 与安全顾问 @Sarah 确认准入清单。"
+          }
+        }
+      ]
     };
 
     // Modal Control
@@ -2144,6 +2484,9 @@
 
       // 5. This Week / Task Management (Slide 4)
       renderThisWeek(data.thisWeek || data.slide4_tasks);
+
+      // 6. Discussion / Proposal Slides (Slide 5+)
+      renderDiscussionSlides(data.discussionSlides || data.appendixSlides || []);
     }
 
     // Render Slide 1: Cover
@@ -2474,6 +2817,214 @@
       }
     }
 
+    // =========================================================================
+    // Slide 5+: 方案研讨与议题研讨 (Discussion & Proposal Slides Dynamic Rendering)
+    // =========================================================================
+    function escapeHtml(str) {
+      if (str == null) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function getBadgeClass(badgeType, badgeText) {
+      if (badgeType) {
+        const bt = String(badgeType).toLowerCase();
+        if (bt === 'recommended' || bt === 'success') return 'badge-recommended';
+        if (bt === 'alternative' || bt === 'info') return 'badge-alternative';
+        if (bt === 'warning' || bt === 'risk') return 'badge-warning';
+        if (bt === 'neutral') return 'badge-neutral';
+      }
+      const t = String(badgeText || '').toLowerCase();
+      if (t.includes('推荐') || t.includes('首选') || t.includes('recommended')) return 'badge-recommended';
+      if (t.includes('备选') || t.includes('alternative') || t.includes('方案b')) return 'badge-alternative';
+      if (t.includes('风险') || t.includes('注意') || t.includes('warning') || t.includes('待定')) return 'badge-warning';
+      return 'badge-neutral';
+    }
+
+    function renderDiscussionSlides(discussionSlides) {
+      const deck = document.querySelector('.slide-deck');
+      if (!deck) return;
+
+      // Clean up previous dynamically generated discussion slides
+      const existingSlides = deck.querySelectorAll('section.slide-discussion');
+      existingSlides.forEach(slide => slide.remove());
+
+      if (!Array.isArray(discussionSlides) || discussionSlides.length === 0) {
+        updatePresentationUI();
+        return;
+      }
+
+      discussionSlides.forEach((slideData, idx) => {
+        const pageNum = 5 + idx;
+        const slideSec = document.createElement('section');
+        slideSec.className = 'slide slide-discussion';
+        slideSec.id = `slide${pageNum}`;
+
+        const title = escapeHtml(slideData.title || `议题研讨 ${idx + 1}`);
+        const subtitle = escapeHtml(slideData.subtitle || '周会方案讨论与决策项');
+        const badge = slideData.badge ? `<span class="discussion-badge">${escapeHtml(slideData.badge)}</span>` : '';
+        const category = slideData.category ? `<span class="discussion-category-pill">${escapeHtml(slideData.category)}</span>` : '';
+
+        // Header
+        const headerHtml = `
+          <div class="slide-header" style="align-items: center;">
+            <div class="slide-title-group">
+              <h2 class="slide-title">${title}</h2>
+              <div class="slide-subtitle" style="font-size: 14px; margin-top: 2px;">${subtitle}</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              ${category}
+              ${badge}
+            </div>
+          </div>
+        `;
+
+        // Body according to layout
+        const layout = slideData.layout || 'comparison';
+        let bodyContentHtml = '';
+
+        if (layout === 'comparison' || layout === 'cards') {
+          const cards = Array.isArray(slideData.cards) ? slideData.cards : [];
+          const cols = slideData.columns || (cards.length >= 4 ? 4 : (cards.length === 3 ? 3 : 2));
+          const gridClass = cols === 4 ? 'grid-cols-4' : (cols === 3 ? 'grid-cols-3' : 'grid-cols-2');
+
+          const cardsHtml = cards.map(c => {
+            const cTitle = escapeHtml(c.title || '');
+            const cBadgeClass = getBadgeClass(c.badgeType, c.badge);
+            const cBadgeHtml = c.badge ? `<span class="card-badge ${cBadgeClass}">${escapeHtml(c.badge)}</span>` : '';
+            const cSummaryHtml = c.summary ? `<div class="card-summary">${escapeHtml(c.summary)}</div>` : '';
+
+            let cItemsHtml = '';
+            if (Array.isArray(c.items) && c.items.length) {
+              cItemsHtml = `
+                <div class="card-items">
+                  ${c.items.map(it => `
+                    <div class="discussion-item-row">
+                      <span class="item-label">${escapeHtml(it.label || '')}</span>
+                      <span class="item-text">${escapeHtml(it.text || it.value || '')}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              `;
+            }
+
+            let cPointsHtml = '';
+            if (Array.isArray(c.points) && c.points.length) {
+              cPointsHtml = `
+                <ul class="discussion-points-list">
+                  ${c.points.map(pt => `<li>${escapeHtml(pt)}</li>`).join('')}
+                </ul>
+              `;
+            }
+
+            const cVerdictHtml = c.verdict ? `<div class="card-verdict">${escapeHtml(c.verdict)}</div>` : '';
+
+            return `
+              <div class="discussion-card">
+                <div class="discussion-card-header">
+                  <span class="card-header-title">${cTitle}</span>
+                  ${cBadgeHtml}
+                </div>
+                <div class="discussion-card-body">
+                  ${cSummaryHtml}
+                  ${cItemsHtml}
+                  ${cPointsHtml}
+                  ${cVerdictHtml}
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          bodyContentHtml = `<div class="discussion-grid ${gridClass}">${cardsHtml}</div>`;
+
+        } else if (layout === 'agenda' || layout === 'deep-dive') {
+          const sections = Array.isArray(slideData.sections) ? slideData.sections : [];
+          const rowsHtml = sections.map((sec, sIdx) => {
+            const sTitle = escapeHtml(sec.title || `议题 ${sIdx + 1}`);
+            const sContent = sec.contentHtml ? sec.contentHtml : escapeHtml(sec.content || '');
+            return `
+              <div class="agenda-row-card">
+                <div class="agenda-row-side">${sTitle}</div>
+                <div class="agenda-row-content">${sContent}</div>
+              </div>
+            `;
+          }).join('');
+
+          bodyContentHtml = `<div class="discussion-agenda-container">${rowsHtml}</div>`;
+
+        } else if (layout === 'table') {
+          const tbl = slideData.table || {};
+          const headers = Array.isArray(tbl.headers) ? tbl.headers : [];
+          const rows = Array.isArray(tbl.rows) ? tbl.rows : [];
+
+          const theadHtml = headers.length ? `
+            <thead>
+              <tr>${headers.map(h => `<th>${escapeHtml(h)}</th>`).join('')}</tr>
+            </thead>
+          ` : '';
+
+          const tbodyHtml = `
+            <tbody>
+              ${rows.map(r => `
+                <tr>${(Array.isArray(r) ? r : []).map((cell, cIdx) => cIdx === 0 ? `<td style="font-weight: 600;">${escapeHtml(cell)}</td>` : `<td>${escapeHtml(cell)}</td>`).join('')}</tr>
+              `).join('')}
+            </tbody>
+          `;
+
+          bodyContentHtml = `
+            <div class="discussion-table-wrapper">
+              <table class="discussion-matrix-table">
+                ${theadHtml}
+                ${tbodyHtml}
+              </table>
+            </div>
+          `;
+
+        } else if (layout === 'custom') {
+          bodyContentHtml = `<div style="flex: 1; overflow-y: auto;">${slideData.html || ''}</div>`;
+        }
+
+        // Conclusion box (optional)
+        let conclusionHtml = '';
+        if (slideData.conclusion) {
+          const cBadge = typeof slideData.conclusion === 'object' && slideData.conclusion.badge
+            ? escapeHtml(slideData.conclusion.badge)
+            : '周会决议 / 待决策项';
+          const cText = typeof slideData.conclusion === 'object'
+            ? escapeHtml(slideData.conclusion.text || '')
+            : escapeHtml(slideData.conclusion);
+          conclusionHtml = `
+            <div class="discussion-conclusion-box">
+              <div class="conclusion-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                </svg>
+                <span>${cBadge}</span>
+              </div>
+              <div class="conclusion-text">${cText}</div>
+            </div>
+          `;
+        }
+
+        slideSec.innerHTML = `
+          ${headerHtml}
+          <div class="discussion-body">
+            ${bodyContentHtml}
+          </div>
+          ${conclusionHtml}
+          <div class="slide-footer-num">${pageNum}</div>
+        `;
+
+        deck.appendChild(slideSec);
+      });
+
+      updatePresentationUI();
+    }
+
 
     // ========================================================================
     // Presentation / Deck Mode
@@ -2497,9 +3048,7 @@
     window.addEventListener('resize', fitPresentationSlide);
 
     function getPresentationSlides() {
-      return PRESENTATION_SLIDE_IDS
-        .map(id => document.getElementById(id))
-        .filter(Boolean);
+      return Array.from(document.querySelectorAll('section.slide'));
     }
 
     function updatePresentationUI() {

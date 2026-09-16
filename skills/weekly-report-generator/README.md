@@ -6,12 +6,14 @@
 
 ## 🌟 核心特性
 
-- **四页标准结构**：
+- **四页标准基础骨架 + 灵活扩展 Slide 5+ 方案研讨页**：
   1. **Slide 1 封面页 (Cover)**：企业 Branding、项目编码、周期、汇报人、机密等级与整体健康度徽章。
   2. **Slide 2 项目总体计划 (Work Plan Overview)**：端到端甘特图、跨多周任务条带映射、`We are here` 当前周指示箭头、法定节假日金色高亮列、关键里程碑星标（★）。
   3. **Slide 3 交付物及状态 (Deliverables / Output Status)**：聚焦战略级主要交付物与核心里程碑门禁，红黄绿健康度指示灯。
   4. **Slide 4 本周工作 (Task Management)**：微观战术执行，前期重点工作、下周工作计划、风险管理双列卡片 + 状态徽标。
+  5. **Slide 5+ 方案研讨与议题扩展页 (Discussion & Proposal Slides)**：支持在周报后追加任意多页讨论页，提供 **方案比选 (`comparison`)**、**卡片矩阵 (`cards`)**、**议题深研 (`agenda`/`deep-dive`)**、**评估矩阵表格 (`table`)** 与 **自由 HTML (`custom`)** 等企业级布局，配备推荐徽标与底部周会决议卡片。
 - **📽️ 全屏无黑边演示模式 (Presentation Deck Mode)**：
+  - 支持动态 1 至 N 页全屏演播，自动识别并更新页码标签（`1 / N`）。
   - 点击工具栏 **「演示模式」** 或按快捷键 `P` 进入，按 `F` 全屏，`←` / `→` 或 `Space` 翻页，`Esc` 退出。
   - 响应式等比缩放自适应浏览器视口，彻底消除黑边与背景留白。
 - **📅 周一至周五工作周严格约束与智能日期校验**：
@@ -23,7 +25,7 @@
   - 内置 `classic-navy`、`tech-blue`、`corporate-crimson`、`emerald-forest`、`cyber-purple`、`minimal-slate`。
   - 网页端支持侧边栏抽屉实时换肤与即时 JSON 编辑渲染。
 - **📄 16:9 矢量 PDF 导出**：
-  - 严格 `@media print` 媒体查询，一页幻灯片对应一页 PDF，无溢出截断。
+  - 严格 `@media print` 媒体查询，一页幻灯片对应一页 PDF（无论 4 页还是 N 页），无溢出截断。
 
 ---
 

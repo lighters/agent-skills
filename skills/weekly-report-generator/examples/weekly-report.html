@@ -36,80 +36,131 @@
       --slide-ratio: 16 / 9;
     }
 
-    /* Enterprise Themes Presets */
-    [data-theme="tech-blue"] {
-      --brand-primary: #2563eb;
-      --brand-primary-dark: #1e3a8a;
-      --brand-primary-light: #eff6ff;
-      --brand-accent: #3b82f6;
-      --brand-accent-sec: #0284c7;
-      --brand-status-header: #15803d;
-      --brand-border: #2563eb;
-      --brand-table-header: #1e3a8a;
-      --brand-gantt-header: #0284c7;
-      --brand-holiday: #f59e0b;
-      --brand-text-main: #0f172a;
-      --brand-text-body: #334155;
-    }
-
-    [data-theme="corporate-crimson"] {
-      --brand-primary: #b91c1c;
-      --brand-primary-dark: #7f1d1d;
-      --brand-primary-light: #fef2f2;
-      --brand-accent: #ef4444;
-      --brand-accent-sec: #dc2626;
-      --brand-status-header: #166534;
-      --brand-border: #b91c1c;
-      --brand-table-header: #7f1d1d;
-      --brand-gantt-header: #991b1b;
-      --brand-holiday: #f59e0b;
-      --brand-text-main: #450a0a;
-      --brand-text-body: #292524;
-    }
-
-    [data-theme="emerald-forest"] {
-      --brand-primary: #047857;
-      --brand-primary-dark: #064e3b;
-      --brand-primary-light: #ecfdf5;
-      --brand-accent: #10b981;
-      --brand-accent-sec: #059669;
-      --brand-status-header: #064e3b;
-      --brand-border: #047857;
-      --brand-table-header: #064e3b;
-      --brand-gantt-header: #059669;
-      --brand-holiday: #f59e0b;
-      --brand-text-main: #022c22;
-      --brand-text-body: #1c1917;
-    }
-
-    [data-theme="cyber-purple"] {
-      --brand-primary: #7c3aed;
-      --brand-primary-dark: #4c1d95;
-      --brand-primary-light: #f5f3ff;
-      --brand-accent: #8b5cf6;
-      --brand-accent-sec: #6366f1;
-      --brand-status-header: #15803d;
-      --brand-border: #7c3aed;
-      --brand-table-header: #4c1d95;
-      --brand-gantt-header: #6d28d9;
-      --brand-holiday: #f59e0b;
-      --brand-text-main: #2e1065;
-      --brand-text-body: #1e1b4b;
-    }
-
-    [data-theme="minimal-slate"] {
-      --brand-primary: #334155;
-      --brand-primary-dark: #0f172a;
-      --brand-primary-light: #f8fafc;
-      --brand-accent: #475569;
-      --brand-accent-sec: #64748b;
-      --brand-status-header: #14532d;
-      --brand-border: #334155;
-      --brand-table-header: #0f172a;
-      --brand-gantt-header: #334155;
-      --brand-holiday: #eab308;
-      --brand-text-main: #0f172a;
+    /* Enterprise Themes Presets (5大医药巨头 + Vercel 极简风) */
+    [data-theme="astrazeneca"],
+    [data-theme="classic-navy"] {
+      --brand-primary: #003865;
+      --brand-primary-dark: #001847;
+      --brand-primary-light: #e8eff5;
+      --brand-accent: #D0006F;
+      --brand-accent-sec: #005587;
+      --brand-status-header: #245D38;
+      --brand-border: #003865;
+      --brand-table-header: #00205B;
+      --brand-gantt-header: #005587;
+      --brand-holiday: #F0AB00;
+      --brand-text-main: #001847;
       --brand-text-body: #1e293b;
+      --brand-bg: #f8fafc;
+    }
+
+    [data-theme="novartis"] {
+      --brand-primary: #0460A9;
+      --brand-primary-dark: #002B49;
+      --brand-primary-light: #fff4ec;
+      --brand-accent: #E74A21;
+      --brand-accent-sec: #0460A9;
+      --brand-status-header: #15803D;
+      --brand-border: #0460A9;
+      --brand-table-header: #002B49;
+      --brand-gantt-header: #0460A9;
+      --brand-holiday: #F8B22A;
+      --brand-text-main: #002B49;
+      --brand-text-body: #1e293b;
+      --brand-bg: #faf7f4;
+    }
+
+    [data-theme="bayer"] {
+      --brand-primary: #00617F;
+      --brand-primary-dark: #10384F;
+      --brand-primary-light: #edf8fd;
+      --brand-accent: #89D329;
+      --brand-accent-sec: #00BCFF;
+      --brand-status-header: #004422;
+      --brand-border: #00617F;
+      --brand-table-header: #10384F;
+      --brand-gantt-header: #00617F;
+      --brand-holiday: #F59E0B;
+      --brand-text-main: #10384F;
+      --brand-text-body: #1e293b;
+      --brand-bg: #f5f9fc;
+    }
+
+    [data-theme="jnj"] {
+      --brand-primary: #D71600;
+      --brand-primary-dark: #8A0000;
+      --brand-primary-light: #fef2f2;
+      --brand-accent: #0F2C59;
+      --brand-accent-sec: #D71600;
+      --brand-status-header: #15803D;
+      --brand-border: #D71600;
+      --brand-table-header: #8A0000;
+      --brand-gantt-header: #D71600;
+      --brand-holiday: #F59E0B;
+      --brand-text-main: #450A0A;
+      --brand-text-body: #292524;
+      --brand-bg: #fafafa;
+    }
+
+    [data-theme="novo-nordisk"] {
+      --brand-primary: #001965;
+      --brand-primary-dark: #001140;
+      --brand-primary-light: #f0f4fa;
+      --brand-accent: #005AD2;
+      --brand-accent-sec: #005AD2;
+      --brand-status-header: #001965;
+      --brand-border: #001965;
+      --brand-table-header: #001965;
+      --brand-gantt-header: #001965;
+      --brand-holiday: #D4AF37;
+      --brand-text-main: #001140;
+      --brand-text-body: #1e293b;
+      --brand-bg: #f8fafc;
+    }
+
+    [data-theme="vercel-minimal"] {
+      --brand-primary: #000000;
+      --brand-primary-dark: #000000;
+      --brand-primary-light: #f4f4f5;
+      --brand-accent: #0070F3;
+      --brand-accent-sec: #18181b;
+      --brand-status-header: #18181b;
+      --brand-border: #000000;
+      --brand-table-header: #000000;
+      --brand-gantt-header: #18181b;
+      --brand-holiday: #F5A623;
+      --brand-text-main: #000000;
+      --brand-text-body: #27272a;
+      --brand-bg: #f4f4f5;
+      --slide-bg: #ffffff;
+    }
+
+    /* Vercel Minimal Aesthetic Refinements */
+    [data-theme="vercel-minimal"] .slide {
+      box-shadow: 0 0 0 1px #e4e4e7, 0 10px 20px -5px rgba(0, 0, 0, 0.04);
+      border-radius: 8px;
+    }
+    [data-theme="vercel-minimal"] .ppt-card {
+      border: 1px solid #18181b;
+      border-radius: 6px;
+    }
+    [data-theme="vercel-minimal"] .ppt-card-header {
+      background: #000000;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    [data-theme="vercel-minimal"] .ppt-status-card {
+      border: 1px solid #18181b;
+      border-radius: 6px;
+    }
+    [data-theme="vercel-minimal"] .cover-tag {
+      background: #000000;
+      color: #ffffff;
+      border: none;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+    }
+    [data-theme="vercel-minimal"] .cover-main-title {
+      letter-spacing: -0.04em;
     }
 
     /* Reset & Base Styles */
@@ -468,9 +519,10 @@
       filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
     }
 
-    /* We are here pointer */
+    /* We are here pointer — centered on the current-week <td> */
     .we-are-here-indicator {
       position: absolute;
+      left: 50%;
       bottom: 2px;
       display: flex;
       align-items: center;
@@ -479,11 +531,12 @@
       font-weight: 800;
       color: #dc2626;
       white-space: nowrap;
-      transform: translateX(-40%);
+      transform: translateX(-50%);
       z-index: 10;
       background: rgba(255, 255, 255, 0.92);
       padding: 1px 4px;
       border-radius: 2px;
+      pointer-events: none;
     }
 
     .red-arrow-up {
@@ -578,7 +631,8 @@
       background-color: #ffffff;
     }
 
-    .deliverables-table .col-m-name { width: 34%; font-weight: 600; color: #0f172a; }
+    .deliverables-table th.col-m-name { width: 34%; color: #ffffff; }
+    .deliverables-table td.col-m-name { width: 34%; font-weight: 600; color: #0f172a; }
     .deliverables-table .col-m-prog { width: 34%; }
     .deliverables-table .col-m-date { width: 12%; text-align: center; font-variant-numeric: tabular-nums; }
     .deliverables-table .col-m-stat { width: 10%; text-align: center; }
@@ -607,29 +661,27 @@
 
     /* Top right Status box from PPT */
     .ppt-status-card {
-      position: absolute;
-      top: 24px;
-      right: 36px;
-      width: 130px;
-      border: 1px solid #444492;
-      border-radius: 3px;
+      width: 110px;
+      border: 1.5px solid var(--brand-border);
+      border-radius: 4px;
       overflow: hidden;
       background: #ffffff;
       box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      flex-shrink: 0;
     }
 
     .ppt-status-header {
       background-color: var(--brand-status-header);
       color: #ffffff;
       font-weight: 700;
-      font-size: 13px;
+      font-size: 12px;
       text-align: center;
-      padding: 4px 0;
+      padding: 3px 0;
       letter-spacing: 0.5px;
     }
 
     .ppt-status-body {
-      padding: 10px 0;
+      padding: 6px 0;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -637,10 +689,10 @@
     }
 
     .ppt-status-circle {
-      width: 28px;
-      height: 28px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
-      border: 1px solid #666666;
+      border: 1px solid rgba(0, 0, 0, 0.15);
     }
 
     /* 2-Column Grid matching PPTX */
@@ -648,7 +700,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 22px;
-      margin-top: 10px;
+      margin-top: 4px;
       flex: 1;
     }
 
@@ -768,6 +820,306 @@
       border: 1px solid #666666;
       display: inline-block;
       flex-shrink: 0;
+    }
+
+    /* ==========================================================================
+       SLIDE 5+: 方案讨论与扩展页 (Discussion & Proposal Slides)
+       ========================================================================== */
+    .slide-discussion {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .discussion-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 11.5px;
+      font-weight: 700;
+      background-color: var(--brand-primary);
+      color: #ffffff;
+      letter-spacing: 0.3px;
+    }
+
+    .discussion-category-pill {
+      font-size: 12px;
+      font-weight: 700;
+      color: #475569;
+      background: #f1f5f9;
+      padding: 4px 12px;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+
+    .discussion-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      margin-top: 6px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+
+    /* Discussion Grids */
+    .discussion-grid {
+      display: grid;
+      gap: 16px;
+      flex: 1;
+      height: 100%;
+    }
+
+    .grid-cols-2 { grid-template-columns: 1fr 1fr; }
+    .grid-cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .grid-cols-4 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 12px; }
+
+    /* Discussion Card */
+    .discussion-card {
+      display: flex;
+      flex-direction: column;
+      border: 1.5px solid var(--brand-border);
+      background: #ffffff;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+
+    .discussion-card-header {
+      background-color: var(--brand-primary);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 13.5px;
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      letter-spacing: 0.2px;
+    }
+
+    .card-header-title {
+      font-weight: 700;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .card-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+
+    .badge-recommended, .badge-success {
+      background-color: #dcfce7;
+      color: #15803d;
+      border: 1px solid #86efac;
+    }
+
+    .badge-alternative, .badge-info {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #7dd3fc;
+    }
+
+    .badge-warning {
+      background-color: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+
+    .badge-neutral {
+      background-color: #f1f5f9;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+    }
+
+    .discussion-card-body {
+      padding: 12px 14px;
+      font-size: 12px;
+      color: #1e293b;
+      line-height: 1.65;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #ffffff;
+      overflow-y: auto;
+    }
+
+    .card-summary {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #0f172a;
+      background-color: #f8fafc;
+      padding: 6px 10px;
+      border-radius: 4px;
+      border-left: 3px solid var(--brand-primary);
+    }
+
+    .card-items {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .discussion-item-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12px;
+      padding: 4px 6px;
+      background: #fafafa;
+      border-radius: 3px;
+    }
+
+    .item-label {
+      font-weight: 700;
+      color: var(--brand-text-main);
+      min-width: 65px;
+      flex-shrink: 0;
+    }
+
+    .item-text {
+      color: #334155;
+      flex: 1;
+    }
+
+    .card-verdict {
+      margin-top: auto;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 11.5px;
+      color: #166534;
+      line-height: 1.5;
+    }
+
+    .discussion-points-list {
+      margin: 0;
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      color: #334155;
+    }
+
+    .discussion-points-list li {
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    /* Agenda Layout */
+    .discussion-agenda-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .agenda-row-card {
+      display: flex;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      flex: 1;
+    }
+
+    .agenda-row-side {
+      width: 140px;
+      background: var(--brand-primary);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .agenda-row-content {
+      padding: 12px 18px;
+      font-size: 12.5px;
+      color: #1e293b;
+      line-height: 1.7;
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Table Matrix Layout */
+    .discussion-table-wrapper {
+      flex: 1;
+      overflow: hidden;
+      border-radius: 4px;
+      border: 1.5px solid var(--brand-border);
+      background: #ffffff;
+    }
+
+    .discussion-matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .discussion-matrix-table th {
+      background: var(--brand-primary);
+      color: #ffffff;
+      padding: 8px 12px;
+      text-align: left;
+      font-weight: 700;
+    }
+
+    .discussion-matrix-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+      line-height: 1.6;
+    }
+
+    .discussion-matrix-table tr:nth-child(even) td {
+      background-color: #f8fafc;
+    }
+
+    /* Discussion Bottom Conclusion Box */
+    .discussion-conclusion-box {
+      margin-top: 4px;
+      background: #eff6ff;
+      border: 1.5px solid #bfdbfe;
+      border-radius: 4px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12.5px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    .conclusion-badge {
+      font-weight: 700;
+      color: #1d4ed8;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .conclusion-text {
+      color: #1e3a8a;
+      font-weight: 600;
+      line-height: 1.5;
     }
 
     /* ==========================================================================
@@ -957,6 +1309,116 @@
       background: #f8fafc;
     }
 
+
+    /* ==========================================================================
+       PRESENTATION / DECK MODE (toggleable; default = normal scroll)
+       ========================================================================== */
+    body.presentation-mode {
+      padding: 0 !important;
+      margin: 0 !important;
+      background: var(--slide-bg, #ffffff) !important;
+      overflow: hidden !important;
+      height: 100vh !important;
+      width: 100vw !important;
+    }
+
+    body.presentation-mode .control-bar {
+      display: none !important;
+    }
+
+    body.presentation-mode .slide-deck {
+      gap: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      overflow: hidden !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      display: block !important;
+      background: var(--slide-bg, #ffffff) !important;
+    }
+
+    body.presentation-mode .slide {
+      display: none !important;
+      position: absolute !important;
+      top: 50% !important;
+      left: 50% !important;
+      width: 1280px !important;
+      height: 720px !important;
+      margin: 0 !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      transform-origin: center center !important;
+      transform: translate(-50%, -50%) scale(var(--pres-scale-x, 1), var(--pres-scale-y, 1)) !important;
+    }
+
+    body.presentation-mode .slide.is-active-slide {
+      display: flex !important;
+    }
+
+    .presentation-hud {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2000;
+      align-items: center;
+      gap: 10px;
+      background: rgba(15, 23, 42, 0.88);
+      color: #f8fafc;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      opacity: 0.25;
+      transition: opacity 0.25s ease;
+    }
+
+    body.presentation-mode .presentation-hud {
+      display: flex;
+    }
+
+    .presentation-hud:hover,
+    .presentation-hud:focus-within {
+      opacity: 1;
+    }
+
+    .presentation-hud button {
+      background: #334155;
+      color: #f8fafc;
+      border: none;
+      border-radius: 999px;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease;
+    }
+
+    .presentation-hud button:hover {
+      background: #475569;
+    }
+
+    .presentation-hud .pres-hint {
+      color: #94a3b8;
+      font-weight: 500;
+      font-size: 11px;
+      margin-left: 4px;
+    }
+
+    body.presentation-mode .custom-theme-drawer,
+    body.presentation-mode .data-modal-overlay {
+      z-index: 2100;
+    }
+
     /* ==========================================================================
        PRINT & PDF EXPORT STYLES (用于邮件提交的 PDF 完美排版)
        ========================================================================== */
@@ -977,8 +1439,35 @@
       }
 
       .control-bar,
-      .custom-theme-drawer {
+      .custom-theme-drawer,
+      .data-modal-overlay,
+      .presentation-hud,
+      script,
+      noscript {
         display: none !important;
+      }
+
+      /* Reset deck mode so every slide still prints as its own page */
+      body.presentation-mode,
+      body.presentation-mode .slide-deck {
+        display: block !important;
+        height: auto !important;
+        width: 100% !important;
+        overflow: visible !important;
+        background: #ffffff !important;
+        padding: 0 !important;
+        gap: 0 !important;
+        position: static !important;
+      }
+
+      body.presentation-mode .slide {
+        display: flex !important;
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+        width: var(--slide-width) !important;
+        height: var(--slide-height) !important;
       }
 
       .slide-deck {
@@ -1032,12 +1521,12 @@
     <div class="control-actions">
       <span style="font-size: 12px; color: #94a3b8;">企业风格适配:</span>
       <select class="select-theme" id="themeSelect" onchange="changeTheme(this.value)">
-        <option value="classic-navy">经典企业蓝 (Astra Blue - 对应原PPT)</option>
-        <option value="tech-blue">现代科技蓝 (Modern Tech Blue)</option>
-        <option value="corporate-crimson">商务中国红 (Huawei / Lenovo Crimson)</option>
-        <option value="emerald-forest">自然与新能源绿 (ESG / Emerald)</option>
-        <option value="cyber-purple">未来数智紫 (Digital AI Purple)</option>
-        <option value="minimal-slate">极简极客灰 (Executive Minimal Slate)</option>
+        <option value="astrazeneca">阿斯利康 (AstraZeneca · 经典深蓝与洋红)</option>
+        <option value="novartis">诺华 (Novartis · 钴蓝与活力暖橙)</option>
+        <option value="bayer">拜耳 (Bayer · 经典深蓝与生机绿)</option>
+        <option value="jnj">强生 (Johnson & Johnson · 2023热情红)</option>
+        <option value="novo-nordisk">诺和诺德 (Novo Nordisk · 真实纯蓝与海蓝)</option>
+        <option value="vercel-minimal">Vercel 极简风 (Vercel Design System · 黑白无衬线)</option>
       </select>
       <button class="btn btn-primary" onclick="toggleDataModal()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1053,6 +1542,14 @@
         </svg>
         企业自定义风格
       </button>
+      <button class="btn btn-secondary" id="btnPresentation" onclick="togglePresentationMode()" title="演示模式 (P)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+        演示模式
+      </button>
       <button class="btn btn-export-pdf" onclick="window.print()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="6 9 6 2 18 2 18 9"></polyline>
@@ -1062,6 +1559,17 @@
         导出 PDF / 打印
       </button>
     </div>
+  </div>
+
+
+  <!-- Presentation mode HUD (hidden unless body.presentation-mode) -->
+  <div class="presentation-hud" id="presentationHud" aria-live="polite">
+    <button type="button" onclick="presentationPrev()" title="上一页 (←)">‹</button>
+    <span id="presentationPageLabel">1 / 4</span>
+    <button type="button" onclick="presentationNext()" title="下一页 (→ / Space)">›</button>
+    <button type="button" onclick="togglePresentationFullscreen()" title="全屏 (F)">⛶</button>
+    <button type="button" onclick="togglePresentationMode(false)" title="退出 (Esc)">✕</button>
+    <span class="pres-hint">← → Space · Esc 退出 · F 全屏</span>
   </div>
 
   <!-- Data Input Modal (交互输入数据与生成周报) -->
@@ -1228,7 +1736,7 @@
       <div class="gantt-container">
         <table class="gantt-table">
         <thead>
-            <tr><th class="gantt-header-th col-workstream">Workstream</th><th class="gantt-header-th col-category">Category</th><th class="gantt-header-th col-task">Tasks</th><th class="gantt-header-th col-week"><div class="week-title">W6</div><div class="week-date">1.22-1.26</div></th><th class="gantt-header-th col-week"><div class="week-title">W7</div><div class="week-date">1.29-2.2</div></th><th class="gantt-header-th col-week"><div class="week-title">W8</div><div class="week-date">2.4-2.8</div></th><th class="gantt-header-th col-week" style="background-color: #d97706;"><div class="week-title">W9</div><div class="week-date">2.12-2.17</div></th><th class="gantt-header-th col-week"><div class="week-title">W10</div><div class="week-date">2.18-2.23</div></th><th class="gantt-header-th col-week"><div class="week-title">W11</div><div class="week-date">2.26-3.1</div></th><th class="gantt-header-th col-week"><div class="week-title">W12</div><div class="week-date">3.4-3.8</div></th><th class="gantt-header-th col-week"><div class="week-title">W13</div><div class="week-date">3.11-3.15</div></th><th class="gantt-header-th col-week"><div class="week-title">W14</div><div class="week-date">3.18-3.22</div></th><th class="gantt-header-th col-week"><div class="week-title">W15</div><div class="week-date">3.25-3.29</div></th><th class="gantt-header-th col-week"><div class="week-title">W16</div><div class="week-date">4.1-4.5</div></th><th class="gantt-header-th col-week"><div class="week-title">W17</div><div class="week-date">4.8-4.12</div></th><th class="gantt-header-th col-week"><div class="week-title">W18</div><div class="week-date">4.15-4.19</div></th><th class="gantt-header-th col-week"><div class="week-title">W19</div><div class="week-date">4.22-4.26</div></th><th class="gantt-header-th col-week"><div class="week-title">W20</div><div class="week-date">4.29-5.3</div></th></tr>
+            <tr><th class="gantt-header-th col-workstream">Workstream</th><th class="gantt-header-th col-category">Category</th><th class="gantt-header-th col-task">Tasks</th><th class="gantt-header-th col-week"><div class="week-title">W6</div><div class="week-date">1.22-1.26</div></th><th class="gantt-header-th col-week"><div class="week-title">W7</div><div class="week-date">1.29-2.2</div></th><th class="gantt-header-th col-week"><div class="week-title">W8</div><div class="week-date">2.5-2.9</div></th><th class="gantt-header-th col-week" style="background-color: #d97706;"><div class="week-title">W9</div><div class="week-date">2.12-2.16</div></th><th class="gantt-header-th col-week"><div class="week-title">W10</div><div class="week-date">2.19-2.23</div></th><th class="gantt-header-th col-week"><div class="week-title">W11</div><div class="week-date">2.26-3.1</div></th><th class="gantt-header-th col-week"><div class="week-title">W12</div><div class="week-date">3.4-3.8</div></th><th class="gantt-header-th col-week"><div class="week-title">W13</div><div class="week-date">3.11-3.15</div></th><th class="gantt-header-th col-week"><div class="week-title">W14</div><div class="week-date">3.18-3.22</div></th><th class="gantt-header-th col-week"><div class="week-title">W15</div><div class="week-date">3.25-3.29</div></th><th class="gantt-header-th col-week" style="background-color: var(--brand-primary-dark);"><div class="week-title">W16</div><div class="week-date">4.1-4.5</div></th><th class="gantt-header-th col-week"><div class="week-title">W17</div><div class="week-date">4.8-4.12</div></th><th class="gantt-header-th col-week"><div class="week-title">W18</div><div class="week-date">4.15-4.19</div></th><th class="gantt-header-th col-week"><div class="week-title">W19</div><div class="week-date">4.22-4.26</div></th><th class="gantt-header-th col-week"><div class="week-title">W20</div><div class="week-date">4.29-5.3</div></th></tr>
         </thead>
         <tbody>
             <tr><td rowspan="13" class="col-workstream" style="background:#f8fafc; font-weight:700;">手机端搭建</td><td rowspan="1" class="col-category">项目启动</td><td class="col-task">项目启动</td><td></td><td></td><td></td><td rowspan="26" class="cell-holiday"><div class="holiday-col-text">春节假期</div></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
@@ -1257,7 +1765,7 @@
             <tr><td class="col-task">系统UAT</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td></td><td></td></tr>
             <tr><td rowspan="2" class="col-category">Go-live</td><td class="col-task">上线准备&部署</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td></td><td></td></tr>
             <tr><td class="col-task">系统上线</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td style="position: relative;">
-                <div class="we-are-here-indicator" style="left: -140px; bottom: 2px;">
+                <div class="we-are-here-indicator" data-week="W16">
                   <span class="red-arrow-up"></span>
                   <span>We are here</span>
                 </div>
@@ -1396,20 +1904,20 @@
          PAGE 4: 本周工作 (Task Management - 完全复刻 ppt 样式)
          ==================================================================== -->
     <section class="slide slide-task-mgmt" id="slide4">
-      <!-- Title Area -->
-      <div class="slide-header" style="margin-bottom: 8px;">
+      <!-- Title Area with Integrated Status Card (消除与下方网格重叠) -->
+      <div class="slide-header" style="margin-bottom: 12px; align-items: flex-start;">
         <div class="slide-title-group">
           <h2 class="slide-title" style="font-size: 28px;">Task Management</h2>
           <div class="slide-subtitle" style="font-size: 18px; margin-top: 2px;">Week 16：4.1～4.3，2024</div>
         </div>
-      </div>
 
-      <!-- Top Right Status Card (复刻 PPT Slide 4 右上角 Status 徽标卡) -->
-      <div class="ppt-status-card">
-        <div class="ppt-status-header">Status</div>
-        <div class="ppt-status-body">
-          <!-- Orange/Amber Circle indicating Caution -->
-          <div class="ppt-status-circle" style="background-color: #ED7D31;"></div>
+        <!-- Top Right Status Card (复刻 PPT Slide 4 右上角 Status 徽标卡) -->
+        <div class="ppt-status-card">
+          <div class="ppt-status-header">Status</div>
+          <div class="ppt-status-body">
+            <!-- Orange/Amber Circle indicating Caution -->
+            <div class="ppt-status-circle" style="background-color: #ED7D31;"></div>
+          </div>
         </div>
       </div>
 
@@ -1498,8 +2006,75 @@
       <div class="slide-footer-num">4</div>
     </section>
 
+
+    <!-- ====================================================================
+         PAGE 5: 方案研讨与议题讨论 (Discussion & Proposal)
+         ==================================================================== -->
+    <section class="slide slide-discussion" id="slide5">
+      <div class="slide-header" style="align-items: center;">
+        <div class="slide-title-group">
+          <h2 class="slide-title">方案研讨：掌上 AZ 与第三方翻译 API 架构选型</h2>
+          <div class="slide-subtitle" style="font-size: 14px; margin-top: 2px;">核心议题与技术方案权衡 (Week 16 决策项)</div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="discussion-category-pill">架构选型</span>
+          <span class="discussion-badge">方案决策</span>
+        </div>
+      </div>
+
+      <div class="discussion-body">
+        <div class="discussion-grid grid-cols-2">
+            <div class="discussion-card">
+              <div class="discussion-card-header">
+                <span class="card-header-title">方案 A：企业级自建网关服务 (推荐)</span>
+                <span class="card-badge badge-recommended">推荐方案</span>
+              </div>
+              <div class="discussion-card-body">
+                <div class="card-summary">在内网统一接入 API 代理，集中鉴权、缓存、数据脱敏、审计与限流。</div>
+                <div class="card-items">
+<div class="discussion-item-row"><span class="item-label">核心优势</span><span class="item-text">敏感数据不出境与合规内控、降低各端接入复杂度、支持熔断降级。</span></div>
+<div class="discussion-item-row"><span class="item-label">潜在短板</span><span class="item-text">初期部署需 1.5 周，需配置独立专线与域名证书。</span></div>
+<div class="discussion-item-row"><span class="item-label">资源预估</span><span class="item-text">后端开发 2 人周，网关运维支持 3 天。</span></div>
+</div>
+                
+                <div class="card-verdict">结论：作为长期标准基础设施首选，符合企业安全基线，建议本期采纳落地。</div>
+              </div>
+            </div>
+            <div class="discussion-card">
+              <div class="discussion-card-header">
+                <span class="card-header-title">方案 B：前端直连云端翻译 SDK</span>
+                <span class="card-badge badge-alternative">备选方案</span>
+              </div>
+              <div class="discussion-card-body">
+                <div class="card-summary">前端直接集成翻译供应商 SDK，通过短期临时凭证完成调用。</div>
+                <div class="card-items">
+<div class="discussion-item-row"><span class="item-label">核心优势</span><span class="item-text">开发周期短，仅需 2-3 天即可完成全平台上线。</span></div>
+<div class="discussion-item-row"><span class="item-label">潜在短板</span><span class="item-text">凭证泄露风险高，无法进行集中数据脱敏与调用量审计。</span></div>
+<div class="discussion-item-row"><span class="item-label">资源预估</span><span class="item-text">前端开发 0.5 人周，免网关开发。</span></div>
+</div>
+                
+                <div class="card-verdict">结论：仅适用于轻量非涉密 PoC，不符合企业安全合规基线，不建议生产采用。</div>
+              </div>
+            </div>
+          </div>
+      </div>
+      
+        <div class="discussion-conclusion-box">
+          <div class="conclusion-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            </svg>
+            <span>周会决议待确认</span>
+          </div>
+          <div class="conclusion-text">本周会重点评审自建网关之脱敏合规路径与排期，请架构师 @Leo 与安全顾问 @Sarah 确认准入清单。</div>
+        </div>
+
+      <div class="slide-footer-num">5</div>
+    </section>
+
   </div>
 
+  <script>
     // Global Report Data State
     let currentReportData = null;
 
@@ -1530,9 +2105,9 @@
         "weeks": [
           { "id": "W6", "name": "W6", "dates": "1.22-1.26" },
           { "id": "W7", "name": "W7", "dates": "1.29-2.2" },
-          { "id": "W8", "name": "W8", "dates": "2.4-2.8" },
-          { "id": "W9", "name": "W9", "dates": "2.12-2.17", "isHoliday": true, "holidayName": "春节假期" },
-          { "id": "W10", "name": "W10", "dates": "2.18-2.23" },
+          { "id": "W8", "name": "W8", "dates": "2.5-2.9" },
+          { "id": "W9", "name": "W9", "dates": "2.12-2.16", "isHoliday": true, "holidayName": "春节假期" },
+          { "id": "W10", "name": "W10", "dates": "2.19-2.23" },
           { "id": "W11", "name": "W11", "dates": "2.26-3.1" },
           { "id": "W12", "name": "W12", "dates": "3.4-3.8" },
           { "id": "W13", "name": "W13", "dates": "3.11-3.15" },
@@ -1635,7 +2210,47 @@
         "milestones": [
           { "name": "-", "date": "-" }
         ]
-      }
+      },
+      "discussionSlides": [
+        {
+          "title": "方案研讨：掌上 AZ 与第三方翻译 API 架构选型",
+          "subtitle": "核心议题与技术方案权衡 (Week 16 决策项)",
+          "badge": "方案决策",
+          "category": "架构选型",
+          "layout": "comparison",
+          "columns": 2,
+          "cards": [
+            {
+              "title": "方案 A：企业级自建网关服务 (推荐)",
+              "badge": "推荐方案",
+              "badgeType": "recommended",
+              "summary": "在内网统一接入 API 代理，集中鉴权、缓存、数据脱敏、审计与限流。",
+              "items": [
+                { "label": "核心优势", "text": "敏感数据不出境与合规内控、降低各端接入复杂度、支持熔断降级。" },
+                { "label": "潜在短板", "text": "初期部署需 1.5 周，需配置独立专线与域名证书。" },
+                { "label": "资源预估", "text": "后端开发 2 人周，网关运维支持 3 天。" }
+              ],
+              "verdict": "结论：作为长期标准基础设施首选，符合企业安全基线，建议本期采纳落地。"
+            },
+            {
+              "title": "方案 B：前端直连云端翻译 SDK",
+              "badge": "备选方案",
+              "badgeType": "alternative",
+              "summary": "前端直接集成翻译供应商 SDK，通过短期临时凭证完成调用。",
+              "items": [
+                { "label": "核心优势", "text": "开发周期短，仅需 2-3 天即可完成全平台上线。" },
+                { "label": "潜在短板", "text": "凭证泄露风险高，无法进行集中数据脱敏与调用量审计。" },
+                { "label": "资源预估", "text": "前端开发 0.5 人周，免网关开发。" }
+              ],
+              "verdict": "结论：仅适用于轻量非涉密 PoC，不符合企业安全合规基线，不建议生产采用。"
+            }
+          ],
+          "conclusion": {
+            "badge": "周会决议待确认",
+            "text": "本周会重点评审自建网关之脱敏合规路径与排期，请架构师 @Leo 与安全顾问 @Sarah 确认准入清单。"
+          }
+        }
+      ]
     };
 
     // Modal Control
@@ -1688,8 +2303,70 @@
       const blob = new Blob(["<!DOCTYPE html>\n" + clonedDoc.outerHTML], { type: "text/html;charset=utf-8" });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = "weekly-report-custom.html";
+      const currentTheme = document.body.getAttribute('data-theme') || 'astrazeneca';
+      a.download = `weekly-report-${currentTheme}.html`;
       a.click();
+    }
+
+    // =========================================================================
+    // Theme Management & Dynamic Switching (企业风格动态适配)
+    // =========================================================================
+    function changeTheme(themeName) {
+      if (!themeName) return;
+      document.body.setAttribute('data-theme', themeName);
+      
+      // Clean up any custom inline styles on body so the theme CSS rules take full effect
+      document.body.removeAttribute('style');
+
+      if (currentReportData) {
+        currentReportData.theme = themeName;
+      }
+
+      const sel = document.getElementById('themeSelect');
+      if (sel && sel.value !== themeName) {
+        sel.value = themeName;
+      }
+    }
+
+    // Custom Theme Slide-out Drawer
+    function toggleCustomDrawer() {
+      const drawer = document.getElementById('customThemeDrawer');
+      if (drawer) {
+        drawer.classList.toggle('active');
+      }
+    }
+
+    function applyCustomColor(varName, val) {
+      document.body.style.setProperty(varName, val);
+      if (varName === '--brand-primary') {
+        const lbl = document.getElementById('labelPrimary');
+        if (lbl) lbl.innerText = val;
+      } else if (varName === '--brand-primary-dark') {
+        const lbl = document.getElementById('labelDark');
+        if (lbl) lbl.innerText = val;
+      } else if (varName === '--brand-accent-sec') {
+        const lbl = document.getElementById('labelAccent');
+        if (lbl) lbl.innerText = val;
+      }
+    }
+
+    function updateCompanyInfo() {
+      const company = document.getElementById('inputCompanyName')?.value;
+      const logo = document.getElementById('inputLogoText')?.value;
+      const dept = document.getElementById('inputDeptName')?.value;
+
+      if (company) {
+        const cEl = document.querySelector('.cover-company');
+        if (cEl) cEl.textContent = company;
+      }
+      if (logo) {
+        const lEl = document.querySelector('.cover-logo-text');
+        if (lEl) lEl.textContent = logo;
+      }
+      if (dept) {
+        const dEl = document.querySelector('.cover-meta-item:first-child span');
+        if (dEl) dEl.textContent = dept;
+      }
     }
 
     // =========================================================================
@@ -1717,6 +2394,9 @@
 
       // 5. This Week / Task Management (Slide 4)
       renderThisWeek(data.thisWeek || data.slide4_tasks);
+
+      // 6. Discussion / Proposal Slides (Slide 5+)
+      renderDiscussionSlides(data.discussionSlides || data.appendixSlides || []);
     }
 
     // Render Slide 1: Cover
@@ -1746,9 +2426,31 @@
       const currentWeekId = timelineData.currentWeek || "W16";
       const weAreHereText = timelineData.weAreHereText || "We are here";
       
-      const holidayWeek = weeks.find(w => w.isHoliday);
-      const holidayWeekId = holidayWeek ? holidayWeek.id : null;
-      const holidayName = holidayWeek ? (holidayWeek.holidayName || "假期") : "假期";
+      // Update Slide 2 Title & Subtitle
+      if (timelineData.title) {
+        const titleEl = document.querySelector('#slide2 .slide-title');
+        if (titleEl) titleEl.textContent = timelineData.title;
+      }
+      let subText = timelineData.subtitle;
+      if (weeks.length) {
+        const firstW = weeks[0].name || weeks[0].id || '';
+        const lastW = weeks[weeks.length - 1].name || weeks[weeks.length - 1].id || '';
+        const rangeStr = `(${firstW} - ${lastW})`;
+        if (!subText) {
+          subText = `端到端执行计划及进度跟踪 ${rangeStr}`;
+        } else if (subText.includes('(W6 - W20)') && rangeStr !== '(W6 - W20)') {
+          subText = subText.replace('(W6 - W20)', rangeStr);
+        }
+      }
+      if (subText) {
+        const subEl = document.querySelector('#slide2 .slide-subtitle');
+        if (subEl) subEl.textContent = subText;
+      }
+
+      const holidayMap = {};
+      weeks.forEach(w => {
+        if (w.isHoliday) holidayMap[w.id] = w.holidayName || "假期";
+      });
 
       // 1. Render THEAD
       const thead = document.querySelector('#slide2 .gantt-table thead');
@@ -1833,9 +2535,20 @@
           weeks.forEach((w, wIdx) => {
             const wId = w.id;
             // Holiday column
-            if (wId === holidayWeekId) {
+            if (holidayMap[wId]) {
               if (rowIdx === 0) {
-                cells += `<td rowspan="${tasks.length}" class="cell-holiday"><div class="holiday-col-text">${holidayName}</div></td>`;
+                const holidayName = holidayMap[wId];
+                let holidayContent = `<div class="holiday-col-text">${holidayName}</div>`;
+                let holidayStyle = '';
+                if (wId === currentWeekId) {
+                  holidayContent += `
+                    <div class="we-are-here-indicator" data-week="${wId}">
+                      <span class="red-arrow-up"></span>
+                      <span>${weAreHereText}</span>
+                    </div>`;
+                  holidayStyle = ' style="position: relative;"';
+                }
+                cells += `<td rowspan="${tasks.length}" class="cell-holiday"${holidayStyle}>${holidayContent}</td>`;
               }
               return;
             }
@@ -1863,7 +2576,7 @@
             // We are here indicator
             if (rowIdx === tasks.length - 1 && wId === currentWeekId) {
               content += `
-                <div class="we-are-here-indicator" style="left: -140px; bottom: 2px;">
+                <div class="we-are-here-indicator" data-week="${wId}">
                   <span class="red-arrow-up"></span>
                   <span>${weAreHereText}</span>
                 </div>
@@ -1884,6 +2597,17 @@
     // Render Slide 3: Deliverables
     function renderDeliverables(delivData) {
       if (!delivData) return;
+
+      // Update Slide 3 Title & Subtitle
+      if (delivData.title) {
+        const titleEl = document.querySelector('#slide3 .slide-title');
+        if (titleEl) titleEl.textContent = delivData.title;
+      }
+      const subEl = document.querySelector('#slide3 .slide-subtitle');
+      if (subEl) {
+        subEl.textContent = delivData.subtitle || "关键交付节点与成果物健康度评估";
+      }
+
       const items = delivData.items || [];
       const tbody = document.querySelector('#slide3 .deliverables-table tbody');
       if (tbody) {
@@ -1918,7 +2642,11 @@
     function renderThisWeek(thisWeekData) {
       if (!thisWeekData) return;
 
-      // Subtitle
+      // Title & Subtitle
+      if (thisWeekData.title) {
+        const titleEl = document.querySelector('#slide4 .slide-title');
+        if (titleEl) titleEl.textContent = thisWeekData.title;
+      }
       if (thisWeekData.subtitle) {
         const sub = document.querySelector('#slide4 .slide-subtitle');
         if (sub) sub.textContent = thisWeekData.subtitle;
@@ -1999,6 +2727,356 @@
       }
     }
 
+    // =========================================================================
+    // Slide 5+: 方案研讨与议题研讨 (Discussion & Proposal Slides Dynamic Rendering)
+    // =========================================================================
+    function escapeHtml(str) {
+      if (str == null) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function getBadgeClass(badgeType, badgeText) {
+      if (badgeType) {
+        const bt = String(badgeType).toLowerCase();
+        if (bt === 'recommended' || bt === 'success') return 'badge-recommended';
+        if (bt === 'alternative' || bt === 'info') return 'badge-alternative';
+        if (bt === 'warning' || bt === 'risk') return 'badge-warning';
+        if (bt === 'neutral') return 'badge-neutral';
+      }
+      const t = String(badgeText || '').toLowerCase();
+      if (t.includes('推荐') || t.includes('首选') || t.includes('recommended')) return 'badge-recommended';
+      if (t.includes('备选') || t.includes('alternative') || t.includes('方案b')) return 'badge-alternative';
+      if (t.includes('风险') || t.includes('注意') || t.includes('warning') || t.includes('待定')) return 'badge-warning';
+      return 'badge-neutral';
+    }
+
+    function renderDiscussionSlides(discussionSlides) {
+      const deck = document.querySelector('.slide-deck');
+      if (!deck) return;
+
+      // Clean up previous dynamically generated discussion slides
+      const existingSlides = deck.querySelectorAll('section.slide-discussion');
+      existingSlides.forEach(slide => slide.remove());
+
+      if (!Array.isArray(discussionSlides) || discussionSlides.length === 0) {
+        updatePresentationUI();
+        return;
+      }
+
+      discussionSlides.forEach((slideData, idx) => {
+        const pageNum = 5 + idx;
+        const slideSec = document.createElement('section');
+        slideSec.className = 'slide slide-discussion';
+        slideSec.id = `slide${pageNum}`;
+
+        const title = escapeHtml(slideData.title || `议题研讨 ${idx + 1}`);
+        const subtitle = escapeHtml(slideData.subtitle || '周会方案讨论与决策项');
+        const badge = slideData.badge ? `<span class="discussion-badge">${escapeHtml(slideData.badge)}</span>` : '';
+        const category = slideData.category ? `<span class="discussion-category-pill">${escapeHtml(slideData.category)}</span>` : '';
+
+        // Header
+        const headerHtml = `
+          <div class="slide-header" style="align-items: center;">
+            <div class="slide-title-group">
+              <h2 class="slide-title">${title}</h2>
+              <div class="slide-subtitle" style="font-size: 14px; margin-top: 2px;">${subtitle}</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              ${category}
+              ${badge}
+            </div>
+          </div>
+        `;
+
+        // Body according to layout
+        const layout = slideData.layout || 'comparison';
+        let bodyContentHtml = '';
+
+        if (layout === 'comparison' || layout === 'cards') {
+          const cards = Array.isArray(slideData.cards) ? slideData.cards : [];
+          const cols = slideData.columns || (cards.length >= 4 ? 4 : (cards.length === 3 ? 3 : 2));
+          const gridClass = cols === 4 ? 'grid-cols-4' : (cols === 3 ? 'grid-cols-3' : 'grid-cols-2');
+
+          const cardsHtml = cards.map(c => {
+            const cTitle = escapeHtml(c.title || '');
+            const cBadgeClass = getBadgeClass(c.badgeType, c.badge);
+            const cBadgeHtml = c.badge ? `<span class="card-badge ${cBadgeClass}">${escapeHtml(c.badge)}</span>` : '';
+            const cSummaryHtml = c.summary ? `<div class="card-summary">${escapeHtml(c.summary)}</div>` : '';
+
+            let cItemsHtml = '';
+            if (Array.isArray(c.items) && c.items.length) {
+              cItemsHtml = `
+                <div class="card-items">
+                  ${c.items.map(it => `
+                    <div class="discussion-item-row">
+                      <span class="item-label">${escapeHtml(it.label || '')}</span>
+                      <span class="item-text">${escapeHtml(it.text || it.value || '')}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              `;
+            }
+
+            let cPointsHtml = '';
+            if (Array.isArray(c.points) && c.points.length) {
+              cPointsHtml = `
+                <ul class="discussion-points-list">
+                  ${c.points.map(pt => `<li>${escapeHtml(pt)}</li>`).join('')}
+                </ul>
+              `;
+            }
+
+            const cVerdictHtml = c.verdict ? `<div class="card-verdict">${escapeHtml(c.verdict)}</div>` : '';
+
+            return `
+              <div class="discussion-card">
+                <div class="discussion-card-header">
+                  <span class="card-header-title">${cTitle}</span>
+                  ${cBadgeHtml}
+                </div>
+                <div class="discussion-card-body">
+                  ${cSummaryHtml}
+                  ${cItemsHtml}
+                  ${cPointsHtml}
+                  ${cVerdictHtml}
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          bodyContentHtml = `<div class="discussion-grid ${gridClass}">${cardsHtml}</div>`;
+
+        } else if (layout === 'agenda' || layout === 'deep-dive') {
+          const sections = Array.isArray(slideData.sections) ? slideData.sections : [];
+          const rowsHtml = sections.map((sec, sIdx) => {
+            const sTitle = escapeHtml(sec.title || `议题 ${sIdx + 1}`);
+            const sContent = sec.contentHtml ? sec.contentHtml : escapeHtml(sec.content || '');
+            return `
+              <div class="agenda-row-card">
+                <div class="agenda-row-side">${sTitle}</div>
+                <div class="agenda-row-content">${sContent}</div>
+              </div>
+            `;
+          }).join('');
+
+          bodyContentHtml = `<div class="discussion-agenda-container">${rowsHtml}</div>`;
+
+        } else if (layout === 'table') {
+          const tbl = slideData.table || {};
+          const headers = Array.isArray(tbl.headers) ? tbl.headers : [];
+          const rows = Array.isArray(tbl.rows) ? tbl.rows : [];
+
+          const theadHtml = headers.length ? `
+            <thead>
+              <tr>${headers.map(h => `<th>${escapeHtml(h)}</th>`).join('')}</tr>
+            </thead>
+          ` : '';
+
+          const tbodyHtml = `
+            <tbody>
+              ${rows.map(r => `
+                <tr>${(Array.isArray(r) ? r : []).map((cell, cIdx) => cIdx === 0 ? `<td style="font-weight: 600;">${escapeHtml(cell)}</td>` : `<td>${escapeHtml(cell)}</td>`).join('')}</tr>
+              `).join('')}
+            </tbody>
+          `;
+
+          bodyContentHtml = `
+            <div class="discussion-table-wrapper">
+              <table class="discussion-matrix-table">
+                ${theadHtml}
+                ${tbodyHtml}
+              </table>
+            </div>
+          `;
+
+        } else if (layout === 'custom') {
+          bodyContentHtml = `<div style="flex: 1; overflow-y: auto;">${slideData.html || ''}</div>`;
+        }
+
+        // Conclusion box (optional)
+        let conclusionHtml = '';
+        if (slideData.conclusion) {
+          const cBadge = typeof slideData.conclusion === 'object' && slideData.conclusion.badge
+            ? escapeHtml(slideData.conclusion.badge)
+            : '周会决议 / 待决策项';
+          const cText = typeof slideData.conclusion === 'object'
+            ? escapeHtml(slideData.conclusion.text || '')
+            : escapeHtml(slideData.conclusion);
+          conclusionHtml = `
+            <div class="discussion-conclusion-box">
+              <div class="conclusion-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                </svg>
+                <span>${cBadge}</span>
+              </div>
+              <div class="conclusion-text">${cText}</div>
+            </div>
+          `;
+        }
+
+        slideSec.innerHTML = `
+          ${headerHtml}
+          <div class="discussion-body">
+            ${bodyContentHtml}
+          </div>
+          ${conclusionHtml}
+          <div class="slide-footer-num">${pageNum}</div>
+        `;
+
+        deck.appendChild(slideSec);
+      });
+
+      updatePresentationUI();
+    }
+
+
+    // ========================================================================
+    // Presentation / Deck Mode
+    // Default = normal scroll. Toggle via toolbar, "P", or URL ?present=1
+    // Keys: ←/→, Space (next); Esc exit; F fullscreen. Click sides optional.
+    // Print/PDF ignores deck mode (all slides still print one-per-page).
+    // ========================================================================
+    const PRESENTATION_SLIDE_IDS = ['slide1', 'slide2', 'slide3', 'slide4'];
+    let presentationIndex = 0;
+    let presentationActive = false;
+
+    function fitPresentationSlide() {
+      if (!presentationActive) return;
+      const w = window.innerWidth || document.documentElement.clientWidth;
+      const h = window.innerHeight || document.documentElement.clientHeight;
+      const sx = w / 1280;
+      const sy = h / 720;
+      document.documentElement.style.setProperty('--pres-scale-x', sx);
+      document.documentElement.style.setProperty('--pres-scale-y', sy);
+    }
+    window.addEventListener('resize', fitPresentationSlide);
+
+    function getPresentationSlides() {
+      return Array.from(document.querySelectorAll('section.slide'));
+    }
+
+    function updatePresentationUI() {
+      const slides = getPresentationSlides();
+      slides.forEach((slide, idx) => {
+        slide.classList.toggle('is-active-slide', presentationActive && idx === presentationIndex);
+      });
+      const label = document.getElementById('presentationPageLabel');
+      if (label) label.textContent = `${presentationIndex + 1} / ${slides.length || 4}`;
+      const btn = document.getElementById('btnPresentation');
+      if (btn) {
+        const icon = btn.querySelector('svg');
+        const iconHtml = icon ? icon.outerHTML : '';
+        btn.innerHTML = iconHtml + (presentationActive ? ' 退出演示' : ' 演示模式');
+      }
+    }
+
+    function goToPresentationSlide(index) {
+      const slides = getPresentationSlides();
+      if (!slides.length) return;
+      presentationIndex = Math.max(0, Math.min(index, slides.length - 1));
+      updatePresentationUI();
+    }
+
+    function presentationNext() {
+      const slides = getPresentationSlides();
+      if (presentationIndex < slides.length - 1) goToPresentationSlide(presentationIndex + 1);
+    }
+
+    function presentationPrev() {
+      if (presentationIndex > 0) goToPresentationSlide(presentationIndex - 1);
+    }
+
+    function togglePresentationMode(force) {
+      presentationActive = (typeof force === 'boolean') ? force : !presentationActive;
+      document.body.classList.toggle('presentation-mode', presentationActive);
+      if (presentationActive) {
+        fitPresentationSlide();
+        const slides = getPresentationSlides();
+        let best = 0;
+        const mid = window.scrollY + window.innerHeight / 2;
+        slides.forEach((s, i) => {
+          const top = s.offsetTop;
+          const bottom = top + s.offsetHeight;
+          if (mid >= top && mid <= bottom) best = i;
+        });
+        goToPresentationSlide(best);
+      } else {
+        const slides = getPresentationSlides();
+        slides.forEach(s => s.classList.remove('is-active-slide'));
+        if (slides[presentationIndex]) {
+          slides[presentationIndex].scrollIntoView({ block: 'start', behavior: 'smooth' });
+        }
+        if (document.fullscreenElement) {
+          document.exitFullscreen().catch(() => {});
+        }
+        document.documentElement.style.removeProperty('--pres-scale-x');
+        document.documentElement.style.removeProperty('--pres-scale-y');
+        updatePresentationUI();
+      }
+    }
+
+    function togglePresentationFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    function isTypingTarget(el) {
+      if (!el) return false;
+      const tag = (el.tagName || '').toLowerCase();
+      return tag === 'input' || tag === 'textarea' || tag === 'select' || el.isContentEditable;
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (isTypingTarget(e.target)) return;
+      if ((e.key === 'p' || e.key === 'P') && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        if (!presentationActive) {
+          e.preventDefault();
+          togglePresentationMode(true);
+          return;
+        }
+      }
+      if (!presentationActive) return;
+
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        togglePresentationMode(false);
+      } else if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+        e.preventDefault();
+        presentationNext();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        presentationPrev();
+      } else if (e.key === 'f' || e.key === 'F') {
+        e.preventDefault();
+        togglePresentationFullscreen();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goToPresentationSlide(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goToPresentationSlide(getPresentationSlides().length - 1);
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!presentationActive) return;
+      if (e.target.closest('.control-bar, .presentation-hud, .custom-theme-drawer, .data-modal-overlay, button, a, select, textarea, input')) return;
+      const slide = e.target.closest('.slide.is-active-slide');
+      if (!slide) return;
+      const rect = slide.getBoundingClientRect();
+      if (e.clientX > rect.left + rect.width * 0.55) presentationNext();
+      else if (e.clientX < rect.left + rect.width * 0.45) presentationPrev();
+    });
+
     // Initialize on page load
     window.addEventListener('DOMContentLoaded', () => {
       // Check if data script embedded
@@ -2017,21 +3095,24 @@
         renderAll(currentReportData);
       }
 
-      // Check URL theme parameter
+      // Check URL theme parameter or sync select from body
       const params = new URLSearchParams(window.location.search);
       const urlTheme = params.get('theme');
+      const select = document.getElementById('themeSelect');
       if (urlTheme) {
-        const select = document.getElementById('themeSelect');
-        if (select) {
-          select.value = urlTheme;
-          changeTheme(urlTheme);
+        if (select) select.value = urlTheme;
+        changeTheme(urlTheme);
+      } else {
+        const bodyTheme = document.body.getAttribute('data-theme');
+        if (select && bodyTheme) {
+          select.value = bodyTheme;
         }
       }
 
-      checkViewport();
+      if (params.get('present') === '1' || params.get('presentation') === '1') {
+        togglePresentationMode(true);
+      }
     });
-
-    window.addEventListener('resize', checkViewport);
   </script>
 
   <script id="weekly-report-data" type="application/json">
@@ -2072,19 +3153,19 @@
       {
         "id": "W8",
         "name": "W8",
-        "dates": "2.4-2.8"
+        "dates": "2.5-2.9"
       },
       {
         "id": "W9",
         "name": "W9",
-        "dates": "2.12-2.17",
+        "dates": "2.12-2.16",
         "isHoliday": true,
         "holidayName": "春节假期"
       },
       {
         "id": "W10",
         "name": "W10",
-        "dates": "2.18-2.23"
+        "dates": "2.19-2.23"
       },
       {
         "id": "W11",
@@ -2481,7 +3562,65 @@
         "date": "-"
       }
     ]
-  }
+  },
+  "discussionSlides": [
+    {
+      "title": "方案研讨：掌上 AZ 与第三方翻译 API 架构选型",
+      "subtitle": "核心议题与技术方案权衡 (Week 16 决策项)",
+      "badge": "方案决策",
+      "category": "架构选型",
+      "layout": "comparison",
+      "columns": 2,
+      "cards": [
+        {
+          "title": "方案 A：企业级自建网关服务 (推荐)",
+          "badge": "推荐方案",
+          "badgeType": "recommended",
+          "summary": "在内网统一接入 API 代理，集中鉴权、缓存、数据脱敏、审计与限流。",
+          "items": [
+            {
+              "label": "核心优势",
+              "text": "敏感数据不出境与合规内控、降低各端接入复杂度、支持熔断降级。"
+            },
+            {
+              "label": "潜在短板",
+              "text": "初期部署需 1.5 周，需配置独立专线与域名证书。"
+            },
+            {
+              "label": "资源预估",
+              "text": "后端开发 2 人周，网关运维支持 3 天。"
+            }
+          ],
+          "verdict": "结论：作为长期标准基础设施首选，符合企业安全基线，建议本期采纳落地。"
+        },
+        {
+          "title": "方案 B：前端直连云端翻译 SDK",
+          "badge": "备选方案",
+          "badgeType": "alternative",
+          "summary": "前端直接集成翻译供应商 SDK，通过短期临时凭证完成调用。",
+          "items": [
+            {
+              "label": "核心优势",
+              "text": "开发周期短，仅需 2-3 天即可完成全平台上线。"
+            },
+            {
+              "label": "潜在短板",
+              "text": "凭证泄露风险高，无法进行集中数据脱敏与调用量审计。"
+            },
+            {
+              "label": "资源预估",
+              "text": "前端开发 0.5 人周，免网关开发。"
+            }
+          ],
+          "verdict": "结论：仅适用于轻量非涉密 PoC，不符合企业安全合规基线，不建议生产采用。"
+        }
+      ],
+      "conclusion": {
+        "badge": "周会决议待确认",
+        "text": "本周会重点评审自建网关之脱敏合规路径与排期，请架构师 @Leo 与安全顾问 @Sarah 确认准入清单。"
+      }
+    }
+  ]
 }
   </script>
 

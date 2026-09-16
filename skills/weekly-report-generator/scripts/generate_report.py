@@ -367,6 +367,199 @@ def build_task_mgmt_components(tasks_data):
         "ms_html": "\n".join(ms_rows) if ms_rows else "<tr><td>-</td><td>-</td></tr>"
     }
 
+def html_escape(text):
+    if text is None:
+        return ""
+    return (
+        str(text)
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+        .replace("'", "&#39;")
+    )
+
+def get_badge_class(badge_type, badge_text):
+    if badge_type:
+        bt = str(badge_type).lower()
+        if bt in ("recommended", "success"):
+            return "badge-recommended"
+        if bt in ("alternative", "info"):
+            return "badge-alternative"
+        if bt in ("warning", "risk"):
+            return "badge-warning"
+        if bt == "neutral":
+            return "badge-neutral"
+    t = str(badge_text or "").lower()
+    if any(k in t for k in ["推荐", "首选", "recommended"]):
+        return "badge-recommended"
+    if any(k in t for k in ["备选", "alternative", "方案b"]):
+        return "badge-alternative"
+    if any(k in t for k in ["风险", "注意", "warning", "待定"]):
+        return "badge-warning"
+    return "badge-neutral"
+
+def build_discussion_slides_html(discussion_slides, start_page_num=5):
+    """
+    Generates HTML for Slide 5+ (Discussion & Proposal Slides).
+    Supports layouts: comparison, cards, agenda, deep-dive, table, custom.
+    """
+    slides_html = []
+    for idx, slide in enumerate(discussion_slides):
+        page_num = start_page_num + idx
+        title = html_escape(slide.get("title", f"议题研讨 {idx + 1}"))
+        subtitle = html_escape(slide.get("subtitle", "周会方案讨论与决策项"))
+        
+        badge_text = slide.get("badge")
+        badge_html = f'<span class="discussion-badge">{html_escape(badge_text)}</span>' if badge_text else ""
+        
+        cat_text = slide.get("category")
+        cat_html = f'<span class="discussion-category-pill">{html_escape(cat_text)}</span>' if cat_text else ""
+        
+        layout = slide.get("layout", "comparison")
+        body_content = ""
+        
+        if layout in ("comparison", "cards"):
+            cards = slide.get("cards", [])
+            cols = slide.get("columns") or (4 if len(cards) >= 4 else (3 if len(cards) == 3 else 2))
+            grid_class = "grid-cols-4" if cols == 4 else ("grid-cols-3" if cols == 3 else "grid-cols-2")
+            
+            cards_list = []
+            for c in cards:
+                c_title = html_escape(c.get("title", ""))
+                c_badge = c.get("badge")
+                c_bclass = get_badge_class(c.get("badgeType"), c_badge)
+                c_badge_html = f'<span class="card-badge {c_bclass}">{html_escape(c_badge)}</span>' if c_badge else ""
+                
+                c_summary = c.get("summary")
+                c_sum_html = f'<div class="card-summary">{html_escape(c_summary)}</div>' if c_summary else ""
+                
+                c_items_html = ""
+                items = c.get("items", [])
+                if items:
+                    rows = []
+                    for it in items:
+                        lbl = html_escape(it.get("label", ""))
+                        txt = html_escape(it.get("text", it.get("value", "")))
+                        rows.append(f'<div class="discussion-item-row"><span class="item-label">{lbl}</span><span class="item-text">{txt}</span></div>')
+                    c_items_html = f'<div class="card-items">\n' + "\n".join(rows) + '\n</div>'
+                
+                c_points_html = ""
+                points = c.get("points", [])
+                if points:
+                    pts = "".join(f'<li>{html_escape(p)}</li>' for p in points)
+                    c_points_html = f'<ul class="discussion-points-list">{pts}</ul>'
+                
+                c_verdict = c.get("verdict")
+                c_verdict_html = f'<div class="card-verdict">{html_escape(c_verdict)}</div>' if c_verdict else ""
+                
+                cards_list.append(f'''
+            <div class="discussion-card">
+              <div class="discussion-card-header">
+                <span class="card-header-title">{c_title}</span>
+                {c_badge_html}
+              </div>
+              <div class="discussion-card-body">
+                {c_sum_html}
+                {c_items_html}
+                {c_points_html}
+                {c_verdict_html}
+              </div>
+            </div>''')
+            
+            body_content = f'<div class="discussion-grid {grid_class}">{"".join(cards_list)}\n          </div>'
+
+        elif layout in ("agenda", "deep-dive"):
+            sections = slide.get("sections", [])
+            secs_list = []
+            for s_idx, sec in enumerate(sections):
+                s_title = html_escape(sec.get("title", f"议题 {s_idx + 1}"))
+                s_content = sec.get("contentHtml") if sec.get("contentHtml") else html_escape(sec.get("content", ""))
+                secs_list.append(f'''
+            <div class="agenda-row-card">
+              <div class="agenda-row-side">{s_title}</div>
+              <div class="agenda-row-content">{s_content}</div>
+            </div>''')
+            body_content = f'<div class="discussion-agenda-container">{"".join(secs_list)}\n          </div>'
+
+        elif layout == "table":
+            tbl = slide.get("table", {})
+            headers = tbl.get("headers", [])
+            rows = tbl.get("rows", [])
+            
+            th_cells = "".join(f'<th>{html_escape(h)}</th>' for h in headers)
+            thead_html = f'<thead><tr>{th_cells}</tr></thead>' if headers else ""
+            
+            tr_rows = []
+            for r in rows:
+                td_cells = []
+                for c_idx, cell in enumerate(r):
+                    if c_idx == 0:
+                        td_cells.append(f'<td style="font-weight: 600;">{html_escape(cell)}</td>')
+                    else:
+                        td_cells.append(f'<td>{html_escape(cell)}</td>')
+                tr_rows.append(f'<tr>{"".join(td_cells)}</tr>')
+            tbody_html = f'<tbody>{"".join(tr_rows)}</tbody>'
+            
+            body_content = f'''<div class="discussion-table-wrapper">
+            <table class="discussion-matrix-table">
+              {thead_html}
+              {tbody_html}
+            </table>
+          </div>'''
+
+        elif layout == "custom":
+            body_content = f'<div style="flex: 1; overflow-y: auto;">{slide.get("html", "")}</div>'
+
+        # Conclusion box (optional)
+        conclusion = slide.get("conclusion")
+        conclusion_html = ""
+        if conclusion:
+            if isinstance(conclusion, dict):
+                c_badge = html_escape(conclusion.get("badge", "周会决议 / 待决策项"))
+                c_text = html_escape(conclusion.get("text", ""))
+            else:
+                c_badge = "周会决议 / 待决策项"
+                c_text = html_escape(str(conclusion))
+            
+            conclusion_html = f'''
+        <div class="discussion-conclusion-box">
+          <div class="conclusion-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            </svg>
+            <span>{c_badge}</span>
+          </div>
+          <div class="conclusion-text">{c_text}</div>
+        </div>'''
+
+        slide_block = f'''
+    <!-- ====================================================================
+         PAGE {page_num}: 方案研讨与议题讨论 (Discussion & Proposal)
+         ==================================================================== -->
+    <section class="slide slide-discussion" id="slide{page_num}">
+      <div class="slide-header" style="align-items: center;">
+        <div class="slide-title-group">
+          <h2 class="slide-title">{title}</h2>
+          <div class="slide-subtitle" style="font-size: 14px; margin-top: 2px;">{subtitle}</div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          {cat_html}
+          {badge_html}
+        </div>
+      </div>
+
+      <div class="discussion-body">
+        {body_content}
+      </div>
+      {conclusion_html}
+
+      <div class="slide-footer-num">{page_num}</div>
+    </section>'''
+        slides_html.append(slide_block)
+
+    return "\n".join(slides_html)
+
 def generate_report(data_path, output_path, theme="classic-navy", auto_fix_dates=False, strict_dates=False):
     base_dir = Path(__file__).resolve().parent.parent
     template_path = base_dir / "templates" / "weekly_report_template.html"
@@ -534,7 +727,23 @@ def generate_report(data_path, output_path, theme="classic-navy", auto_fix_dates
         flags=re.DOTALL
     )
 
-    # 5. Embed the clean data JSON into script tag for browser dynamic editing
+    # 5. Slide 5+ (Discussion / Proposal Slides) generation & injection
+    discussion_slides = data.get("discussionSlides", data.get("appendixSlides", []))
+    if discussion_slides:
+        disc_slides_html = build_discussion_slides_html(discussion_slides, start_page_num=5)
+        # Remove any existing discussion slides in template first
+        html = re.sub(r'<!-- ===+\s*PAGE \d+: 方案研讨与议题讨论.*?<div class="slide-footer-num">\d+</div>\s*</section>', '', html, flags=re.DOTALL)
+        html = re.sub(r'<section class="slide slide-discussion".*?</section>', '', html, flags=re.DOTALL)
+        
+        # Insert after slide 4
+        html = re.sub(
+            r'(<div class="slide-footer-num">4</div>\s*</section>)',
+            f'\\1\n\n{disc_slides_html}',
+            html,
+            flags=re.DOTALL
+        )
+
+    # 6. Embed the clean data JSON into script tag for browser dynamic editing
     data_json_str = json.dumps(data, ensure_ascii=False, indent=2)
     # Remove existing script if any
     html = re.sub(r'<script id="weekly-report-data" type="application/json">.*?</script>', '', html, flags=re.DOTALL)

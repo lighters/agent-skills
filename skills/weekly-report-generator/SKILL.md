@@ -2,8 +2,8 @@
 name: weekly-report-generator
 description: >-
   Use when generating a high-fidelity HTML/PDF weekly report (cover, Gantt
-  timeline, deliverables status, this-week cards) from structured JSON —
-  especially corporate project weekly reports for email or sync.
+  timeline, deliverables status, this-week cards, and optional Slide 5+ discussion/proposal slides)
+  from structured JSON — especially corporate project weekly reports for email or sync.
 ---
 # Weekly Report Generator（企业高阶周报生成器）
 
@@ -11,7 +11,7 @@ Directory: `skills/weekly-report-generator`
 
 Source: https://github.com/lighters/agent-skills (`skills/weekly-report-generator`)
 
-Produce presentation-grade HTML + PDF weekly reports (4 slides: Cover, Gantt Work Plan Overview, Deliverables & Status, This Week / Task Management). Match the visual fidelity of enterprise PPT weekly reports.
+Produce presentation-grade HTML + PDF weekly reports (4 core slides: Cover, Gantt Work Plan Overview, Deliverables & Status, This Week / Task Management; plus optional Slide 5+ Discussion & Proposal slides for meeting topics and architectural trade-offs). Match the visual fidelity of enterprise PPT weekly reports.
 
 ## Before generating
 
@@ -88,14 +88,35 @@ When constructing `timeline.weeks[]`, agents MUST strictly follow these business
 - **Purpose & Scope**: Tactical weekly execution tasks, operational progress, next week steps, and immediate risks.
 - `thisWeek`: `subtitle`, `overallStatus`, `previousTasks`, `nextSteps`, `risks`, `milestones`
 
+## Slide 5+ (Discussion & Proposal Slides) Guidance (方案研讨与议题扩展页)
+
+- **Purpose & Scope**: The standard 4-slide structure serves as the foundation. In enterprise weekly meetings, teams often need to discuss specific technical proposals, architectural trade-offs, process alignment, or strategic decisions. Agents can add one or more discussion slides via `discussionSlides: [...]` (or `appendixSlides`).
+- **Supported Layouts**:
+  1. `comparison`: Solution comparison mode (e.g. Option A vs Option B vs Option C). Best for architectural trade-offs, vendor comparisons, or tech stack selections. Each card supports:
+     - `title`, `badge` (e.g. `"推荐方案"`, `"备选方案"`), `badgeType` (`recommended` | `alternative` | `warning` | `neutral`)
+     - `summary`: Short summary callout box
+     - `items`: Structured key-value rows (`[{label: "核心优势", text: "..."}, ...]`)
+     - `points`: Bullet list points (`["point 1", ...]`)
+     - `verdict`: Green bottom verdict box (e.g. `"结论：作为长期首选，建议本期采纳落地。"`)
+  2. `cards`: Multi-column card matrix (2, 3, or 4 columns grid). Ideal for multiple initiative reviews, workstream breakdowns, or parallel milestone status.
+  3. `agenda` / `deep-dive`: Two-column horizontal row cards (left header banner, right detailed narrative). Ideal for structured discussions: Background & Pain Points → Proposed Solutions → Expected Impact.
+  4. `table`: Evaluation matrix table (`headers: [...]`, `rows: [[...], ...]`).
+  5. `custom`: Free-form HTML injection via `html: "..."`.
+- **Top Badges & Category Pills**:
+  - `category`: Gray pill tag on top right (e.g. `"架构选型"`, `"流程规范"`).
+  - `badge`: Theme-colored badge on top right (e.g. `"方案决策"`, `"周会决议"`).
+- **Bottom Conclusion Box (`conclusion`)**:
+  - Highlights weekly meeting decisions or pending approval items (e.g. `{ badge: "周会决议待确认", text: "..." }` or a plain string).
+- **Page Numbering**: Slides are automatically numbered starting from Page 5 (`5`, `6`, `7`...), fully integrated into Presentation Mode (1 / N) and 16:9 PDF export.
 
 ## Presentation / deck mode
 
 Generated HTML defaults to normal scroll. Enter **演示模式** from the toolbar (or press `P`, or open with `?present=1`):
 
-- Pages: Cover → Timeline/Overview → Deliverables → This Week
+- Pages: Dynamic 1 to N slides (Cover → Timeline → Deliverables → This Week → Discussion Slides 5..N)
 - Keys: `←` / `→`, `Space` (next), `Esc` exit, `F` fullscreen; click left/right half of slide to navigate
-- Print/PDF unchanged — each slide still prints as one page
+- Seamless viewport fitting with zero letterboxing / black borders
+- Print/PDF unchanged — each slide still prints cleanly as one 16:9 page
 
 ## Delivery
 
