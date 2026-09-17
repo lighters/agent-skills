@@ -118,6 +118,17 @@ Generated HTML defaults to normal scroll. Enter **演示模式** from the toolba
 - Seamless viewport fitting with zero letterboxing / black borders
 - Print/PDF unchanged — each slide still prints cleanly as one 16:9 page
 
+## Interactive WYSIWYG Content Editing (所见即所得直接编辑模式)
+
+Users can modify small phrasing or fix typos directly in the browser without asking the Agent to re-run the skill:
+
+- **Activate Edit Mode**: Click the **「✏️ 编辑内容」** button in the top toolbar, press `E` (when not typing), or simply **double-click** any text element on the slide.
+- **Direct Editing**: Click anywhere on titles, table cells, task cards, or discussion points and edit text like in a word processor.
+- **Save & Export**:
+  - Click **「💾 另存 HTML」** to download the modified standalone HTML with all text edits permanently preserved and synced to the embedded JSON data.
+  - Click **「导出 PDF / 打印」** to print the modified DOM to vector PDF immediately.
+  - Press `Esc` or click **「完成编辑」** to exit edit mode.
+
 ## Delivery
 
 Attach HTML and/or PDF for the user. Prefer PDF when they need an email-ready attachment.

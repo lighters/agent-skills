@@ -1207,6 +1207,114 @@
       outline: none;
     }
 
+    /* ==========================================================================
+       WYSIWYG Direct Content Editing Mode (所见即所得直接编辑模式)
+       ========================================================================== */
+    .btn.btn-edit-active {
+      background-color: #059669 !important;
+      color: #ffffff !important;
+      border-color: #059669 !important;
+      box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.35) !important;
+    }
+
+    body.edit-mode [contenteditable="true"] {
+      outline: 1.5px dashed rgba(59, 130, 246, 0.45);
+      outline-offset: 2px;
+      border-radius: 2px;
+      cursor: text;
+      transition: outline 0.15s ease, background-color 0.15s ease;
+    }
+
+    body.edit-mode [contenteditable="true"]:hover {
+      outline: 1.5px dashed var(--brand-primary, #005587);
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+
+    body.edit-mode [contenteditable="true"]:focus {
+      outline: 2px solid var(--brand-accent, #0070c0);
+      outline-offset: 2px;
+      background-color: rgba(59, 130, 246, 0.08);
+    }
+
+    .edit-mode-tip-bar {
+      display: none;
+      position: fixed;
+      top: 54px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0f172a;
+      color: #ffffff;
+      padding: 7px 18px;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+      z-index: 1002;
+      align-items: center;
+      gap: 16px;
+      font-size: 12.5px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      animation: slideDownTip 0.2s ease-out;
+    }
+
+    .edit-mode-tip-bar.show {
+      display: flex;
+    }
+
+    @keyframes slideDownTip {
+      from { opacity: 0; transform: translate(-50%, -10px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    .tip-content {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tip-icon {
+      font-size: 14px;
+    }
+
+    .tip-text strong {
+      color: #34d399;
+    }
+
+    .tip-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tip-btn-save {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 11.5px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.15s ease;
+    }
+
+    .tip-btn-save:hover {
+      background: #1d4ed8;
+    }
+
+    .tip-btn-done {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 11.5px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .tip-btn-done:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
     /* Custom Theme Drawer */
     .custom-theme-drawer {
       position: fixed;
@@ -1442,9 +1550,15 @@
       .custom-theme-drawer,
       .data-modal-overlay,
       .presentation-hud,
+      .edit-mode-tip-bar,
       script,
       noscript {
         display: none !important;
+      }
+
+      [contenteditable] {
+        outline: none !important;
+        background: transparent !important;
       }
 
       /* Reset deck mode so every slide still prints as its own page */
@@ -1533,14 +1647,21 @@
           <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
           <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
         </svg>
-        📝 输入数据与生成
+        📝 数据 JSON
+      </button>
+      <button class="btn btn-secondary" id="btnEditMode" onclick="toggleEditMode()" title="快捷直接编辑页面文字 (快捷键: E)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 20h9"></path>
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+        </svg>
+        <span id="btnEditText">✏️ 编辑内容</span>
       </button>
       <button class="btn btn-secondary" onclick="toggleCustomDrawer()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="3"></circle>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
-        企业自定义风格
+        主题调色
       </button>
       <button class="btn btn-secondary" id="btnPresentation" onclick="togglePresentationMode()" title="演示模式 (P)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1550,6 +1671,14 @@
         </svg>
         演示模式
       </button>
+      <button class="btn btn-secondary" onclick="downloadCurrentHtml()" title="另存为包含当前修改的 HTML 文件">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+          <polyline points="17 21 17 13 7 13 7 21"></polyline>
+          <polyline points="7 3 7 8 15 8"></polyline>
+        </svg>
+        另存 HTML
+      </button>
       <button class="btn btn-export-pdf" onclick="window.print()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="6 9 6 2 18 2 18 9"></polyline>
@@ -1558,6 +1687,18 @@
         </svg>
         导出 PDF / 打印
       </button>
+    </div>
+  </div>
+
+  <!-- Edit mode floating notification tip bar -->
+  <div class="edit-mode-tip-bar" id="editModeNotification">
+    <div class="tip-content">
+      <span class="tip-icon">✏️</span>
+      <span class="tip-text"><strong>已进入直接编辑模式</strong>：点击页面任意文字即可直接改写。修改完毕后可点击「另存 HTML」或直接「导出 PDF」。</span>
+    </div>
+    <div class="tip-actions">
+      <button type="button" class="tip-btn-save" onclick="downloadCurrentHtml()">💾 另存 HTML</button>
+      <button type="button" class="tip-btn-done" onclick="toggleEditMode(false)">完成编辑 (Esc)</button>
     </div>
   </div>
 
@@ -2287,10 +2428,293 @@
       }
     }
 
-    // Download configured standalone HTML
+    // =========================================================================
+    // WYSIWYG Direct Content Editing Engine (所见即所得直接编辑引擎)
+    // =========================================================================
+    let editModeActive = false;
+
+    function toggleEditMode(force) {
+      editModeActive = (typeof force === 'boolean') ? force : !editModeActive;
+      document.body.classList.toggle('edit-mode', editModeActive);
+
+      const btn = document.getElementById('btnEditMode');
+      const btnText = document.getElementById('btnEditText');
+      const tipBar = document.getElementById('editModeNotification');
+
+      if (editModeActive) {
+        if (typeof presentationActive !== 'undefined' && presentationActive) {
+          togglePresentationMode(false);
+        }
+        if (btn) btn.classList.add('btn-edit-active');
+        if (btnText) btnText.innerHTML = '✅ 完成编辑';
+        if (tipBar) tipBar.classList.add('show');
+        enableContentEditable(true);
+      } else {
+        syncDomToReportData();
+        if (btn) btn.classList.remove('btn-edit-active');
+        if (btnText) btnText.innerHTML = '✏️ 编辑内容';
+        if (tipBar) tipBar.classList.remove('show');
+        enableContentEditable(false);
+      }
+    }
+
+    function enableContentEditable(enable) {
+      const selectors = [
+        '.slide .slide-title',
+        '.slide .slide-subtitle',
+        '.slide .cover-main-title',
+        '.slide .company-name',
+        '.slide .company-dept',
+        '.slide .cover-logo-text',
+        '.slide .company-logo-icon',
+        '.slide .cover-meta-item span',
+        '.slide .cover-tag',
+        '.slide .overall-status-text',
+        '#slide2 .gantt-table td:not(.col-gantt-bar)',
+        '#slide2 .gantt-table th:not(.gantt-week-th)',
+        '#slide3 .deliverables-table td:not(.col-m-indi)',
+        '#slide4 .milestones-table td',
+        '#slide4 .ppt-card-header',
+        '#slide4 .ppt-list-item > div',
+        '#slide4 .ppt-tag',
+        '.slide-discussion .card-header-title',
+        '.slide-discussion .card-badge',
+        '.slide-discussion .card-summary',
+        '.slide-discussion .discussion-item-row .item-label',
+        '.slide-discussion .discussion-item-row .item-text',
+        '.slide-discussion .card-verdict',
+        '.slide-discussion .discussion-points-list li',
+        '.slide-discussion .agenda-row-side',
+        '.slide-discussion .agenda-row-content',
+        '.slide-discussion .discussion-matrix-table td',
+        '.slide-discussion .discussion-matrix-table th',
+        '.slide-discussion .conclusion-badge span',
+        '.slide-discussion .conclusion-text',
+        '.slide-discussion .discussion-badge',
+        '.slide-discussion .discussion-category-pill'
+      ];
+
+      const els = document.querySelectorAll(selectors.join(', '));
+      els.forEach(el => {
+        if (el.classList.contains('ppt-legend-dot') || el.classList.contains('status-dot') || el.classList.contains('ppt-status-circle')) return;
+        if (enable) {
+          el.setAttribute('contenteditable', 'true');
+          el.setAttribute('spellcheck', 'false');
+        } else {
+          el.removeAttribute('contenteditable');
+          el.removeAttribute('spellcheck');
+        }
+      });
+    }
+
+    function syncDomToReportData() {
+      if (!currentReportData) return;
+
+      // 1. Cover
+      if (!currentReportData.company) currentReportData.company = {};
+      if (!currentReportData.project) currentReportData.project = {};
+
+      const compName = document.getElementById('displayCompanyName');
+      if (compName) currentReportData.company.name = compName.innerText.trim();
+      const deptName = document.getElementById('displayDeptName');
+      if (deptName) currentReportData.company.department = deptName.innerText.trim();
+      const logoBadge = document.getElementById('logoIconBadge');
+      if (logoBadge) currentReportData.company.logoText = logoBadge.innerText.trim();
+
+      const projTitle = document.getElementById('displayProjectTitle');
+      if (projTitle) currentReportData.project.title = projTitle.innerText.trim();
+      const projPeriod = document.getElementById('displayReportPeriod');
+      if (projPeriod) {
+        currentReportData.project.period = projPeriod.innerText.replace(/^汇报周期[：:]\s*/, '').trim();
+      }
+      const reporter = document.getElementById('displayReporter');
+      if (reporter) currentReportData.project.reporter = reporter.innerText.trim();
+
+      // 2. Timeline Slide 2
+      const tlTitle = document.querySelector('#slide2 .slide-title');
+      const tlSubtitle = document.querySelector('#slide2 .slide-subtitle');
+      if (currentReportData.timeline) {
+        if (tlTitle) currentReportData.timeline.title = tlTitle.innerText.trim();
+        if (tlSubtitle) currentReportData.timeline.subtitle = tlSubtitle.innerText.trim();
+
+        // Sync task names if edited
+        const ganttRows = document.querySelectorAll('#slide2 .gantt-table tbody tr');
+        if (Array.isArray(currentReportData.timeline.tasks)) {
+          ganttRows.forEach((row, rIdx) => {
+            const taskTd = row.querySelector('.col-task');
+            if (taskTd && currentReportData.timeline.tasks[rIdx]) {
+              currentReportData.timeline.tasks[rIdx].task = taskTd.innerText.trim();
+            }
+          });
+        }
+      }
+
+      // 3. Deliverables Slide 3
+      const delivTitle = document.querySelector('#slide3 .slide-title');
+      const delivSubtitle = document.querySelector('#slide3 .slide-subtitle');
+      if (currentReportData.deliverables) {
+        if (delivTitle) currentReportData.deliverables.title = delivTitle.innerText.trim();
+        if (delivSubtitle) currentReportData.deliverables.subtitle = delivSubtitle.innerText.trim();
+
+        const dRows = document.querySelectorAll('#slide3 .deliverables-table tbody tr');
+        if (Array.isArray(currentReportData.deliverables.items)) {
+          dRows.forEach((row, idx) => {
+            if (currentReportData.deliverables.items[idx]) {
+              const mName = row.querySelector('.col-m-name');
+              const mProg = row.querySelector('.col-m-prog');
+              const mDate = row.querySelector('.col-m-date');
+              const mStat = row.querySelector('.col-m-stat');
+              if (mName) currentReportData.deliverables.items[idx].milestone = mName.innerText.trim();
+              if (mProg) currentReportData.deliverables.items[idx].progress = mProg.innerText.trim();
+              if (mDate) currentReportData.deliverables.items[idx].date = mDate.innerText.trim();
+              if (mStat) currentReportData.deliverables.items[idx].status = mStat.innerText.trim();
+            }
+          });
+        }
+      }
+
+      // 4. This Week Slide 4
+      const twTitle = document.querySelector('#slide4 .slide-title');
+      const twSubtitle = document.querySelector('#slide4 .slide-subtitle');
+      if (currentReportData.thisWeek) {
+        if (twTitle) currentReportData.thisWeek.title = twTitle.innerText.trim();
+        if (twSubtitle) currentReportData.thisWeek.subtitle = twSubtitle.innerText.trim();
+
+        // Card 1: previous tasks
+        const prevList = document.querySelectorAll('#slide4 .task-mgmt-col:first-child .ppt-card:first-child .ppt-list-item');
+        if (Array.isArray(currentReportData.thisWeek.previousTasks)) {
+          prevList.forEach((item, idx) => {
+            if (currentReportData.thisWeek.previousTasks[idx]) {
+              const tagEl = item.querySelector('.ppt-tag');
+              const fullText = item.querySelector('div')?.innerText || '';
+              if (tagEl) {
+                currentReportData.thisWeek.previousTasks[idx].tag = tagEl.innerText.replace(/^[【\[]|[\】\]]$/g, '').trim();
+                currentReportData.thisWeek.previousTasks[idx].content = fullText.replace(tagEl.innerText, '').trim();
+              } else {
+                currentReportData.thisWeek.previousTasks[idx].content = fullText.trim();
+              }
+            }
+          });
+        }
+
+        // Card 2: next steps
+        const nextList = document.querySelectorAll('#slide4 .task-mgmt-col:first-child .ppt-card:nth-child(2) .ppt-list-item');
+        if (Array.isArray(currentReportData.thisWeek.nextSteps)) {
+          nextList.forEach((item, idx) => {
+            if (currentReportData.thisWeek.nextSteps[idx]) {
+              const tagEl = item.querySelector('.ppt-tag');
+              const fullText = item.querySelector('div')?.innerText || '';
+              if (tagEl) {
+                currentReportData.thisWeek.nextSteps[idx].tag = tagEl.innerText.replace(/^[【\[]|[\】\]]$/g, '').trim();
+                currentReportData.thisWeek.nextSteps[idx].content = fullText.replace(tagEl.innerText, '').trim();
+              } else {
+                currentReportData.thisWeek.nextSteps[idx].content = fullText.trim();
+              }
+            }
+          });
+        }
+
+        // Card 3: risks
+        const riskList = document.querySelectorAll('#slide4 .task-mgmt-col:nth-child(2) .ppt-card:first-child .ppt-list-item');
+        if (Array.isArray(currentReportData.thisWeek.risks)) {
+          riskList.forEach((item, idx) => {
+            if (currentReportData.thisWeek.risks[idx]) {
+              const tagEl = item.querySelector('.ppt-tag');
+              const fullText = item.querySelector('div')?.innerText || '';
+              if (tagEl) {
+                currentReportData.thisWeek.risks[idx].tag = tagEl.innerText.replace(/^[【\[]|[\】\]]$/g, '').trim();
+                currentReportData.thisWeek.risks[idx].content = fullText.replace(tagEl.innerText, '').trim();
+              } else {
+                currentReportData.thisWeek.risks[idx].content = fullText.trim();
+              }
+            }
+          });
+        }
+
+        // Milestones
+        const msRows = document.querySelectorAll('#slide4 .milestones-table tbody tr');
+        if (Array.isArray(currentReportData.thisWeek.milestones)) {
+          msRows.forEach((row, idx) => {
+            if (currentReportData.thisWeek.milestones[idx]) {
+              const tds = row.querySelectorAll('td');
+              if (tds.length >= 2) {
+                currentReportData.thisWeek.milestones[idx].name = tds[0].innerText.trim();
+                currentReportData.thisWeek.milestones[idx].date = tds[1].innerText.trim();
+              }
+            }
+          });
+        }
+      }
+
+      // 5. Discussion Slides (Slide 5+)
+      const discSlides = document.querySelectorAll('section.slide-discussion');
+      if (Array.isArray(currentReportData.discussionSlides)) {
+        discSlides.forEach((sec, sIdx) => {
+          const sData = currentReportData.discussionSlides[sIdx];
+          if (!sData) return;
+          const t = sec.querySelector('.slide-title');
+          const st = sec.querySelector('.slide-subtitle');
+          if (t) sData.title = t.innerText.trim();
+          if (st) sData.subtitle = st.innerText.trim();
+
+          const concText = sec.querySelector('.discussion-conclusion-box .conclusion-text');
+          if (concText) {
+            if (typeof sData.conclusion === 'object') {
+              sData.conclusion.text = concText.innerText.trim();
+            } else if (sData.conclusion) {
+              sData.conclusion = concText.innerText.trim();
+            }
+          }
+
+          if (sData.layout === 'comparison' || sData.layout === 'cards') {
+            const cards = sec.querySelectorAll('.discussion-card');
+            cards.forEach((card, cIdx) => {
+              if (sData.cards && sData.cards[cIdx]) {
+                const cardObj = sData.cards[cIdx];
+                const ct = card.querySelector('.card-header-title');
+                if (ct) cardObj.title = ct.innerText.trim();
+                const cs = card.querySelector('.card-summary');
+                if (cs) cardObj.summary = cs.innerText.trim();
+                const cv = card.querySelector('.card-verdict');
+                if (cv) cardObj.verdict = cv.innerText.trim();
+
+                const itemRows = card.querySelectorAll('.discussion-item-row');
+                itemRows.forEach((iRow, iIdx) => {
+                  if (cardObj.items && cardObj.items[iIdx]) {
+                    const l = iRow.querySelector('.item-label');
+                    const v = iRow.querySelector('.item-text');
+                    if (l) cardObj.items[iIdx].label = l.innerText.trim();
+                    if (v) cardObj.items[iIdx].text = v.innerText.trim();
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    }
+
+    // Download configured standalone HTML with all edits preserved
     function downloadCurrentHtml() {
+      // 1. Sync any DOM edits into currentReportData
+      syncDomToReportData();
+
+      // 2. Clone document
       const clonedDoc = document.documentElement.cloneNode(true);
-      // Embed latest data in script
+
+      // 3. Remove edit-mode and UI transient classes & attributes
+      clonedDoc.body.classList.remove('edit-mode');
+      const clonedTip = clonedDoc.querySelector('#editModeNotification');
+      if (clonedTip) clonedTip.classList.remove('show');
+      const clonedEditBtn = clonedDoc.querySelector('#btnEditMode');
+      if (clonedEditBtn) clonedEditBtn.classList.remove('btn-edit-active');
+      const clonedEditText = clonedDoc.querySelector('#btnEditText');
+      if (clonedEditText) clonedEditText.innerHTML = '✏️ 编辑内容';
+
+      clonedDoc.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+      clonedDoc.querySelectorAll('[spellcheck]').forEach(el => el.removeAttribute('spellcheck'));
+
+      // 4. Update embedded JSON script
       let dataScript = clonedDoc.querySelector('#weekly-report-data');
       if (!dataScript) {
         dataScript = document.createElement('script');
@@ -2303,8 +2727,9 @@
       const blob = new Blob(["<!DOCTYPE html>\n" + clonedDoc.outerHTML], { type: "text/html;charset=utf-8" });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      const currentTheme = document.body.getAttribute('data-theme') || 'astrazeneca';
-      a.download = `weekly-report-${currentTheme}.html`;
+      const currentTheme = document.body.getAttribute('data-theme') || 'classic-navy';
+      const projectTitle = (currentReportData && currentReportData.project && currentReportData.project.title) ? currentReportData.project.title.replace(/[\\/:*?"<>|]/g, '_') : 'weekly-report';
+      a.download = `${projectTitle}-${currentTheme}.html`;
       a.click();
     }
 
@@ -2381,6 +2806,28 @@
         changeTheme(data.theme);
         const sel = document.getElementById('themeSelect');
         if (sel) sel.value = data.theme;
+      }
+
+      if (data.customTheme) {
+        const ct = data.customTheme;
+        if (ct.primary) {
+          applyCustomColor('--brand-primary', ct.primary);
+          applyCustomColor('--brand-border', ct.primary);
+        }
+        if (ct.primaryDark) {
+          applyCustomColor('--brand-primary-dark', ct.primaryDark);
+          applyCustomColor('--brand-text-main', ct.primaryDark);
+        }
+        if (ct.accent) {
+          applyCustomColor('--brand-accent-sec', ct.accent);
+          applyCustomColor('--brand-gantt-header', ct.accent);
+        }
+        if (ct.holiday) {
+          applyCustomColor('--brand-holiday', ct.holiday);
+        }
+        if (ct.bg) {
+          applyCustomColor('--brand-bg', ct.bg);
+        }
       }
 
       // 2. Cover (Slide 1)
@@ -3036,7 +3483,38 @@
     }
 
     document.addEventListener('keydown', (e) => {
+      // If typing in contenteditable, handle Escape and Enter
+      if (e.target && e.target.isContentEditable) {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          e.target.blur();
+          toggleEditMode(false);
+          return;
+        }
+        if (e.key === 'Enter' && !e.shiftKey && e.target.matches('th, td, .slide-title, .card-header-title, .item-label, .ppt-card-header, .company-name, .company-dept, .cover-main-title')) {
+          e.preventDefault();
+          e.target.blur();
+          return;
+        }
+        return;
+      }
+
       if (isTypingTarget(e.target)) return;
+
+      // Shortcut: 'E' to toggle edit mode
+      if ((e.key === 'e' || e.key === 'E') && !e.metaKey && !e.ctrlKey && !e.altKey && !presentationActive) {
+        e.preventDefault();
+        toggleEditMode();
+        return;
+      }
+
+      // Shortcut: 'Esc' to exit edit mode
+      if (e.key === 'Escape' && editModeActive) {
+        e.preventDefault();
+        toggleEditMode(false);
+        return;
+      }
+
       if ((e.key === 'p' || e.key === 'P') && !e.metaKey && !e.ctrlKey && !e.altKey) {
         if (!presentationActive) {
           e.preventDefault();
@@ -3065,6 +3543,18 @@
         e.preventDefault();
         goToPresentationSlide(getPresentationSlides().length - 1);
       }
+    });
+
+    // Double-click any text on slide to instantly enter edit mode
+    document.addEventListener('dblclick', (e) => {
+      const slide = e.target.closest('.slide');
+      if (!slide || e.target.closest('button, select, input, textarea, .slide-footer-num, svg, .ppt-status-circle, .status-dot, .ppt-legend-dot')) return;
+      if (!editModeActive) {
+        toggleEditMode(true);
+      }
+      e.target.setAttribute('contenteditable', 'true');
+      e.target.setAttribute('spellcheck', 'false');
+      e.target.focus();
     });
 
     document.addEventListener('click', (e) => {
