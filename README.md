@@ -1,6 +1,29 @@
 # 🤖 Agent Skills Hub (`agent-skills`)
 
-> **通用 AI Agent 技能仓库 (Universal AI Agent Skills Hub)**：面向主流自动化智能体框架（Claude Code、Cursor、Google Antigravity、Roo Code、Windsurf、Cline 及自定义 Agent 系统），遵循行业开放技能标准（`SKILL.md` + 自动化脚本工具链），提供生产级、开箱即用的专业工作流扩展技能。
+<p align="center">
+  <a href="https://github.com/lighters/agent-skills/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+  <img src="https://img.shields.io/badge/python-3.8+-3776AB.svg?logo=python&logoColor=white" alt="Python">
+  <a href="https://github.com/lighters/agent-skills/actions/workflows/ci.yml"><img src="https://github.com/lighters/agent-skills/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://lighters.github.io/agent-skills/"><img src="https://img.shields.io/badge/Live_Demo-GitHub_Pages-orange?logo=github" alt="Live Demo"></a>
+  <a href="https://github.com/lighters/agent-skills/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
+</p>
+
+> **通用 AI Agent 技能仓库 (Universal AI Agent Skills Hub)**：面向主流自动化智能体框架（Claude Code、Cursor、Google Antigravity、Roo Code、Windsurf、Cline 及自定义 Agent 系统），遵循开放技能标准（`SKILL.md` + 标准化脚本工具链），提供生产级、开箱即用的专业工作流扩展技能。
+
+> ⚡ **零第三方依赖 (Zero External Dependencies)**：核心引擎完全基于 Python 标准库（`json`, `re`, `datetime`, `argparse`）构建，**无需 `pip install` 任何第三方包**，开箱即用。
+
+---
+
+## 🎨 视觉效果预览 (Visual Previews)
+
+> 💡 **在线交互体验**：无需安装或 Clone，直接访问 👉 [**在线体验 Live Demo (GitHub Pages)**](https://lighters.github.io/agent-skills/)  
+> （在在线网页中按 `P` 键进入影院级全屏演示，按 `E` 键直接修改文字，右上角抽屉可一键换肤）
+
+| Slide 1: 沉浸式高管汇报封面 (Cover) | Slide 2: 端到端计划甘特图 (Work Plan Timeline) |
+| :---: | :---: |
+| ![Slide 1 Cover](./docs/assets/slide1_cover_preview.png) | ![Slide 2 Gantt](./docs/assets/slide2_gantt_preview.png) |
+| **Slide 3: 交付物健康度看板 (Deliverables)** | **Slide 4: 任务执行与两周里程碑 (Tasks)** |
+| ![Slide 3 Deliverables](./docs/assets/slide3_deliverables_preview.png) | ![Slide 4 Tasks](./docs/assets/slide4_tasks_preview.png) |
 
 ---
 
@@ -8,7 +31,7 @@
 
 | 技能名称 (Skill) | 目录路径 | 描述说明 | 依赖环境 |
 | :--- | :--- | :--- | :--- |
-| **`weekly-report-generator`** | [`skills/weekly-report-generator`](./skills/weekly-report-generator) | **企业高保真周报与演示文稿生成器**：1:1 复刻麦肯锡、埃森哲等顶级咨询与 500 强高管汇报级排版。支持 4 页标准结构 + 自由扩展 Slide 5+ 方案研讨与议题决议页、端到端 Timeline 甘特图自动排版、交付物健康度跟踪、所见即所得直接编辑、影院级全屏演示动效、7 大企业主题及 16:9 矢量 PDF 导出。 | Python 3.8+ / Google Chrome (可选导出 PDF) |
+| **`weekly-report-generator`** | [`skills/weekly-report-generator`](./skills/weekly-report-generator) | **企业高保真周报与演示文稿生成器**：1:1 复刻麦肯锡、埃森哲等顶级咨询与 500 强高管汇报级排版。支持 4 页标准结构 + 自由扩展 Slide 5+ 方案研讨与议题决议页、端到端 Timeline 甘特图自动排版、交付物健康度跟踪、所见即所得直接编辑、影院级全屏演示动效、7 大企业主题及 16:9 矢量 PDF 导出。 | Python 3.8+ (纯标准库) / Google Chrome (可选导出 PDF) |
 
 ---
 
@@ -167,22 +190,26 @@ python3 scripts/export_pdf.py \
 
 ---
 
-### 4. 详细规范与文档链接
+## 🗺️ 技能路线图 (Skill Roadmap)
 
-- 技能定义与 Agent Runbook：[`skills/weekly-report-generator/SKILL.md`](./skills/weekly-report-generator/SKILL.md)
-- 数据格式与输入指南：[`skills/weekly-report-generator/references/input_format_guide.md`](./skills/weekly-report-generator/references/input_format_guide.md)
-- JSON 数据 Schema 规范：[`skills/weekly-report-generator/references/data_schema.md`](./skills/weekly-report-generator/references/data_schema.md)
-- 示例数据集：[`skills/weekly-report-generator/examples/sample_data.json`](./skills/weekly-report-generator/examples/sample_data.json)
+Agent Skills Hub 正在持续扩展高频通用工作流，欢迎社区参与共建：
+
+- [x] **`weekly-report-generator`**：高管级周报、甘特图排版、方案研讨与 16:9 PDF 生成
+- [ ] **`meeting-minutes-extractor`**：基于会议转录文本，自动提炼决策结论、行动项（Action Items）并分配责任人
+- [ ] **`code-review-reporter`**：针对多文件 Git Diff 自动生成结构化代码审查报告与重构建议
+- [ ] **`release-notes-generator`**：基于 Git Commit 与 PR 规范，全自动提取版本发布日志与变更说明
+- [ ] **`adr-generator`**：软件架构决策记录（Architecture Decision Record）自动化生成与维护
 
 ---
 
 ## 📝 扩展新技能 (Contributing)
 
-欢迎贡献更多通用 Agent Skills！每个新技能遵循通用开放技能标准：
+欢迎贡献更多通用 Agent Skills！每个新技能遵循通用开放技能标准，详情请查阅 [CONTRIBUTING.md](./CONTRIBUTING.md)：
 
 ```text
 skills/<skill-name>/
 ├── SKILL.md            # 包含 YAML frontmatter (name, description) 与执行手册
+├── README.md           # 人类可读使用指南与 CLI 命令行说明
 ├── scripts/            # 跨平台自动化脚本与工具链
 ├── templates/          # 模板与配置资源
 ├── examples/           # 样例输入与生成产出

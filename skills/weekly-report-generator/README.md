@@ -2,6 +2,18 @@
 
 > **通用 AI Agent 技能与独立命令行工具 (Universal AI Agent Skill & Standalone CLI Tool)**：基于结构化 JSON 自动生成高保真企业级 HTML 与 16:9 矢量 PDF 周报。1:1 复刻麦肯锡、埃森哲等顶级咨询及世界 500 强高管汇报 PPT 视觉与排版标准。
 
+> ⚡ **零第三方依赖 (Zero External Dependencies)**：纯 Python 标准库驱动，无需任何 `pip install`，开箱即用。
+
+---
+
+## 🎨 视觉效果预览 (Visual Previews)
+
+| Slide 1: 封面页 (Cover) | Slide 2: 甘特图总体计划 (Work Plan) |
+| :---: | :---: |
+| ![Slide 1 Cover](../../docs/assets/slide1_cover_preview.png) | ![Slide 2 Gantt](../../docs/assets/slide2_gantt_preview.png) |
+| **Slide 3: 交付物健康度评估 (Deliverables)** | **Slide 4: 任务执行与两周里程碑 (Tasks)** |
+| ![Slide 3 Deliverables](../../docs/assets/slide3_deliverables_preview.png) | ![Slide 4 Tasks](../../docs/assets/slide4_tasks_preview.png) |
+
 ---
 
 ## 🌟 核心特性

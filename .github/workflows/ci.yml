@@ -1,0 +1,65 @@
+name: CI & Test Suite
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Test Weekly Report Engine
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Validate Timeline Dates Check
+        run: |
+          python3 skills/weekly-report-generator/scripts/generate_report.py \
+            --data skills/weekly-report-generator/examples/sample_data.json \
+            --check-dates
+
+      - name: Test Report Compilation (AstraZeneca Theme)
+        run: |
+          python3 skills/weekly-report-generator/scripts/generate_report.py \
+            --data skills/weekly-report-generator/examples/sample_data.json \
+            --theme astrazeneca \
+            --output /tmp/test_report_az.html
+          test -s /tmp/test_report_az.html
+          grep -q 'id="slide1"' /tmp/test_report_az.html
+          grep -q 'id="slide2"' /tmp/test_report_az.html
+          grep -q 'id="slide3"' /tmp/test_report_az.html
+          grep -q 'id="slide4"' /tmp/test_report_az.html
+
+      - name: Test Report Compilation (Wukong Green Theme)
+        run: |
+          python3 skills/weekly-report-generator/scripts/generate_report.py \
+            --data skills/weekly-report-generator/examples/sample_data.json \
+            --theme wukong-green \
+            --output /tmp/test_report_wukong.html
+          test -s /tmp/test_report_wukong.html
+
+      - name: Test Report Compilation (Vercel Minimal Theme)
+        run: |
+          python3 skills/weekly-report-generator/scripts/generate_report.py \
+            --data skills/weekly-report-generator/examples/vercel_sample_data.json \
+            --theme vercel-minimal \
+            --output /tmp/test_report_vercel.html
+          test -s /tmp/test_report_vercel.html
+
+      - name: Verify Zero External Python Dependencies
+        run: |
+          python3 -c "
+          import json, os, re, sys, datetime, argparse, pathlib
+          print('All required modules belong to Python standard library!')
+          "

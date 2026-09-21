@@ -1,0 +1,54 @@
+name: 🐛 Bug Report
+description: Report a bug, template rendering issue, or script error
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to report an issue!
+  - type: dropdown
+    id: skill
+    attributes:
+      label: Affected Skill / Component
+      options:
+        - weekly-report-generator
+        - scripts (generate_report / export_pdf)
+        - templates / CSS styles
+        - other
+    validations:
+      required: true
+  - type: input
+    id: agent_runtime
+    attributes:
+      label: AI Agent Runtime / Environment
+      placeholder: e.g. Claude Code, Cursor, Google Antigravity, Standalone CLI
+    validations:
+      required: true
+  - type: input
+    id: python_version
+    attributes:
+      label: Python Version & OS
+      placeholder: e.g. Python 3.11 on macOS Sonoma / Ubuntu 22.04
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description of the Bug
+      description: Clear and concise description of what went wrong.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Run `python3 ...`
+        2. With data file ...
+        3. See error ...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error Logs or Screenshots
+      render: shell

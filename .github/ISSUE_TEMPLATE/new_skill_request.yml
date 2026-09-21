@@ -1,0 +1,28 @@
+name: 🚀 New Skill Proposal
+description: Propose a new workflow or automation skill for the Agent Skills Hub
+labels: ["new-skill"]
+body:
+  - type: markdown
+    attributes:
+      value: Propose a new skill to expand the Universal AI Agent Skills Hub!
+  - type: input
+    id: skill_name
+    attributes:
+      label: Proposed Skill Name
+      placeholder: e.g. meeting-minutes-extractor, code-review-reporter
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this skill solve?
+      description: Describe the repetitive or complex workflow this skill automates.
+    validations:
+      required: true
+  - type: textarea
+    id: agent_workflow
+    attributes:
+      label: Agent Execution Workflow
+      description: How will an AI Agent invoke and run this skill? What are the inputs, scripts, and outputs?
+    validations:
+      required: true
