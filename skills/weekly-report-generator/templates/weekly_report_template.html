@@ -77,7 +77,6 @@
     }
 
     /* Enterprise Themes Presets (5大医药巨头 + Vercel 极简风 + 极客翠绿) */
-    [data-theme="astrazeneca"],
     [data-theme="classic-navy"] {
       --brand-primary: #003865;
       --brand-primary-dark: #001847;
@@ -98,6 +97,28 @@
       --glow-color: rgba(208, 0, 111, 0.22);
       --bg-ambient-top: #0d1e2e;
       --bg-ambient-bot: #060e17;
+    }
+
+    [data-theme="astrazeneca"] {
+      --brand-primary: #830051;
+      --brand-primary-dark: #003865;
+      --brand-primary-light: #fbf0f6;
+      --brand-accent: #F0AB00;
+      --brand-accent-sec: #003865;
+      --brand-status-header: #245D38;
+      --brand-border: #830051;
+      --brand-table-header: #830051;
+      --brand-gantt-header: #003865;
+      --brand-holiday: #F0AB00;
+      --brand-text-main: #003865;
+      --brand-text-body: #1e293b;
+      --brand-bg: #fdfafd;
+      --grad-primary: linear-gradient(135deg, #830051 0%, #003865 100%);
+      --grad-cover: linear-gradient(150deg, #830051 0%, #5c0039 52%, #003865 100%);
+      --grad-page: linear-gradient(180deg, #FBF0F6 0%, #FCF8FA 58%, #FFFFFF 100%);
+      --glow-color: rgba(240, 171, 0, 0.25);
+      --bg-ambient-top: #1f0b18;
+      --bg-ambient-bot: #0a0408;
     }
 
     [data-theme="novartis"] {
@@ -145,23 +166,23 @@
     }
 
     [data-theme="jnj"] {
-      --brand-primary: #D71600;
-      --brand-primary-dark: #8A0000;
+      --brand-primary: #C8102E;
+      --brand-primary-dark: #A00D1E;
       --brand-primary-light: #fef2f2;
-      --brand-accent: #0F2C59;
-      --brand-accent-sec: #D71600;
+      --brand-accent: #1E22AA;
+      --brand-accent-sec: #C8102E;
       --brand-status-header: #15803D;
-      --brand-border: #D71600;
-      --brand-table-header: #8A0000;
-      --brand-gantt-header: #D71600;
-      --brand-holiday: #F59E0B;
-      --brand-text-main: #450A0A;
+      --brand-border: #C8102E;
+      --brand-table-header: #C8102E;
+      --brand-gantt-header: #C8102E;
+      --brand-holiday: #FF8200;
+      --brand-text-main: #1c1917;
       --brand-text-body: #292524;
       --brand-bg: #fcf8f8;
-      --grad-primary: linear-gradient(135deg, #D71600 0%, #b81400 60%, #8A0000 100%);
-      --grad-cover: linear-gradient(150deg, #5A0000 0%, #3a0000 52%, #1a0000 100%);
+      --grad-primary: linear-gradient(135deg, #D71600 0%, #C8102E 60%, #9B0014 100%);
+      --grad-cover: linear-gradient(150deg, #D71600 0%, #C8102E 52%, #9B0014 100%);
       --grad-page: linear-gradient(180deg, #FDECEC 0%, #FCF6F6 58%, #FFFFFF 100%);
-      --glow-color: rgba(215, 22, 0, 0.25);
+      --glow-color: rgba(200, 16, 46, 0.25);
       --bg-ambient-top: #240a0a;
       --bg-ambient-bot: #120404;
     }
@@ -3766,15 +3787,14 @@
       if (contentCand.length > 0) {
         contentCand.sort((a, b) => b.size - a.size);
         contentFile = contentCand[0].file;
-      } else {
-        const candidates = Object.keys(mediaMap).filter(k => k !== coverFile && k !== logoFile && (mediaMap[k].compSize > 40000 && mediaMap[k].compSize < 2000000));
-        contentFile = candidates[0] || null;
       }
 
       if (contentFile && mediaMap[contentFile]) {
         const b = await getBytes(mediaMap[contentFile]);
         const mime = getMime(contentFile);
         result.contentBgDataUrl = `data:${mime};base64,${uint8ToBase64(b)}`;
+      } else {
+        result.contentBgDataUrl = null;
       }
 
       // Texts
@@ -3833,20 +3853,132 @@
 
       let coverCss = '';
       if (pptxData.coverBgDataUrl) {
-        coverCss = `
-          body .slide-cover {
-            background-image: linear-gradient(135deg, rgba(8, 20, 36, 0.78) 0%, rgba(14, 40, 70, 0.68) 100%), url('${pptxData.coverBgDataUrl}') !important;
-            background-size: cover !important;
-            background-position: center !important;
-            background-repeat: no-repeat !important;
+        const logoTlCss = pptxData.coverHasLogoTopLeft ? `
+          body .slide-cover .company-badge {
+            visibility: hidden !important;
           }
-          body .slide-cover::before, body .slide-cover::after {
+          body .slide-cover .cover-center-content {
+            margin-top: 56px !important;
+          }
+        ` : '';
+
+        const darkLogoTlCss = pptxData.coverHasLogoTopLeft ? `
+          body .slide-cover .company-logo-icon {
             display: none !important;
           }
-        `;
+          body .slide-cover .company-info-text {
+            margin-left: 55px !important;
+          }
+        ` : '';
+
+        if (pptxData.isLightCover) {
+          const primaryCol = colors.primary || '#830051';
+          const darkCol = colors.primaryDark || '#003865';
+          coverCss = `
+            body .slide-cover {
+              background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%), url('${pptxData.coverBgDataUrl}') !important;
+              background-size: cover !important;
+              background-position: center !important;
+              background-repeat: no-repeat !important;
+              color: ${darkCol} !important;
+            }
+            body .slide-cover::before, body .slide-cover::after {
+              display: none !important;
+            }
+            body .slide-cover .company-name,
+            body .slide-cover .company-dept,
+            body .slide-cover .cover-sub-title,
+            body .slide-cover .cover-project-title {
+              color: ${darkCol} !important;
+              -webkit-text-fill-color: ${darkCol} !important;
+            }
+            body .slide-cover .cover-main-title {
+              color: ${primaryCol} !important;
+              background: transparent !important;
+              -webkit-background-clip: border-box !important;
+              background-clip: border-box !important;
+              -webkit-text-fill-color: ${primaryCol} !important;
+              text-shadow: none !important;
+            }
+            body .slide-cover .cover-tag {
+              background: rgba(131, 0, 81, 0.08) !important;
+              color: ${primaryCol} !important;
+              border-color: rgba(131, 0, 81, 0.25) !important;
+            }
+            body .slide-cover .cover-period-pill {
+              background: rgba(0, 56, 101, 0.08) !important;
+              color: ${darkCol} !important;
+              border-color: rgba(0, 56, 101, 0.2) !important;
+            }
+            body .slide-cover .meta-card,
+            body .slide-cover .cover-stat-card {
+              background: rgba(255, 255, 255, 0.90) !important;
+              border: 1px solid rgba(0, 56, 101, 0.15) !important;
+              box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06) !important;
+              backdrop-filter: blur(10px) !important;
+            }
+            body .slide-cover .meta-value,
+            body .slide-cover .stat-card-val {
+              color: ${darkCol} !important;
+            }
+            body .slide-cover .meta-label,
+            body .slide-cover .stat-card-label {
+              color: #64748b !important;
+            }
+            ${logoTlCss}
+          `;
+        } else {
+          coverCss = `
+            body .slide-cover {
+              background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.12) 100%), url('${pptxData.coverBgDataUrl}') !important;
+              background-size: cover !important;
+              background-position: center !important;
+              background-repeat: no-repeat !important;
+              color: #ffffff !important;
+            }
+            body .slide-cover::before, body .slide-cover::after {
+              display: none !important;
+            }
+            body .slide-cover .cover-main-title {
+              color: #ffffff !important;
+              background: none !important;
+              -webkit-background-clip: border-box !important;
+              background-clip: border-box !important;
+              -webkit-text-fill-color: #ffffff !important;
+            }
+            body .slide-cover .cover-sub-title {
+              color: rgba(255, 255, 255, 0.95) !important;
+            }
+            body .slide-cover .meta-card,
+            body .slide-cover .cover-stat-card {
+              background: rgba(0, 0, 0, 0.24) !important;
+              border: 1px solid rgba(255, 255, 255, 0.25) !important;
+              backdrop-filter: blur(10px) !important;
+            }
+            body .slide-cover .meta-value,
+            body .slide-cover .stat-card-val {
+              color: #ffffff !important;
+            }
+            body .slide-cover .meta-label,
+            body .slide-cover .stat-card-label {
+              color: rgba(255, 255, 255, 0.82) !important;
+            }
+            ${darkLogoTlCss}
+          `;
+        }
       }
 
       let contentCss = '';
+      const cntLogoTrCss = pptxData.contentHasLogoTopRight ? `
+        body .slide:not(.slide-cover) .slide-header {
+          padding-right: 90px !important;
+        }
+        body .slide:not(.slide-cover) .gantt-legend,
+        body .slide:not(.slide-cover) .status-summary-pills {
+          margin-right: 90px !important;
+        }
+      ` : '';
+
       if (pptxData.contentBgDataUrl) {
         contentCss = `
           body .slide:not(.slide-cover) {
@@ -3868,6 +4000,18 @@
             -webkit-backdrop-filter: blur(10px) !important;
             box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05) !important;
           }
+          ${cntLogoTrCss}
+        `;
+      } else if (cntLogoTrCss) {
+        contentCss = `
+          body .slide:not(.slide-cover) {
+            background-color: #ffffff !important;
+            background-image: none !important;
+          }
+          body .slide:not(.slide-cover)::before {
+            display: none !important;
+          }
+          ${cntLogoTrCss}
         `;
       }
 

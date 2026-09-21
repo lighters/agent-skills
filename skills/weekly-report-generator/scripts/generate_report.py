@@ -613,7 +613,10 @@ def generate_report(data_path, output_path, theme="classic-navy", pptx_path=None
             "contentBgDataUrl": pptx_data.get("content_bg_data_url"),
             "logoDataUrl": pptx_data.get("logo_data_url"),
             "companyName": pptx_data.get("company_name", ""),
-            "slogan": pptx_data.get("slogan", "")
+            "slogan": pptx_data.get("slogan", ""),
+            "isLightCover": pptx_data.get("is_light_cover", False),
+            "coverHasLogoTopLeft": pptx_data.get("cover_has_logo_top_left", False),
+            "contentHasLogoTopRight": pptx_data.get("content_has_logo_top_right", False)
         }
 
     # Apply theme to body and select
