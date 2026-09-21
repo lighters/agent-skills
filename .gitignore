@@ -42,3 +42,10 @@ yarn-error.log*
 *.swp
 *.swo
 *~
+
+# Customer PPT templates (Confidential)
+*.pptx
+*.ppt
+*.potx
+*.pot
+/tmp/

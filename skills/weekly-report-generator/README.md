@@ -39,6 +39,13 @@
   - 内置自动校验机制，支持 `--check-dates`（校验）、`--fix-dates`（自动对齐纠正）与 `--strict-dates`（严格模式）。
 - **🏷️ 全页面标题/副标题动态自适应**：
   - 支持自定义所有页面的大标题与副标题，未指定时自动根据实际周列表自适应计算周期区间（如 `(W1 - W8)`）。
+- **🎨 客户定制 PPT 模板导入与背景自适应 (Custom PPTX Template Extraction)**：
+  - **开箱即用支持客户母版**：很多客户要求周报必须沿用企业自有 PPT 模板。现在只需提供一个 `.pptx` 文件，系统即可全自动解构提取封面背景大图、内页底纹/波浪图、企业 Logo 与主题主色调。
+  - **零第三方依赖 (Zero pip dependencies)**：完全基于 Python 内置标准库与浏览器原生 `DecompressionStream`，无需安装 `python-pptx` 或 `Pillow`。
+  - **双通道支持**：
+    - **CLI 命令行参数**：`--pptx "/path/to/customer_template.pptx"` 一键编译。
+    - **网页端交互式导入**：在周报页面点击 **「🎨 导入 PPT 模板」**，直接选择本地 `.pptx` 即可瞬时在浏览器内解压、提取并换肤，点击「另存 HTML」永久固化。
+  - **完美视读保障**：自动叠加企业级暗色渐变（封面）与毛玻璃透气背景（内容页），确保文字与甘特图拥有绝对清晰的对比度与高级质感。
 - **🎨 7 大企业主题与自定义调色系统 (Theme System)**：
   - 内置 `astrazeneca`（阿斯利康深蓝与洋红）、`novartis`（诺华钴蓝与暖橙）、`bayer`（拜耳深蓝与生机绿）、`jnj`（强生红）、`novo-nordisk`（诺和诺德蓝）、`wukong-green`（极客翠绿）、`vercel-minimal`（Vercel 极简风）。
   - 支持通过 JSON `customTheme` 自定义颜色覆盖，网页端支持侧边栏抽屉实时换肤与即时 JSON 编辑渲染。
@@ -88,13 +95,19 @@ python3 scripts/generate_report.py \
   --theme astrazeneca \
   --output weekly-report.html
 
-# 2. 仅校验时间轴日期与节假日合法性
+# 2. 导入客户 PPT 模板一键自适应背景与 Logo
+python3 scripts/generate_report.py \
+  --data examples/sample_data.json \
+  --pptx "/path/to/customer_template.pptx" \
+  --output weekly-report.html
+
+# 3. 仅校验时间轴日期与节假日合法性
 python3 scripts/generate_report.py --data examples/sample_data.json --check-dates
 
-# 3. 自动纠正非标准日期为周一至周五并生成报告
+# 4. 自动纠正非标准日期为周一至周五并生成报告
 python3 scripts/generate_report.py --data your_data.json --fix-dates --output weekly-report.html
 
-# 4. 导出为高清 16:9 矢量 PDF 附件（依赖本地 Chrome/Edge 浏览器）
+# 5. 导出为高清 16:9 矢量 PDF 附件（依赖本地 Chrome/Edge 浏览器）
 python3 scripts/export_pdf.py \
   --input weekly-report.html \
   --output weekly-report.pdf
@@ -109,10 +122,11 @@ skills/weekly-report-generator/
 ├── SKILL.md                          # 通用 Agent 技能描述与执行规范 (必读)
 ├── README.md                         # 技能概述与使用手册
 ├── scripts/
-│   ├── generate_report.py            # 周报核心 HTML 编译引擎（支持日期校验与自动修正）
+│   ├── generate_report.py            # 周报核心 HTML 编译引擎（支持日期校验与 PPT 模板绑定）
+│   ├── pptx_extractor.py             # PPTX 母版底图、配色与 Logo 纯标准库提取器
 │   └── export_pdf.py                 # 无头 Chrome 矢量 PDF 导出脚本
 ├── templates/
-│   ├── weekly_report_template.html   # 高保真 PPT 响应式 HTML 模板（含动效与演示系统）
+│   ├── weekly_report_template.html   # 高保真 PPT 响应式 HTML 模板（含动效、演示系统与 PPTX 导入）
 │   └── theme-presets.json            # 7 套企业主题调色板配置
 ├── examples/
 │   ├── sample_data.json              # 基础范例数据（包含多工作流、甘特条、节假日与研讨页）

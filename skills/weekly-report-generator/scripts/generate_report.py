@@ -13,6 +13,11 @@ import datetime
 import argparse
 from pathlib import Path
 
+try:
+    from pptx_extractor import extract_pptx_template, build_pptx_css_override
+except ImportError:
+    from .pptx_extractor import extract_pptx_template, build_pptx_css_override
+
 def load_json(path):
     with open(path, 'r', encoding='utf-8') as f:
         return json.load(f)
@@ -560,7 +565,7 @@ def build_discussion_slides_html(discussion_slides, start_page_num=5):
 
     return "\n".join(slides_html)
 
-def generate_report(data_path, output_path, theme="classic-navy", auto_fix_dates=False, strict_dates=False):
+def generate_report(data_path, output_path, theme="classic-navy", pptx_path=None, auto_fix_dates=False, strict_dates=False):
     base_dir = Path(__file__).resolve().parent.parent
     template_path = base_dir / "templates" / "weekly_report_template.html"
     
@@ -581,6 +586,35 @@ def generate_report(data_path, output_path, theme="classic-navy", auto_fix_dates
 
     with open(template_path, "r", encoding="utf-8") as f:
         html = f.read()
+
+    # Apply PPTX custom template override if provided
+    pptx_data = None
+    if pptx_path and os.path.exists(pptx_path):
+        print(f"📦 Extracting corporate template assets from PPTX: {pptx_path}...")
+        pptx_data = extract_pptx_template(pptx_path)
+        pptx_css = build_pptx_css_override(pptx_data)
+        html = html.replace("</head>", f"{pptx_css}\n</head>")
+
+        # If logo was found, embed into company data
+        if pptx_data.get("logo_data_url"):
+            company["logoDataUrl"] = pptx_data["logo_data_url"]
+
+        # If company name / slogan was detected and not customized in JSON
+        if pptx_data.get("company_name") and ("company" not in data or not data["company"].get("name")):
+            company["name"] = pptx_data["company_name"]
+        if pptx_data.get("slogan") and ("company" not in data or not data["company"].get("department")):
+            company["department"] = pptx_data["slogan"]
+
+        # Store in data so client-side re-rendering retains customPptx info
+        data["company"] = company
+        data["customPptx"] = {
+            "colors": pptx_data.get("colors", {}),
+            "coverBgDataUrl": pptx_data.get("cover_bg_data_url"),
+            "contentBgDataUrl": pptx_data.get("content_bg_data_url"),
+            "logoDataUrl": pptx_data.get("logo_data_url"),
+            "companyName": pptx_data.get("company_name", ""),
+            "slogan": pptx_data.get("slogan", "")
+        }
 
     # Apply theme to body and select
     html = html.replace('body data-theme="classic-navy"', f'body data-theme="{theme}"')
@@ -611,7 +645,11 @@ def generate_report(data_path, output_path, theme="classic-navy", auto_fix_dates
     # 1. Slide 1 (Cover) replacements
     html = html.replace("AstraZeneca / 数字化交付中心", company.get("name", "企业数字化创新交付中心"))
     html = html.replace("商业技术交付团队", company.get("department", "技术交付团队"))
-    html = html.replace(">AZ<", f">{company.get('logoText', 'TECH')}<")
+    if company.get("logoDataUrl"):
+        logo_html = f'<div class="company-logo-icon" id="logoIconBadge" style="background:transparent;border:none;box-shadow:none;padding:0;"><img src="{company["logoDataUrl"]}" style="max-height:38px;max-width:54px;object-fit:contain;" alt="Logo" /></div>'
+        html = re.sub(r'<div class="company-logo-icon" id="logoIconBadge">.*?</div>', logo_html, html)
+    else:
+        html = html.replace(">AZ<", f">{company.get('logoText', 'TECH')}<")
     html = html.replace("手机端搭建与 Web 端优化项目", project.get("title", "核心系统升级与交付项目"))
     html = html.replace("Weekly Report", project.get("reportTitle", "Weekly Report"))
     html = html.replace("PRJ-2024-AZ-Q1", project.get("projectCode", "PRJ-2024-001"))
@@ -786,6 +824,7 @@ if __name__ == "__main__":
     parser.add_argument("--data", default=None, help="Path to JSON data file")
     parser.add_argument("--output", default="weekly-report.html", help="Path to output HTML file")
     parser.add_argument("--theme", default=None, help="Theme ID (astrazeneca, novartis, bayer, jnj, novo-nordisk, vercel-minimal)")
+    parser.add_argument("--pptx", "--pptx-template", dest="pptx", default=None, help="Path to PowerPoint (.pptx) template file to extract backgrounds, theme colors, and logo from")
     parser.add_argument("--check-dates", action="store_true", help="Only validate timeline dates and report issues without generating HTML")
     parser.add_argument("--fix-dates", action="store_true", help="Auto-adjust non-holiday timeline dates to exact Monday-to-Friday")
     parser.add_argument("--strict-dates", action="store_true", help="Fail with non-zero exit code if timeline date validation finds any issue")
@@ -803,4 +842,4 @@ if __name__ == "__main__":
             print("✅ All Work Plan timeline dates strictly conform to Monday-to-Friday and statutory holiday rules.")
         sys.exit(1 if issues and not args.fix_dates else 0)
 
-    generate_report(data_file, args.output, args.theme, auto_fix_dates=args.fix_dates, strict_dates=args.strict_dates)
+    generate_report(data_file, args.output, args.theme, pptx_path=args.pptx, auto_fix_dates=args.fix_dates, strict_dates=args.strict_dates)

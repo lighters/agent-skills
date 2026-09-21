@@ -2212,6 +2212,15 @@
         </svg>
         主题调色
       </button>
+      <button class="btn btn-secondary" onclick="triggerPptxUpload()" title="导入客户 PPT 模板 (.pptx)，自动识别提取封面与内容页背景、配色与 Logo">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <circle cx="8.5" cy="8.5" r="1.5"></circle>
+          <polyline points="21 15 16 10 5 21"></polyline>
+        </svg>
+        <span>🎨 导入 PPT 模板</span>
+      </button>
+      <input type="file" id="pptxFileInput" accept=".pptx" style="display:none" onchange="handlePptxUpload(event)">
       <button class="btn btn-secondary" id="btnPresentation" onclick="togglePresentationMode()" title="演示模式 (P)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="2" y="3" width="20" height="14" rx="2"></rect>
@@ -2338,7 +2347,17 @@
         <span id="labelAccent" style="font-size: 11px; font-family: monospace;">#0070C0</span>
       </div>
     </div>
-    <button class="btn btn-primary" style="width: 100%; margin-top: 8px; justify-content: center;" onclick="toggleCustomDrawer()">
+    <div class="drawer-field" style="margin-top: 10px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.12);">
+      <label>客户 PPT 模板背景 (.pptx)</label>
+      <button class="btn btn-secondary" style="width:100%; justify-content:center; margin-top:4px;" onclick="triggerPptxUpload()">
+        📁 选择 / 替换 PPT 模板
+      </button>
+      <div id="pptxStatusIndicator" style="font-size:11px; color:#94a3b8; margin-top:5px; line-height:1.4;">未加载自定义 PPT 模板</div>
+      <button id="btnRemovePptx" class="btn btn-secondary" style="width:100%; justify-content:center; margin-top:6px; display:none; color:#f87171; border-color: rgba(239, 68, 68, 0.4);" onclick="removePptxTemplate()">
+        ✕ 恢复系统默认背景
+      </button>
+    </div>
+    <button class="btn btn-primary" style="width: 100%; margin-top: 12px; justify-content: center;" onclick="toggleCustomDrawer()">
       完成配置
     </button>
   </div>
@@ -3373,6 +3392,443 @@
     }
 
     // =========================================================================
+    // Client-side Custom PPTX Template Extractor & Applicator
+    // =========================================================================
+    function triggerPptxUpload() {
+      const input = document.getElementById('pptxFileInput');
+      if (input) {
+        input.value = '';
+        input.click();
+      }
+    }
+
+    async function handlePptxUpload(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      if (!file.name.toLowerCase().endsWith('.pptx')) {
+        if (typeof showToast === 'function') showToast('⚠️ 请上传 Microsoft PowerPoint (.pptx) 格式模板');
+        return;
+      }
+
+      if (typeof showToast === 'function') showToast('⏳ 正在解析 PPT 模板背景、色彩与 Logo 资产...');
+
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const pptxData = await extractPptxFromBuffer(arrayBuffer);
+        pptxData.fileName = file.name;
+
+        applyPptxTemplateStyles(pptxData);
+
+        // Update company info in report data
+        if (!currentReportData) currentReportData = {};
+        if (!currentReportData.company) currentReportData.company = {};
+        if (pptxData.logoDataUrl) {
+          currentReportData.company.logoDataUrl = pptxData.logoDataUrl;
+        }
+        if (pptxData.companyName && (!currentReportData.company.name || currentReportData.company.name.includes('AstraZeneca'))) {
+          currentReportData.company.name = pptxData.companyName;
+          const compEl = document.getElementById('displayCompanyName');
+          if (compEl) compEl.textContent = pptxData.companyName;
+          const compInp = document.getElementById('inputCompanyName');
+          if (compInp) compInp.value = pptxData.companyName;
+        }
+        if (pptxData.slogan && (!currentReportData.company.department || currentReportData.company.department.includes('商业技术交付团队'))) {
+          currentReportData.company.department = pptxData.slogan;
+          const deptEl = document.getElementById('displayDeptName');
+          if (deptEl) deptEl.textContent = pptxData.slogan;
+          const deptInp = document.getElementById('inputDeptName');
+          if (deptInp) deptInp.value = pptxData.slogan;
+        }
+
+        currentReportData.customPptx = pptxData;
+
+        // Update drawer status indicator
+        const ind = document.getElementById('pptxStatusIndicator');
+        if (ind) {
+          ind.innerHTML = `<span style="color:#10b981;font-weight:600;">✅ 已应用模板:</span> ${file.name}`;
+        }
+        const btnRemove = document.getElementById('btnRemovePptx');
+        if (btnRemove) btnRemove.style.display = 'inline-flex';
+
+        if (typeof showToast === 'function') showToast(`🎉 成功导入模板「${file.name}」！已自动适配封面与内容页背景`);
+      } catch (err) {
+        console.error('Failed to parse PPTX template:', err);
+        if (typeof showToast === 'function') showToast('❌ PPT 模板解析失败: ' + (err.message || '未知错误'));
+      }
+    }
+
+    async function extractPptxFromBuffer(arrayBuffer) {
+      const view = new DataView(arrayBuffer);
+      const len = arrayBuffer.byteLength;
+
+      // Locate End of Central Directory (EOCD)
+      let eocdOffset = -1;
+      for (let i = len - 22; i >= Math.max(0, len - 65557); i--) {
+        if (view.getUint32(i, true) === 0x06054b50) {
+          eocdOffset = i;
+          break;
+        }
+      }
+      if (eocdOffset === -1) {
+        throw new Error('无效的 PPTX 文件 (未找到 Zip EOCD 记录)');
+      }
+
+      const cdOffset = view.getUint32(eocdOffset + 16, true);
+      const totalEntries = view.getUint16(eocdOffset + 10, true);
+
+      let p = cdOffset;
+      const files = {};
+      for (let i = 0; i < totalEntries; i++) {
+        if (view.getUint32(p, true) !== 0x02014b50) break;
+        const method = view.getUint16(p + 10, true);
+        const compSize = view.getUint32(p + 20, true);
+        const uncompSize = view.getUint32(p + 24, true);
+        const nameLen = view.getUint16(p + 28, true);
+        const extraLen = view.getUint16(p + 30, true);
+        const commentLen = view.getUint16(p + 32, true);
+        const localHeaderOffset = view.getUint32(p + 42, true);
+
+        const nameBytes = new Uint8Array(arrayBuffer, p + 46, nameLen);
+        const name = new TextDecoder().decode(nameBytes);
+        files[name] = { name, method, compSize, uncompSize, localHeaderOffset };
+        p += 46 + nameLen + extraLen + commentLen;
+      }
+
+      async function getBytes(entry) {
+        if (!entry) return null;
+        const lh = entry.localHeaderOffset;
+        const lNameLen = view.getUint16(lh + 26, true);
+        const lExtraLen = view.getUint16(lh + 28, true);
+        const dataStart = lh + 30 + lNameLen + lExtraLen;
+        const compData = new Uint8Array(arrayBuffer, dataStart, entry.compSize);
+
+        if (entry.method === 0) {
+          return compData;
+        }
+        if (entry.method === 8) {
+          if (typeof DecompressionStream === 'undefined') {
+            throw new Error('当前浏览器不支持 native DecompressionStream，请使用现代 Chrome、Safari 16.4+ 或 Edge');
+          }
+          const ds = new DecompressionStream('deflate-raw');
+          const writer = ds.writable.getWriter();
+          writer.write(compData);
+          writer.close();
+          const ab = await new Response(ds.readable).arrayBuffer();
+          return new Uint8Array(ab);
+        }
+        throw new Error(`不支持的压缩算法: ${entry.method}`);
+      }
+
+      async function getText(entry) {
+        const b = await getBytes(entry);
+        return b ? new TextDecoder().decode(b) : '';
+      }
+
+      function uint8ToBase64(bytes) {
+        let binary = '';
+        const chunkSize = 8192;
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+          const chunk = bytes.subarray(i, i + chunkSize);
+          binary += String.fromCharCode.apply(null, chunk);
+        }
+        return btoa(binary);
+      }
+
+      const result = {
+        colors: {
+          primary: '#0E7CEA',
+          primaryDark: '#0B1411',
+          accent: '#0099FF',
+          accentWarm: '#ED7D31'
+        },
+        coverBgDataUrl: null,
+        contentBgDataUrl: null,
+        logoDataUrl: null,
+        companyName: '',
+        slogan: ''
+      };
+
+      // Theme Colors
+      const themeFile = Object.keys(files).find(k => k.startsWith('ppt/theme/theme') && k.endsWith('.xml'));
+      if (themeFile) {
+        const xml = await getText(files[themeFile]);
+        const mAccent1 = xml.match(/<a:accent1>\s*<a:srgbClr val="([0-9A-Fa-f]{6})"/);
+        if (mAccent1) result.colors.primary = '#' + mAccent1[1];
+        const mAccent2 = xml.match(/<a:accent2>\s*<a:srgbClr val="([0-9A-Fa-f]{6})"/);
+        if (mAccent2) result.colors.accentWarm = '#' + mAccent2[1];
+        const mAccent5 = xml.match(/<a:accent5>\s*<a:srgbClr val="([0-9A-Fa-f]{6})"/);
+        if (mAccent5) result.colors.accent = '#' + mAccent5[1];
+        const mDk2 = xml.match(/<a:dk2>\s*<a:srgbClr val="([0-9A-Fa-f]{6})"/);
+        if (mDk2) result.colors.primaryDark = '#' + mDk2[1];
+      }
+
+      // Media Files
+      const mediaNames = Object.keys(files).filter(k => k.startsWith('ppt/media/'));
+      const mediaMap = {};
+      for (const mn of mediaNames) {
+        const base = mn.replace(/^.*[\\\/]/, '');
+        mediaMap[base] = files[mn];
+      }
+
+      // Layouts
+      const layoutPics = [];
+      const layoutFiles = Object.keys(files).filter(k => k.startsWith('ppt/slideLayouts/slideLayout') && k.endsWith('.xml'));
+
+      for (const lf of layoutFiles) {
+        const relsName = lf.replace('ppt/slideLayouts/', 'ppt/slideLayouts/_rels/') + '.rels';
+        const rels = {};
+        if (files[relsName]) {
+          const relXml = await getText(files[relsName]);
+          const matches = relXml.matchAll(/Id="([^"]+)"[^>]*Target="([^"]+)"/g);
+          for (const m of matches) {
+            rels[m[1]] = m[2].replace(/^.*[\\\/]/, '');
+          }
+        }
+
+        const lXml = await getText(files[lf]);
+        const mNum = lf.match(/slideLayout(\d+)\.xml/);
+        const lNum = mNum ? parseInt(mNum[1], 10) : 0;
+
+        const picMatches = lXml.matchAll(/<p:pic>(.*?)<\/p:pic>/gs);
+        for (const pic of picMatches) {
+          const pTxt = pic[1];
+          const rEmbed = pTxt.match(/r:embed="([^"]+)"/);
+          const mOff = pTxt.match(/<a:off x="(\d+)" y="(\d+)"/);
+          const mExt = pTxt.match(/<a:ext cx="(\d+)" cy="(\d+)"/);
+          const off = mOff ? [parseInt(mOff[1], 10), parseInt(mOff[2], 10)] : [0, 0];
+          const ext = mExt ? [parseInt(mExt[1], 10), parseInt(mExt[2], 10)] : [0, 0];
+
+          if (rEmbed && rels[rEmbed[1]]) {
+            const target = rels[rEmbed[1]];
+            if (mediaMap[target]) {
+              layoutPics.push({
+                layout: lNum,
+                file: target,
+                entry: mediaMap[target],
+                size: mediaMap[target].uncompSize || mediaMap[target].compSize,
+                off,
+                ext
+              });
+            }
+          }
+        }
+      }
+
+      // Corporate Logo
+      const logoCand = layoutPics.filter(p => (p.ext[0] > 0 && p.ext[0] < 2500000 && p.ext[1] > 0 && p.ext[1] < 2500000) || p.size < 70000);
+      let logoFile = null;
+      if (logoCand.length > 0) {
+        logoCand.sort((a, b) => a.size - b.size);
+        logoFile = logoCand[0].file;
+      } else {
+        const pngs = Object.keys(mediaMap).filter(k => k.toLowerCase().endsWith('.png') && (mediaMap[k].uncompSize < 80000 || mediaMap[k].compSize < 80000));
+        if (pngs.length > 0) logoFile = pngs[0];
+      }
+
+      if (logoFile && mediaMap[logoFile]) {
+        const b = await getBytes(mediaMap[logoFile]);
+        const mime = logoFile.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg';
+        result.logoDataUrl = `data:${mime};base64,${uint8ToBase64(b)}`;
+      }
+
+      // Cover Background
+      let coverCand = layoutPics.filter(p => p.layout === 1 && (p.ext[0] > 4000000 || p.size > 100000));
+      let coverFile = null;
+      if (coverCand.length > 0) {
+        coverCand.sort((a, b) => b.size - a.size);
+        coverFile = coverCand[0].file;
+      } else {
+        const sortedMedia = Object.keys(mediaMap).sort((a, b) => mediaMap[b].compSize - mediaMap[a].compSize);
+        coverFile = sortedMedia[0] || null;
+      }
+
+      if (coverFile && mediaMap[coverFile]) {
+        const b = await getBytes(mediaMap[coverFile]);
+        const mime = coverFile.toLowerCase().match(/\.(jpe?g)$/) ? 'image/jpeg' : 'image/png';
+        result.coverBgDataUrl = `data:${mime};base64,${uint8ToBase64(b)}`;
+      }
+
+      // Content Background
+      let contentCand = layoutPics.filter(p => p.layout > 1 && p.ext[0] > 8000000 && p.file !== coverFile);
+      let contentFile = null;
+      if (contentCand.length > 0) {
+        contentCand.sort((a, b) => b.size - a.size);
+        contentFile = contentCand[0].file;
+      } else {
+        const candidates = Object.keys(mediaMap).filter(k => k !== coverFile && k !== logoFile && (mediaMap[k].compSize > 30000 && mediaMap[k].compSize < 2000000));
+        contentFile = candidates[0] || null;
+      }
+
+      if (contentFile && mediaMap[contentFile]) {
+        const b = await getBytes(mediaMap[contentFile]);
+        const mime = contentFile.toLowerCase().match(/\.(jpe?g)$/) ? 'image/jpeg' : 'image/png';
+        result.contentBgDataUrl = `data:${mime};base64,${uint8ToBase64(b)}`;
+      }
+
+      // Texts
+      for (const s of ['ppt/slides/slide1.xml', 'ppt/slideLayouts/slideLayout1.xml']) {
+        if (files[s]) {
+          const txt = await getText(files[s]);
+          const texts = Array.from(txt.matchAll(/<a:t>([^<]+)<\/a:t>/g)).map(m => m[1]);
+          const fullStr = texts.join(' ');
+          if (fullStr.includes('SINOPHARM')) result.companyName = '国药集团 / SINOPHARM';
+          else if (fullStr.includes('国控') || fullStr.includes('国药')) result.companyName = '国药控股';
+          for (const t of texts) {
+            if (['关爱生命', '呵护健康', '科技引领', '持续创新', '客户至上'].some(w => t.includes(w))) {
+              result.slogan = t.trim();
+            }
+          }
+        }
+      }
+
+      return result;
+    }
+
+    function applyPptxTemplateStyles(pptxData) {
+      if (!pptxData) return;
+
+      let styleEl = document.getElementById('pptx-template-override');
+      if (!styleEl) {
+        styleEl = document.createElement('style');
+        styleEl.id = 'pptx-template-override';
+        document.head.appendChild(styleEl);
+      }
+
+      const colors = pptxData.colors || {};
+      const cssRules = [];
+      if (colors.primary) {
+        cssRules.push(`--brand-primary: ${colors.primary} !important;`);
+        cssRules.push(`--brand-border: ${colors.primary} !important;`);
+        cssRules.push(`--brand-table-header: ${colors.primary} !important;`);
+        cssRules.push(`--brand-gantt-header: ${colors.primary} !important;`);
+        cssRules.push(`--brand-status-header: ${colors.primary} !important;`);
+        applyCustomColor('--brand-primary', colors.primary);
+      }
+      if (colors.primaryDark) {
+        cssRules.push(`--brand-primary-dark: ${colors.primaryDark} !important;`);
+        cssRules.push(`--brand-text-main: ${colors.primaryDark} !important;`);
+        applyCustomColor('--brand-primary-dark', colors.primaryDark);
+      }
+      if (colors.accent) {
+        cssRules.push(`--brand-accent: ${colors.accent} !important;`);
+        cssRules.push(`--brand-accent-sec: ${colors.accent} !important;`);
+        applyCustomColor('--brand-accent-sec', colors.accent);
+      }
+      if (colors.accentWarm) {
+        cssRules.push(`--brand-holiday: ${colors.accentWarm} !important;`);
+      }
+
+      let coverCss = '';
+      if (pptxData.coverBgDataUrl) {
+        coverCss = `
+          body .slide-cover {
+            background-image: linear-gradient(135deg, rgba(8, 20, 36, 0.78) 0%, rgba(14, 40, 70, 0.68) 100%), url('${pptxData.coverBgDataUrl}') !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+          }
+          body .slide-cover::before, body .slide-cover::after {
+            display: none !important;
+          }
+        `;
+      }
+
+      let contentCss = '';
+      if (pptxData.contentBgDataUrl) {
+        contentCss = `
+          body .slide:not(.slide-cover) {
+            background-image: url('${pptxData.contentBgDataUrl}') !important;
+            background-size: 100% 100% !important;
+            background-position: center bottom !important;
+            background-repeat: no-repeat !important;
+            background-color: #ffffff !important;
+          }
+          body .slide:not(.slide-cover)::before {
+            display: none !important;
+          }
+          body .gantt-container,
+          body .deliverables-table-wrapper,
+          body .ppt-card,
+          body .discussion-card {
+            background: rgba(255, 255, 255, 0.94) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05) !important;
+          }
+        `;
+      }
+
+      let logoCss = '';
+      if (pptxData.logoDataUrl) {
+        logoCss = `
+          .company-logo-icon, .cover-logo-badge {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            color: transparent !important;
+            font-size: 0 !important;
+            line-height: 0 !important;
+          }
+          .company-logo-icon::before, .cover-logo-badge::before {
+            content: '' !important;
+            display: inline-block !important;
+            width: 44px !important;
+            height: 44px !important;
+            background-image: url('${pptxData.logoDataUrl}') !important;
+            background-size: contain !important;
+            background-repeat: no-repeat !important;
+            background-position: center !important;
+          }
+          .company-logo-icon span, .cover-logo-text {
+            display: none !important;
+          }
+        `;
+        const logoBadge = document.getElementById('logoIconBadge');
+        if (logoBadge) {
+          logoBadge.innerHTML = `<img src="${pptxData.logoDataUrl}" style="max-height:38px;max-width:54px;object-fit:contain;" alt="Logo" />`;
+          logoBadge.style.background = 'transparent';
+          logoBadge.style.border = 'none';
+          logoBadge.style.boxShadow = 'none';
+        }
+      }
+
+      styleEl.textContent = `
+        :root, body {
+          ${cssRules.join('\n          ')}
+        }
+        ${coverCss}
+        ${contentCss}
+        ${logoCss}
+      `;
+    }
+
+    function removePptxTemplate() {
+      const existing = document.getElementById('pptx-template-override');
+      if (existing) existing.remove();
+
+      const ind = document.getElementById('pptxStatusIndicator');
+      if (ind) ind.textContent = '未加载自定义 PPT 模板';
+      const btn = document.getElementById('btnRemovePptx');
+      if (btn) btn.style.display = 'none';
+
+      const logoBadge = document.getElementById('logoIconBadge');
+      if (logoBadge) {
+        logoBadge.removeAttribute('style');
+        logoBadge.textContent = currentReportData?.company?.logoText || 'AZ';
+      }
+
+      if (currentReportData) {
+        delete currentReportData.customPptx;
+        if (currentReportData.company) {
+          delete currentReportData.company.logoDataUrl;
+        }
+      }
+
+      if (typeof showToast === 'function') showToast('已恢复系统预设背景');
+    }
+
+    // =========================================================================
     // Core Dynamic Generation Engine (动态生成全套页面与 Timeline)
     // =========================================================================
     function renderAll(data) {
@@ -3384,6 +3840,10 @@
         changeTheme(data.theme);
         const sel = document.getElementById('themeSelect');
         if (sel) sel.value = data.theme;
+      }
+
+      if (data.customPptx) {
+        applyPptxTemplateStyles(data.customPptx);
       }
 
       if (data.customTheme) {
@@ -3430,7 +3890,21 @@
       const proj = data.project || {};
       
       if (comp.name) document.getElementById('displayCompanyName').textContent = comp.name;
-      if (comp.logoText) document.getElementById('logoIconBadge').textContent = comp.logoText;
+      if (comp.logoDataUrl) {
+        const logoBadge = document.getElementById('logoIconBadge');
+        if (logoBadge) {
+          logoBadge.innerHTML = `<img src="${comp.logoDataUrl}" style="max-height:36px;max-width:48px;object-fit:contain;" alt="Logo" />`;
+          logoBadge.style.background = 'transparent';
+          logoBadge.style.border = 'none';
+          logoBadge.style.boxShadow = 'none';
+        }
+      } else if (comp.logoText) {
+        const logoBadge = document.getElementById('logoIconBadge');
+        if (logoBadge) {
+          logoBadge.removeAttribute('style');
+          logoBadge.textContent = comp.logoText;
+        }
+      }
       if (comp.department) document.getElementById('displayDeptName').textContent = comp.department;
       
       if (proj.title) document.getElementById('displayProjectTitle').textContent = proj.title;

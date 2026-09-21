@@ -129,13 +129,39 @@ Users can modify small phrasing or fix typos directly in the browser without ask
   - Click **「导出 PDF / 打印」** to print the modified DOM to vector PDF immediately.
   - Press `Esc` or click **「完成编辑」** to exit edit mode.
 
+## Custom PPTX Template Support (客户定制 PPT 模板背景与资产自适应)
+
+In enterprise customer delivery, clients frequently require weekly reports to strictly follow their own corporate PowerPoint background graphics, master layouts, logos, and color palettes. The generator supports automatic extraction and zero-dependency style binding:
+
+1. **CLI / Script Generation via `--pptx`**:
+   ```bash
+   python3 scripts/generate_report.py \
+     --data examples/sample_data.json \
+     --pptx "/path/to/customer_template.pptx" \
+     --output weekly-report.html
+   ```
+   - **Zero pip dependencies**: Parses OpenXML/PKZIP directly using Python built-in standard library (`zipfile`, `re`, `xml`).
+   - **Automatic asset recognition**:
+     - Cover slide background image (with high-contrast dark overlay gradient).
+     - Content slide background graphics (corporate waves, headers, footers).
+     - Corporate logo image (embedded as vector/data URL).
+     - Corporate theme palette (`accent1`, `accent2`, `accent5`, `dk2`).
+     - Corporate slogan & name.
+   - Content cards and tables automatically apply glassmorphic backdrop blur (`rgba(255,255,255,0.94); backdrop-filter: blur(10px)`) to guarantee 100% typography legibility over customer background graphics.
+
+2. **Interactive In-Browser PPTX Upload**:
+   - In any generated HTML or standalone report, users can click **「🎨 导入 PPT 模板」** in the top toolbar or open **「主题调色」** drawer and click **「📁 选择 / 替换 PPT 模板」**.
+   - Select local `.pptx` file: runs in-browser client-side extraction via native browser `DecompressionStream` (zero external dependencies, 100% local, offline-capable and private).
+   - Instantly applies customer cover, content slide backgrounds, and brand colors to the live page.
+   - Click **「另存 HTML」** to save the configured file with the custom PPTX assets embedded permanently as Base64 data URLs.
+
 ## Delivery
 
 Attach HTML and/or PDF for the user. Prefer PDF when they need an email-ready attachment.
 
 ## Files
 
-- `scripts/generate_report.py`, `scripts/export_pdf.py`
+- `scripts/generate_report.py`, `scripts/export_pdf.py`, `scripts/pptx_extractor.py`
 - `templates/weekly_report_template.html`, `templates/theme-presets.json`
 - `references/input_format_guide.md`, `references/data_schema.md`
 - `examples/sample_data.json`

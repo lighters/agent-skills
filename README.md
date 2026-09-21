@@ -31,7 +31,7 @@
 
 | 技能名称 (Skill) | 目录路径 | 描述说明 | 依赖环境 |
 | :--- | :--- | :--- | :--- |
-| **`weekly-report-generator`** | [`skills/weekly-report-generator`](./skills/weekly-report-generator) | **企业高保真周报与演示文稿生成器**：1:1 复刻麦肯锡、埃森哲等顶级咨询与 500 强高管汇报级排版。支持 4 页标准结构 + 自由扩展 Slide 5+ 方案研讨与议题决议页、端到端 Timeline 甘特图自动排版、交付物健康度跟踪、所见即所得直接编辑、影院级全屏演示动效、7 大企业主题及 16:9 矢量 PDF 导出。 | Python 3.8+ (纯标准库) / Google Chrome (可选导出 PDF) |
+| **`weekly-report-generator`** | [`skills/weekly-report-generator`](./skills/weekly-report-generator) | **企业高保真周报与演示文稿生成器**：1:1 复刻麦肯锡、埃森哲等顶级咨询与 500 强高管汇报级排版。支持 4 页标准结构 + 自由扩展 Slide 5+ 方案研讨与议题决议页、**客户现有 PPT 模板背景/Logo 自动解构提取与自适应**、端到端 Timeline 甘特图自动排版、交付物健康度跟踪、所见即所得直接编辑、影院级全屏演示动效、7 大企业主题及 16:9 矢量 PDF 导出。 | Python 3.8+ (纯标准库) / Google Chrome (可选导出 PDF) |
 
 ---
 
