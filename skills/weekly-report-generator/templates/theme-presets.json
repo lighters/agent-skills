@@ -101,6 +101,23 @@
     "textBody": "#3f3f46",
     "bgGradient": "linear-gradient(135deg, #000000 0%, #27272a 100%)"
   },
+  "wukong-green": {
+    "id": "wukong-green",
+    "name": "极客翠绿 (Wukong Tech - 翠绿生机与赛博青)",
+    "primary": "#157A4A",
+    "primaryDark": "#073621",
+    "primaryLight": "#EAF7EF",
+    "accent": "#21E0FF",
+    "accentSecondary": "#2BB673",
+    "statusHeaderBg": "#1F9C5F",
+    "cardBorder": "#2BB673",
+    "tableHeaderBg": "#0E5C38",
+    "ganttHeaderBg": "#157A4A",
+    "holidayBg": "#F0A040",
+    "textMain": "#0B1411",
+    "textBody": "#2A3A33",
+    "bgGradient": "linear-gradient(150deg, #157A4A 0%, #0E5C38 52%, #073621 100%)"
+  },
   "classic-navy": {
     "id": "classic-navy",
     "name": "经典企业蓝 (Astra Blue - 别名)",

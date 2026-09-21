@@ -4,12 +4,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>项目周报 | Weekly Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
     /* ==========================================================================
        Enterprise Theme CSS Custom Properties (风格定义设计系统)
        ========================================================================== */
     :root {
-      /* Default: Classic Navy (Astra Blue - 对应原PPT商务蓝风格) */
+      /* Typography Engine (标杆排版字体系统) */
+      --font-display: "Sora", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --font-sans: "Plus Jakarta Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+
+      /* Ink 层次灰度系统 (100-900) */
+      --ink-900: #0B1726;
+      --ink-800: #132438;
+      --ink-700: #1E344F;
+      --ink-600: #334E6F;
+      --ink-500: #547194;
+      --ink-400: #829CB8;
+      --ink-300: #BDCCE0;
+      --ink-200: #DFE8F2;
+      --ink-100: #EEF4F9;
+      --surface-0: #FFFFFF;
+      --mist-top: #E6EFF6;
+      --mist-bottom: #F8FAFC;
+
+      /* 柔和阴影与多阶圆角 */
+      --shadow-sm: 0 2px 8px -2px rgba(15, 40, 80, .06);
+      --shadow-md: 0 4px 16px -4px rgba(15, 40, 80, .10), 0 2px 6px -2px rgba(15, 40, 80, .05);
+      --shadow-lg: 0 18px 44px -14px rgba(15, 40, 80, .14), 0 4px 12px -4px rgba(15, 40, 80, .06);
+      --shadow-stage: 0 40px 120px -30px rgba(0, 0, 0, .68);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-pill: 999px;
+
+      /* Default: Classic Navy (Astra Blue) */
       --brand-primary: #005587;
       --brand-primary-dark: #001847;
       --brand-primary-light: #e8f2f8;
@@ -22,9 +54,17 @@
       --brand-holiday: #FFC000;
       --brand-text-main: #001847;
       --brand-text-body: #1e293b;
-      --brand-bg: #f8fafc;
+      --brand-bg: #f5f8fb;
       --slide-bg: #ffffff;
       
+      /* Dynamic Gradients & Deck Ambient */
+      --grad-primary: linear-gradient(135deg, #005587 0%, #0070C0 60%, #003865 100%);
+      --grad-cover: linear-gradient(150deg, #001847 0%, #002e6c 52%, #001138 100%);
+      --grad-page: linear-gradient(180deg, #E6EFF6 0%, #F5F9FC 58%, #FFFFFF 100%);
+      --glow-color: rgba(72, 116, 203, 0.22);
+      --bg-ambient-top: #102436;
+      --bg-ambient-bot: #071019;
+
       /* Status indicator colors */
       --status-good: #00B050;
       --status-caution: #FFC000;
@@ -36,7 +76,7 @@
       --slide-ratio: 16 / 9;
     }
 
-    /* Enterprise Themes Presets (5大医药巨头 + Vercel 极简风) */
+    /* Enterprise Themes Presets (5大医药巨头 + Vercel 极简风 + 极客翠绿) */
     [data-theme="astrazeneca"],
     [data-theme="classic-navy"] {
       --brand-primary: #003865;
@@ -51,7 +91,13 @@
       --brand-holiday: #F0AB00;
       --brand-text-main: #001847;
       --brand-text-body: #1e293b;
-      --brand-bg: #f8fafc;
+      --brand-bg: #f4f7fb;
+      --grad-primary: linear-gradient(135deg, #005587 0%, #003865 100%);
+      --grad-cover: linear-gradient(150deg, #001847 0%, #002b5c 52%, #001035 100%);
+      --grad-page: linear-gradient(180deg, #E8EFF5 0%, #F6F9FC 58%, #FFFFFF 100%);
+      --glow-color: rgba(208, 0, 111, 0.22);
+      --bg-ambient-top: #0d1e2e;
+      --bg-ambient-bot: #060e17;
     }
 
     [data-theme="novartis"] {
@@ -68,6 +114,12 @@
       --brand-text-main: #002B49;
       --brand-text-body: #1e293b;
       --brand-bg: #faf7f4;
+      --grad-primary: linear-gradient(135deg, #0460A9 0%, #034880 100%);
+      --grad-cover: linear-gradient(150deg, #002B49 0%, #044270 52%, #001a2e 100%);
+      --grad-page: linear-gradient(180deg, #E8F2FA 0%, #F7FAFD 58%, #FFFFFF 100%);
+      --glow-color: rgba(231, 74, 33, 0.25);
+      --bg-ambient-top: #0e2334;
+      --bg-ambient-bot: #07121c;
     }
 
     [data-theme="bayer"] {
@@ -83,7 +135,13 @@
       --brand-holiday: #F59E0B;
       --brand-text-main: #10384F;
       --brand-text-body: #1e293b;
-      --brand-bg: #f5f9fc;
+      --brand-bg: #f4f9fc;
+      --grad-primary: linear-gradient(135deg, #00617F 0%, #0088b3 60%, #10384F 100%);
+      --grad-cover: linear-gradient(150deg, #10384F 0%, #004d66 52%, #08212e 100%);
+      --grad-page: linear-gradient(180deg, #E5F3F7 0%, #F4FAFC 58%, #FFFFFF 100%);
+      --glow-color: rgba(137, 211, 41, 0.25);
+      --bg-ambient-top: #0a2029;
+      --bg-ambient-bot: #051014;
     }
 
     [data-theme="jnj"] {
@@ -99,7 +157,13 @@
       --brand-holiday: #F59E0B;
       --brand-text-main: #450A0A;
       --brand-text-body: #292524;
-      --brand-bg: #fafafa;
+      --brand-bg: #fcf8f8;
+      --grad-primary: linear-gradient(135deg, #D71600 0%, #b81400 60%, #8A0000 100%);
+      --grad-cover: linear-gradient(150deg, #5A0000 0%, #3a0000 52%, #1a0000 100%);
+      --grad-page: linear-gradient(180deg, #FDECEC 0%, #FCF6F6 58%, #FFFFFF 100%);
+      --glow-color: rgba(215, 22, 0, 0.25);
+      --bg-ambient-top: #240a0a;
+      --bg-ambient-bot: #120404;
     }
 
     [data-theme="novo-nordisk"] {
@@ -115,7 +179,44 @@
       --brand-holiday: #D4AF37;
       --brand-text-main: #001140;
       --brand-text-body: #1e293b;
-      --brand-bg: #f8fafc;
+      --brand-bg: #f5f8fd;
+      --grad-primary: linear-gradient(135deg, #005AD2 0%, #001965 100%);
+      --grad-cover: linear-gradient(150deg, #001140 0%, #001a5e 52%, #000924 100%);
+      --grad-page: linear-gradient(180deg, #E6EDFB 0%, #F5F8FD 58%, #FFFFFF 100%);
+      --glow-color: rgba(0, 90, 210, 0.25);
+      --bg-ambient-top: #0a1329;
+      --bg-ambient-bot: #050a14;
+    }
+
+    [data-theme="wukong-green"] {
+      --brand-primary: #157A4A;
+      --brand-primary-dark: #073621;
+      --brand-primary-light: #EAF7EF;
+      --brand-accent: #21E0FF;
+      --brand-accent-sec: #2BB673;
+      --brand-status-header: #1F9C5F;
+      --brand-border: #2BB673;
+      --brand-table-header: #0E5C38;
+      --brand-gantt-header: #157A4A;
+      --brand-holiday: #F0A040;
+      --brand-text-main: #0B1411;
+      --brand-text-body: #2A3A33;
+      --brand-bg: #F4FAF6;
+      --grad-primary: linear-gradient(135deg, #5EC487 0%, #2BB673 60%, #1F9C5F 100%);
+      --grad-cover: linear-gradient(150deg, #157A4A 0%, #0E5C38 52%, #073621 100%);
+      --grad-page: linear-gradient(180deg, #DDF1E4 0%, #F6FBF8 58%, #FFFFFF 100%);
+      --glow-color: rgba(33, 224, 255, 0.28);
+      --bg-ambient-top: #123522;
+      --bg-ambient-bot: #0a1a12;
+      --ink-900: #0B1411;
+      --ink-800: #19241F;
+      --ink-700: #2A3A33;
+      --ink-600: #4A5A52;
+      --ink-500: #6B7A72;
+      --ink-400: #93A199;
+      --ink-300: #BEC9C3;
+      --ink-200: #DFE6E2;
+      --ink-100: #EEF3F0;
     }
 
     [data-theme="vercel-minimal"] {
@@ -133,25 +234,41 @@
       --brand-text-body: #27272a;
       --brand-bg: #f4f4f5;
       --slide-bg: #ffffff;
+      --grad-primary: linear-gradient(135deg, #000000 0%, #27272a 100%);
+      --grad-cover: linear-gradient(150deg, #09090b 0%, #18181b 52%, #000000 100%);
+      --grad-page: linear-gradient(180deg, #f4f4f5 0%, #fafafa 58%, #ffffff 100%);
+      --glow-color: rgba(0, 112, 243, 0.22);
+      --bg-ambient-top: #18181b;
+      --bg-ambient-bot: #09090b;
+      --ink-900: #09090b;
+      --ink-800: #18181b;
+      --ink-700: #27272a;
+      --ink-600: #3f3f46;
+      --ink-500: #71717a;
+      --ink-400: #a1a1aa;
+      --ink-300: #d4d4d8;
+      --ink-200: #e4e4e7;
+      --ink-100: #f4f4f5;
     }
 
     /* Vercel Minimal Aesthetic Refinements */
     [data-theme="vercel-minimal"] .slide {
       box-shadow: 0 0 0 1px #e4e4e7, 0 10px 20px -5px rgba(0, 0, 0, 0.04);
-      border-radius: 8px;
+      border-radius: 10px;
     }
     [data-theme="vercel-minimal"] .ppt-card {
       border: 1px solid #18181b;
-      border-radius: 6px;
+      border-radius: 8px;
     }
     [data-theme="vercel-minimal"] .ppt-card-header {
       background: #000000;
+      color: #ffffff;
       font-weight: 600;
       letter-spacing: -0.01em;
     }
     [data-theme="vercel-minimal"] .ppt-status-card {
       border: 1px solid #18181b;
-      border-radius: 6px;
+      border-radius: 8px;
     }
     [data-theme="vercel-minimal"] .cover-tag {
       background: #000000;
@@ -172,16 +289,16 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      font-family: var(--font-sans);
       background-color: var(--brand-bg);
-      color: var(--brand-text-body);
-      line-height: 1.4;
+      color: var(--ink-700);
+      line-height: 1.45;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding-top: 60px;
       padding-bottom: 60px;
-      transition: background-color 0.2s ease;
+      transition: background-color 0.25s ease;
     }
 
     /* Slide Container */
@@ -196,13 +313,26 @@
       width: var(--slide-width);
       height: var(--slide-height);
       background-color: var(--slide-bg);
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      box-shadow: var(--shadow-lg);
       position: relative;
       overflow: hidden;
-      padding: 20px 32px 18px 32px;
+      padding: 22px 36px 20px 36px;
       display: flex;
       flex-direction: column;
-      border-radius: 4px;
+      border-radius: var(--radius-lg, 14px);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    /* Ambient Hex Mesh Pattern for Content Slides */
+    .slide:not(.slide-cover)::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTc0IiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE3NCI+PGRlZnM+PHBhdHRlcm4gaWQ9ImhleCIgeD0iMCIgeT0iMCIgd2lkdGg9IjIwMCIgaGVpZ2h0PSIxNzQiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzJCQjY3MyIgc3Ryb2tlLXdpZHRoPSIwLjgiIG9wYWNpdHk9IjAuMTQiPjxwb2x5Z29uIHBvaW50cz0iNTAsNCA5NiwzMCA5Niw4MiA1MCwxMDggNCw4MiA0LDMwIj48L3BvbHlnb24+PHBvbHlnb24gcG9pbnRzPSIxNTAsNCAxOTYsMzAgMTk2LDgyIDE1MCwxMDggMTA0LDgyIDEwNCwzMCI+PC9wb2x5Z29uPjwvZz48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNoZXgpIj48L3JlY3Q+PC9zdmc+");
+      background-size: 280px 244px;
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 0;
     }
 
     /* Slide Header */
@@ -213,6 +343,7 @@
       margin-bottom: 12px;
       position: relative;
       min-height: 40px;
+      z-index: 1;
     }
 
     .slide-title-group {
@@ -221,55 +352,93 @@
     }
 
     .slide-title {
+      font-family: var(--font-display);
       font-size: 26px;
-      font-weight: 700;
-      color: var(--brand-text-main);
-      letter-spacing: -0.01em;
+      font-weight: 800;
+      color: var(--ink-900);
+      letter-spacing: -0.02em;
       line-height: 1.15;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .slide-title::before {
+      content: "";
+      width: 14px;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--grad-primary);
+      display: inline-block;
+      flex-shrink: 0;
     }
 
     .slide-subtitle {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--brand-text-main);
-      margin-top: 2px;
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--ink-500);
+      margin-top: 3px;
     }
 
     /* Slide Page Number */
     .slide-footer-num {
       position: absolute;
-      bottom: 8px;
-      right: 20px;
-      font-size: 10px;
-      color: #94a3b8;
+      bottom: 10px;
+      right: 24px;
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-400);
+      letter-spacing: 0.04em;
+      z-index: 1;
     }
 
     /* ==========================================================================
-       SLIDE 1: 封面页 (Cover Page)
+       SLIDE 1: 封面页 (Cover Page - 高级沉浸式科技封面)
        ========================================================================== */
     .slide-cover {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 48px 56px;
-      background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+      padding: 48px 60px 42px 60px;
+      background: var(--grad-cover);
+      color: #ffffff;
       position: relative;
+      overflow: hidden;
     }
 
     .slide-cover::before {
       content: "";
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 8px;
-      background: linear-gradient(90deg, var(--brand-primary-dark), var(--brand-primary), var(--brand-accent-sec));
+      inset: 0;
+      background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMTc0IiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE3NCI+PGRlZnM+PHBhdHRlcm4gaWQ9ImhleCIgeD0iMCIgeT0iMCIgd2lkdGg9IjIwMCIgaGVpZ2h0PSIxNzQiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIwLjgiIG9wYWNpdHk9IjAuMTUiPjxwb2x5Z29uIHBvaW50cz0iNTAsNCA5NiwzMCA5Niw4MiA1MCwxMDggNCw4MiA0LDMwIj48L3BvbHlnb24+PHBvbHlnb24gcG9pbnRzPSIxNTAsNCAxOTYsMzAgMTk2LDgyIDE1MCwxMDggMTA0LDgyIDEwNCwzMCI+PC9wb2x5Z29uPjwvZz48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNoZXgpIj48L3JlY3Q+PC9zdmc+");
+      background-size: 280px 244px;
+      opacity: 0.35;
+      mix-blend-mode: overlay;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .slide-cover::after {
+      content: "";
+      position: absolute;
+      width: 760px;
+      height: 760px;
+      border-radius: 50%;
+      right: -160px;
+      top: -200px;
+      background: radial-gradient(circle, var(--glow-color, rgba(33,224,255,.24)), transparent 64%);
+      pointer-events: none;
+      z-index: 0;
     }
 
     .cover-top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
+      z-index: 2;
     }
 
     .company-badge {
@@ -281,15 +450,19 @@
     .company-logo-icon {
       width: 38px;
       height: 38px;
-      border-radius: 8px;
-      background: var(--brand-primary);
+      border-radius: var(--radius-md, 10px);
+      background: rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       display: flex;
       align-items: center;
       justify-content: center;
       color: #ffffff;
+      font-family: var(--font-display);
       font-weight: 800;
-      font-size: 18px;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+      font-size: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
     .company-info-text {
@@ -298,81 +471,106 @@
     }
 
     .company-name {
-      font-size: 14px;
+      font-family: var(--font-display);
+      font-size: 14.5px;
       font-weight: 700;
-      color: var(--brand-text-main);
-      letter-spacing: 0.5px;
+      color: #ffffff;
+      letter-spacing: 0.04em;
     }
 
     .company-dept {
       font-size: 12px;
-      color: #64748b;
+      color: rgba(255, 255, 255, 0.72);
+      font-weight: 500;
+      margin-top: 1px;
     }
 
     .cover-center-content {
-      margin: auto 0;
+      margin: 32px 0;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      max-width: 900px;
+      max-width: 960px;
+      position: relative;
+      z-index: 2;
     }
 
     .cover-tag {
-      display: inline-block;
-      padding: 4px 12px;
-      background-color: var(--brand-primary-light);
-      color: var(--brand-primary);
-      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 14px;
+      background-color: rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.95);
+      font-family: var(--font-display);
+      font-size: 11.5px;
       font-weight: 700;
-      border-radius: 4px;
+      border-radius: var(--radius-pill);
       margin-bottom: 16px;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      border: 1px solid rgba(0, 85, 135, 0.15);
+      letter-spacing: 0.16em;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
 
     .cover-main-title {
-      font-size: 54px;
+      font-family: var(--font-display);
+      font-size: 58px;
       font-weight: 800;
-      color: var(--brand-text-main);
-      line-height: 1.15;
-      margin-bottom: 16px;
-      letter-spacing: -0.02em;
+      color: #ffffff;
+      line-height: 1.08;
+      margin-bottom: 12px;
+      letter-spacing: -0.025em;
+      background: linear-gradient(120deg, #ffffff 40%, rgba(255, 255, 255, 0.75));
+      -webkit-background-clip: text;
+      background-clip: text;
     }
 
     .cover-sub-title {
+      font-family: var(--font-display);
       font-size: 24px;
-      font-weight: 400;
-      color: #475569;
-      line-height: 1.4;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.92);
+      line-height: 1.35;
       margin-bottom: 8px;
     }
 
     .cover-period-pill {
-      font-size: 14px;
-      color: var(--brand-primary);
+      font-size: 13.5px;
+      color: rgba(255, 255, 255, 0.88);
       font-weight: 600;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 5px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       margin-top: 10px;
     }
 
     .cover-meta-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
+      gap: 18px;
       padding: 18px 24px;
-      background: #ffffff;
-      border-radius: 8px;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      background: rgba(0, 0, 0, 0.24);
+      border-radius: var(--radius-lg, 14px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      position: relative;
+      z-index: 2;
     }
 
     .meta-card {
       display: flex;
       flex-direction: column;
-      border-right: 1px solid #edf2f7;
+      border-right: 1px solid rgba(255, 255, 255, 0.10);
       padding-right: 12px;
     }
 
@@ -381,28 +579,37 @@
     }
 
     .meta-label {
-      font-size: 11px;
-      color: #64748b;
+      font-family: var(--font-display);
+      font-size: 10.5px;
+      color: rgba(255, 255, 255, 0.58);
       margin-bottom: 4px;
       text-transform: uppercase;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.12em;
     }
 
     .meta-value {
-      font-size: 14px;
-      color: var(--brand-text-main);
+      font-family: var(--font-sans);
+      font-size: 14.5px;
+      color: #ffffff;
       font-weight: 700;
     }
 
+    .slide-cover .slide-footer-num {
+      color: rgba(255, 255, 255, 0.35);
+    }
+
     /* ==========================================================================
-       SLIDE 2: 整体项目计划 (Work Plan — Overview)
+       SLIDE 2: 整体项目计划 (Work Plan — Overview - 现代数据图表化)
        ========================================================================== */
     .gantt-legend-bar {
       display: flex;
       align-items: center;
       gap: 16px;
       font-size: 11px;
-      color: #475569;
+      font-weight: 600;
+      color: var(--ink-500);
+      font-family: var(--font-display);
     }
 
     .gantt-legend-item {
@@ -414,7 +621,7 @@
     .gantt-block-sample {
       width: 14px;
       height: 10px;
-      border-radius: 2px;
+      border-radius: 3px;
     }
 
     .gantt-container {
@@ -422,8 +629,11 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      border: 1px solid #cbd5e1;
-      background: #ffffff;
+      border: 1px solid var(--ink-200);
+      border-radius: var(--radius-lg, 14px);
+      background: var(--surface-0);
+      box-shadow: var(--shadow-md);
+      padding: 4px;
     }
 
     .gantt-table {
@@ -431,11 +641,12 @@
       border-collapse: collapse;
       table-layout: fixed;
       font-size: 10px;
+      font-family: var(--font-sans);
     }
 
     .gantt-table th,
     .gantt-table td {
-      border: 1px solid #cbd5e1;
+      border: 1px solid var(--ink-100);
       padding: 0.5px 2px;
       text-align: center;
       position: relative;
@@ -443,9 +654,9 @@
     }
 
     /* Column widths */
-    .col-workstream { width: 85px; font-weight: 700; background-color: #ffffff; font-size: 9.5px; }
-    .col-category   { width: 92px; font-weight: 600; background-color: #ffffff; font-size: 9px; }
-    .col-task       { width: 125px; text-align: left !important; padding-left: 5px !important; font-weight: 500; font-size: 9px; }
+    .col-workstream { width: 85px; font-weight: 700; background-color: #fafbfc; font-size: 9.5px; font-family: var(--font-display); color: var(--ink-900); }
+    .col-category   { width: 92px; font-weight: 600; background-color: #fafbfc; font-size: 9px; font-family: var(--font-display); color: var(--ink-800); }
+    .col-task       { width: 125px; text-align: left !important; padding-left: 6px !important; font-weight: 500; font-size: 9px; color: var(--ink-800); }
     .col-week       { width: calc((100% - 302px) / 15); font-size: 8.5px; }
 
     /* Gantt Header */
@@ -453,10 +664,12 @@
       background-color: var(--brand-gantt-header);
       color: #ffffff;
       font-weight: 700;
-      height: 24px;
+      font-family: var(--font-display);
+      height: 25px;
       line-height: 1.1;
-      font-size: 9px;
+      font-size: 9.5px;
       padding: 1px !important;
+      letter-spacing: 0.02em;
     }
 
     .week-title {
@@ -465,7 +678,7 @@
     }
 
     .week-date {
-      font-weight: 400;
+      font-weight: 500;
       font-size: 8.5px;
       opacity: 0.9;
     }
@@ -491,21 +704,27 @@
     }
 
     .cell-current-week {
-      border-left: 2px solid #ef4444 !important;
-      border-right: 2px solid #ef4444 !important;
+      border-left: 2px dashed #ef4444 !important;
+      border-right: 2px dashed #ef4444 !important;
     }
 
     /* Gantt Progress Bars */
     .gantt-bar-completed {
       background-color: var(--brand-accent) !important;
+      border-radius: 3px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
     }
 
     .gantt-bar-active {
       background-color: var(--brand-accent-sec) !important;
+      border-radius: 3px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
     }
 
     .gantt-bar-planned {
       background-color: var(--brand-accent-sec) !important;
+      border-radius: 3px;
+      opacity: 0.85;
     }
 
     /* Red Star Milestone */
@@ -516,7 +735,7 @@
       display: inline-block;
       vertical-align: middle;
       font-weight: bold;
-      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
+      filter: drop-shadow(0 2px 4px rgba(239, 68, 68, 0.35));
     }
 
     /* We are here pointer — centered on the current-week <td> */
@@ -527,48 +746,53 @@
       display: flex;
       align-items: center;
       gap: 4px;
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 800;
+      font-family: var(--font-display);
       color: #dc2626;
       white-space: nowrap;
       transform: translateX(-50%);
       z-index: 10;
-      background: rgba(255, 255, 255, 0.92);
-      padding: 1px 4px;
-      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 1px 5px;
+      border-radius: 4px;
+      border: 1px solid rgba(220, 38, 38, 0.25);
+      box-shadow: 0 2px 6px rgba(220, 38, 38, 0.2);
       pointer-events: none;
     }
 
     .red-arrow-up {
       width: 0;
       height: 0;
-      border-left: 6px solid transparent;
-      border-right: 6px solid transparent;
-      border-bottom: 9px solid #dc2626;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-bottom: 8px solid #dc2626;
       display: inline-block;
     }
 
     /* ==========================================================================
-       SLIDE 3: 交付物及状态 (Deliverables / Output Status)
+       SLIDE 3: 交付物及状态 (Deliverables / Output Status - 现代化高阶表格)
        ========================================================================== */
     .status-indicator-legend-box {
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
+      border: 1px solid var(--ink-200);
+      border-radius: var(--radius-md, 10px);
       padding: 6px 14px;
-      background: #ffffff;
+      background: var(--surface-0);
       display: flex;
       flex-direction: column;
       gap: 5px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+      box-shadow: var(--shadow-sm);
     }
 
     .legend-box-title {
+      font-family: var(--font-display);
       font-size: 11px;
       font-weight: 700;
-      color: var(--brand-text-main);
+      color: var(--ink-900);
       margin-bottom: 2px;
-      border-bottom: 1px solid #f1f5f9;
+      border-bottom: 1px solid var(--ink-100);
       padding-bottom: 3px;
+      letter-spacing: 0.04em;
     }
 
     .legend-box-row {
@@ -576,17 +800,17 @@
       align-items: center;
       gap: 8px;
       font-size: 11px;
-      color: var(--brand-text-main);
+      color: var(--ink-700);
       font-weight: 500;
     }
 
     .status-dot {
-      width: 11px;
-      height: 11px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       display: inline-block;
       flex-shrink: 0;
-      border: 1px solid rgba(0,0,0,0.15);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
     }
 
     .status-dot.dot-good    { background-color: var(--status-good); }
@@ -596,8 +820,10 @@
     .deliverables-table-wrapper {
       flex: 1;
       overflow: hidden;
-      border-radius: 4px;
-      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-lg, 14px);
+      border: 1px solid var(--ink-200);
+      box-shadow: var(--shadow-md);
+      background: var(--surface-0);
     }
 
     .deliverables-table {
@@ -605,53 +831,78 @@
       border-collapse: collapse;
       table-layout: fixed;
       font-size: 12.5px;
+      font-family: var(--font-sans);
     }
 
     .deliverables-table th {
-      background-color: var(--brand-table-header);
-      color: #ffffff;
+      background-color: #F1F4F8;
+      color: var(--ink-900);
+      font-family: var(--font-display);
       font-weight: 700;
+      font-size: 11.5px;
       text-align: left;
       padding: 10px 14px;
-      border: 1px solid #475569;
+      border: none;
+      border-bottom: 1.5px solid #CBD5E1;
+      border-right: 1px solid #E2E8F0;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .deliverables-table th:last-child {
+      border-right: none;
     }
 
     .deliverables-table td {
       padding: 9px 14px;
-      border: 1px solid #e2e8f0;
-      color: #1e293b;
+      border: none;
+      border-bottom: 1px solid var(--ink-100);
+      border-right: 1px solid var(--ink-100);
+      color: var(--ink-700);
       vertical-align: middle;
     }
 
+    .deliverables-table td:last-child {
+      border-right: none;
+    }
+
     .deliverables-table tr:nth-child(even) td {
-      background-color: #f1f5f9;
+      background-color: #F8FAFC;
     }
 
     .deliverables-table tr:nth-child(odd) td {
       background-color: #ffffff;
     }
 
-    .deliverables-table th.col-m-name { width: 34%; color: #ffffff; }
-    .deliverables-table td.col-m-name { width: 34%; font-weight: 600; color: #0f172a; }
+    .deliverables-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .deliverables-table th.col-m-name { width: 34%; color: var(--ink-900); }
+    .deliverables-table td.col-m-name { width: 34%; font-weight: 600; color: var(--ink-900); font-family: var(--font-sans); }
     .deliverables-table .col-m-prog { width: 34%; }
-    .deliverables-table .col-m-date { width: 12%; text-align: center; font-variant-numeric: tabular-nums; }
+    .deliverables-table .col-m-date { width: 12%; text-align: center; font-variant-numeric: tabular-nums; font-family: var(--font-display); font-weight: 600; }
     .deliverables-table .col-m-stat { width: 10%; text-align: center; }
     .deliverables-table .col-m-indi { width: 10%; text-align: center; }
 
     .status-pill {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
+      font-family: var(--font-display);
+      letter-spacing: 0.01em;
     }
 
-    .status-pill.completed { background-color: #dcfce7; color: #15803d; }
-    .status-pill.ongoing   { background-color: #fef9c3; color: #a16207; }
-    .status-pill.pending   { background-color: #f1f5f9; color: #64748b; }
+    .status-pill.completed { background-color: #EAF7EF; color: #157A4A; }
+    .status-pill.ongoing   { background-color: #FCEFD9; color: #A86A12; }
+    .status-pill.pending   { background-color: #EEF3F0; color: #6B7A72; }
 
     /* ==========================================================================
-       SLIDE 4: 本周工作 (Task Management - 完全复刻 ppt 样式)
+       SLIDE 4: 本周工作 (Task Management - 现代企业统一看板)
        ========================================================================== */
     .slide-task-mgmt {
       position: relative;
@@ -659,14 +910,14 @@
       flex-direction: column;
     }
 
-    /* Top right Status box from PPT */
+    /* Top right Status box */
     .ppt-status-card {
       width: 110px;
-      border: 1.5px solid var(--brand-border);
-      border-radius: 4px;
+      border: 1px solid var(--ink-200);
+      border-radius: var(--radius-md, 10px);
       overflow: hidden;
-      background: #ffffff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      background: var(--surface-0);
+      box-shadow: var(--shadow-sm);
       flex-shrink: 0;
     }
 
@@ -674,75 +925,96 @@
       background-color: var(--brand-status-header);
       color: #ffffff;
       font-weight: 700;
-      font-size: 12px;
+      font-family: var(--font-display);
+      font-size: 11px;
       text-align: center;
-      padding: 3px 0;
-      letter-spacing: 0.5px;
+      padding: 4px 0;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     .ppt-status-body {
-      padding: 6px 0;
+      padding: 7px 0;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: #ffffff;
+      background: var(--surface-0);
     }
 
     .ppt-status-circle {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
-      border: 1px solid rgba(0, 0, 0, 0.15);
+      border: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
     }
 
     /* 2-Column Grid matching PPTX */
     .task-mgmt-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 22px;
-      margin-top: 4px;
+      gap: 18px;
+      margin-top: 6px;
       flex: 1;
     }
 
     .task-mgmt-col {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
-    /* PPT Card Widget */
+    /* Modern Card Widget */
     .ppt-card {
       display: flex;
       flex-direction: column;
-      border: 1.5px solid var(--brand-border);
-      background: #ffffff;
+      border: 1px solid var(--ink-200);
+      background: var(--surface-0);
+      border-radius: var(--radius-lg, 14px);
+      box-shadow: var(--shadow-md);
       overflow: hidden;
     }
 
     .ppt-card-header {
-      background-color: var(--brand-primary);
-      color: #ffffff;
-      font-weight: 700;
-      font-size: 13px;
-      text-align: center;
-      padding: 6px 12px;
-      letter-spacing: 0.2px;
+      background-color: #ffffff;
+      color: var(--ink-900);
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 13.5px;
+      text-align: left;
+      padding: 10px 16px 8px 16px;
+      letter-spacing: -0.01em;
+      border-bottom: 1px solid var(--ink-100);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ppt-card-header::before {
+      content: "";
+      width: 14px;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--grad-primary);
+      display: inline-block;
+      flex-shrink: 0;
     }
 
     .ppt-card-body {
       padding: 12px 16px;
       font-size: 12.5px;
-      color: #000000;
-      line-height: 1.7;
+      font-family: var(--font-sans);
+      color: var(--ink-700);
+      line-height: 1.6;
       flex: 1;
-      background: #ffffff;
+      background: var(--surface-0);
     }
 
     .ppt-list-item {
       display: flex;
       align-items: flex-start;
-      gap: 6px;
-      margin-bottom: 8px;
+      gap: 9px;
+      margin-bottom: 9px;
     }
 
     .ppt-list-item:last-child {
@@ -750,33 +1022,59 @@
     }
 
     .ppt-list-num {
-      font-weight: 500;
-      color: #000000;
-      min-width: 14px;
+      width: 18px;
+      height: 18px;
+      border-radius: 5px;
+      background: var(--ink-100);
+      color: var(--ink-700);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 10.5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1.5px;
     }
 
     .ppt-tag {
+      font-family: var(--font-display);
       font-weight: 700;
-      color: #000000;
+      color: var(--brand-primary);
+      margin-right: 4px;
     }
 
     /* Milestones Section in Right Column Bottom */
     .milestones-section {
-      margin-top: 4px;
+      margin-top: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
 
     .milestones-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 12px;
+      font-family: var(--font-sans);
+      border: 1px solid var(--ink-200);
+      border-radius: var(--radius-lg, 14px);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      background: var(--surface-0);
     }
 
     .milestones-table th {
-      border-top: 1.5px solid #000000;
-      border-bottom: 1.5px solid #000000;
-      padding: 6px 10px;
+      background: #F1F4F8;
+      border-top: none;
+      border-bottom: 1.5px solid #CBD5E1;
+      padding: 9px 14px;
       font-weight: 700;
-      color: #000000;
+      font-family: var(--font-display);
+      color: var(--ink-900);
+      font-size: 11.5px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
     }
 
     .milestones-table th:first-child {
@@ -788,38 +1086,50 @@
     }
 
     .milestones-table td {
-      padding: 10px;
-      border-bottom: 1px solid #e2e8f0;
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--ink-100);
+      color: var(--ink-700);
+    }
+
+    .milestones-table tr:last-child td {
+      border-bottom: none;
     }
 
     .milestones-table td:last-child {
       text-align: right;
+      font-family: var(--font-display);
+      font-weight: 600;
+      color: var(--brand-primary);
     }
 
-    /* Bottom Status Legend (复刻 PPT 底部状态图例) */
+    /* Bottom Status Legend */
     .ppt-bottom-legend {
       display: flex;
       align-items: center;
-      gap: 32px;
+      justify-content: flex-end;
+      gap: 24px;
       margin-top: auto;
-      padding-top: 12px;
+      padding-top: 10px;
       font-size: 11px;
-      color: #000000;
+      font-weight: 600;
+      color: var(--ink-500);
+      font-family: var(--font-display);
     }
 
     .ppt-legend-item {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
     }
 
     .ppt-legend-dot {
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
-      border: 1px solid #666666;
+      border: none;
       display: inline-block;
       flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
     }
 
     /* ==========================================================================
@@ -834,24 +1144,27 @@
     .discussion-badge {
       display: inline-flex;
       align-items: center;
-      padding: 2px 10px;
-      border-radius: 12px;
-      font-size: 11.5px;
+      padding: 3px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
       font-weight: 700;
-      background-color: var(--brand-primary);
+      font-family: var(--font-display);
+      background: var(--grad-primary);
       color: #ffffff;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.04em;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
     }
 
     .discussion-category-pill {
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
-      color: #475569;
+      font-family: var(--font-display);
+      color: var(--ink-600);
       background: #f1f5f9;
       padding: 4px 12px;
-      border-radius: 4px;
-      border: 1px solid #cbd5e1;
-      letter-spacing: 0.3px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--ink-200);
+      letter-spacing: 0.03em;
       white-space: nowrap;
     }
 
@@ -880,23 +1193,36 @@
     .discussion-card {
       display: flex;
       flex-direction: column;
-      border: 1.5px solid var(--brand-border);
-      background: #ffffff;
-      border-radius: 4px;
+      border: 1px solid var(--ink-200);
+      background: var(--surface-0);
+      border-radius: var(--radius-lg, 14px);
       overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      box-shadow: var(--shadow-md);
     }
 
     .discussion-card-header {
-      background-color: var(--brand-primary);
-      color: #ffffff;
-      font-weight: 700;
+      background: var(--surface-0);
+      color: var(--ink-900);
+      font-family: var(--font-display);
+      font-weight: 800;
       font-size: 13.5px;
-      padding: 8px 14px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--ink-100);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      letter-spacing: 0.2px;
+      letter-spacing: -0.01em;
+    }
+
+    .discussion-card-header::before {
+      content: "";
+      width: 14px;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--grad-primary);
+      display: inline-block;
+      flex-shrink: 0;
+      margin-right: 8px;
     }
 
     .card-header-title {
@@ -1419,12 +1745,12 @@
 
 
     /* ==========================================================================
-       PRESENTATION / DECK MODE (toggleable; default = normal scroll)
+       PRESENTATION / DECK MODE (影院级暗态舞台与悬浮毛玻璃 HUD)
        ========================================================================== */
     body.presentation-mode {
       padding: 0 !important;
       margin: 0 !important;
-      background: var(--slide-bg, #ffffff) !important;
+      background: radial-gradient(120% 120% at 50% 0%, var(--bg-ambient-top, #102436) 0%, var(--bg-ambient-bot, #071019) 70%) !important;
       overflow: hidden !important;
       height: 100vh !important;
       width: 100vw !important;
@@ -1442,8 +1768,10 @@
       position: fixed !important;
       top: 0 !important;
       left: 0 !important;
-      display: block !important;
-      background: var(--slide-bg, #ffffff) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: transparent !important;
     }
 
     body.presentation-mode .slide {
@@ -1454,51 +1782,83 @@
       width: 1280px !important;
       height: 720px !important;
       margin: 0 !important;
-      box-shadow: none !important;
-      border-radius: 0 !important;
+      box-shadow: var(--shadow-stage) !important;
+      border-radius: var(--radius-xl, 20px) !important;
       transform-origin: center center !important;
       transform: translate(-50%, -50%) scale(var(--pres-scale-x, 1), var(--pres-scale-y, 1)) !important;
+      transition: opacity 0.35s cubic-bezier(.22,1,.36,1), transform 0.35s cubic-bezier(.22,1,.36,1);
     }
 
     body.presentation-mode .slide.is-active-slide {
       display: flex !important;
+      opacity: 1 !important;
+      visibility: visible !important;
     }
 
+    /* Top Progress Bar in Presentation Mode */
+    .presentation-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.08);
+      z-index: 2150;
+      display: none;
+    }
+
+    body.presentation-mode .presentation-progress {
+      display: block;
+    }
+
+    .presentation-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--brand-accent-sec, #0070C0), var(--brand-accent, #21E0FF));
+      transition: width 0.38s cubic-bezier(.22,1,.36,1);
+      width: 0%;
+    }
+
+    /* Floating Glassmorphic HUD with Animated Dots */
     .presentation-hud {
       display: none;
       position: fixed;
       bottom: 20px;
       left: 50%;
-      transform: translateX(-50%);
-      z-index: 2000;
+      transform: translateX(-50%) translateY(8px);
+      z-index: 2100;
       align-items: center;
       gap: 10px;
-      background: rgba(15, 23, 42, 0.88);
+      background: rgba(8, 20, 32, 0.85);
       color: #f8fafc;
-      padding: 8px 16px;
-      border-radius: 999px;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
       font-size: 12px;
       font-weight: 600;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-      backdrop-filter: blur(10px);
-      opacity: 0.25;
-      transition: opacity 0.25s ease;
+      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s ease, transform 0.28s cubic-bezier(.22,1,.36,1);
     }
 
     body.presentation-mode .presentation-hud {
       display: flex;
     }
 
-    .presentation-hud:hover,
-    .presentation-hud:focus-within {
+    body.presentation-mode .presentation-hud.hud-visible,
+    body.presentation-mode .presentation-hud:hover,
+    body.presentation-mode .presentation-hud:focus-within {
       opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
     }
 
     .presentation-hud button {
-      background: #334155;
+      background: rgba(255, 255, 255, 0.12);
       color: #f8fafc;
       border: none;
-      border-radius: 999px;
+      border-radius: var(--radius-pill);
       width: 32px;
       height: 32px;
       cursor: pointer;
@@ -1508,23 +1868,208 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.15s ease;
+      transition: background 0.15s ease, transform 0.15s ease;
     }
 
     .presentation-hud button:hover {
-      background: #475569;
+      background: var(--brand-primary, #0070C0);
+      transform: scale(1.06);
+    }
+
+    .presentation-hud #presentationPageLabel {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 12px;
+      color: #e2e8f0;
+      letter-spacing: 0.08em;
+      min-width: 48px;
+      text-align: center;
+    }
+
+    /* Animated Pagination Dots */
+    .presentation-dots {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0 4px;
+    }
+
+    .presentation-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.28);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .presentation-dot:hover {
+      background: rgba(255, 255, 255, 0.6);
+      transform: scale(1.2);
+    }
+
+    .presentation-dot.active {
+      background: var(--brand-accent, #21E0FF);
+      width: 18px;
+      border-radius: 4px;
+      box-shadow: 0 0 8px rgba(33, 224, 255, 0.5);
     }
 
     .presentation-hud .pres-hint {
-      color: #94a3b8;
+      color: rgba(255, 255, 255, 0.45);
       font-weight: 500;
       font-size: 11px;
       margin-left: 4px;
+      letter-spacing: 0.03em;
+    }
+
+    /* Floating Toast Notification */
+    .toast-notification {
+      position: fixed;
+      bottom: 76px;
+      left: 50%;
+      transform: translateX(-50%) translateY(14px);
+      background: rgba(8, 20, 32, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #f8fafc;
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 7px 18px;
+      border-radius: var(--radius-pill);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+      z-index: 2500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1), transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .toast-notification.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* === Baize Stagger & Transition Animations (层叠级联进场与切页动效) === */
+    @keyframes ms-fade-in-up {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes float-orb {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+      }
+      50% {
+        transform: translateY(-14px) scale(1.04);
+      }
+    }
+
+    /* Stagger Choreography in Presentation Mode */
+    body.presentation-mode .slide.is-active-slide .slide-header {
+      animation: ms-fade-in-up 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: 50ms;
+    }
+
+    body.presentation-mode .slide.is-active-slide .gantt-container,
+    body.presentation-mode .slide.is-active-slide .deliverables-table-wrapper,
+    body.presentation-mode .slide.is-active-slide .discussion-grid {
+      animation: ms-fade-in-up 0.46s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: 110ms;
+    }
+
+    body.presentation-mode .slide.is-active-slide .task-mgmt-col:nth-child(1) .ppt-card:nth-child(1) {
+      animation: ms-fade-in-up 0.44s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: 80ms;
+    }
+
+    body.presentation-mode .slide.is-active-slide .task-mgmt-col:nth-child(1) .ppt-card:nth-child(2) {
+      animation: ms-fade-in-up 0.44s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: 150ms;
+    }
+
+    body.presentation-mode .slide.is-active-slide .task-mgmt-col:nth-child(2) .ppt-card:nth-child(1) {
+      animation: ms-fade-in-up 0.44s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: 120ms;
+    }
+
+    body.presentation-mode .slide.is-active-slide .task-mgmt-col:nth-child(2) .milestones-section {
+      animation: ms-fade-in-up 0.44s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: 180ms;
+    }
+
+    body.presentation-mode .slide.is-active-slide.slide-cover .cover-top-bar {
+      animation: ms-fade-in-up 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: 40ms;
+    }
+
+    body.presentation-mode .slide.is-active-slide.slide-cover .cover-center-content {
+      animation: ms-fade-in-up 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: 100ms;
+    }
+
+    body.presentation-mode .slide.is-active-slide.slide-cover .cover-meta-grid {
+      animation: ms-fade-in-up 0.52s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: 180ms;
+    }
+
+    .slide-cover::after {
+      animation: float-orb 7s ease-in-out infinite;
+    }
+
+    /* Interactive Hover Transitions */
+    .ppt-card, .discussion-card, .deliverables-table-wrapper, .gantt-container {
+      transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s ease;
+    }
+
+    .ppt-card:hover, .discussion-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .deliverables-table tbody tr {
+      transition: background-color 0.15s ease;
+    }
+
+    .deliverables-table tbody tr:hover td {
+      background-color: #f0f4f9;
+    }
+
+    .btn {
+      transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), background 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    /* Accessibility reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      .slide-cover::after {
+        animation: none !important;
+      }
     }
 
     body.presentation-mode .custom-theme-drawer,
     body.presentation-mode .data-modal-overlay {
-      z-index: 2100;
+      z-index: 2200;
     }
 
     /* ==========================================================================
@@ -1620,6 +2165,9 @@
 </head>
 <body data-theme="classic-navy">
 
+  <!-- Top Presentation Progress Bar -->
+  <div class="presentation-progress"><div class="presentation-progress-fill" id="presentationProgressBar"></div></div>
+
   <!-- Interactive Control Bar (Auto-hidden in Print/PDF) -->
   <div class="control-bar">
     <div class="control-brand">
@@ -1640,6 +2188,7 @@
         <option value="bayer">拜耳 (Bayer · 经典深蓝与生机绿)</option>
         <option value="jnj">强生 (Johnson & Johnson · 2023热情红)</option>
         <option value="novo-nordisk">诺和诺德 (Novo Nordisk · 真实纯蓝与海蓝)</option>
+        <option value="wukong-green">极客翠绿 (Wukong Tech · 翠绿生机与赛博青)</option>
         <option value="vercel-minimal">Vercel 极简风 (Vercel Design System · 黑白无衬线)</option>
       </select>
       <button class="btn btn-primary" onclick="toggleDataModal()">
@@ -1705,11 +2254,20 @@
 
   <!-- Presentation mode HUD (hidden unless body.presentation-mode) -->
   <div class="presentation-hud" id="presentationHud" aria-live="polite">
-    <button type="button" onclick="presentationPrev()" title="上一页 (←)">‹</button>
-    <span id="presentationPageLabel">1 / 4</span>
-    <button type="button" onclick="presentationNext()" title="下一页 (→ / Space)">›</button>
-    <button type="button" onclick="togglePresentationFullscreen()" title="全屏 (F)">⛶</button>
-    <button type="button" onclick="togglePresentationMode(false)" title="退出 (Esc)">✕</button>
+    <button type="button" onclick="presentationPrev()" title="上一页 (←)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <div class="presentation-dots" id="presentationDots"></div>
+    <span id="presentationPageLabel">01 / 04</span>
+    <button type="button" onclick="presentationNext()" title="下一页 (→ / Space)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+    <button type="button" onclick="togglePresentationFullscreen()" title="全屏 (F)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+    </button>
+    <button type="button" onclick="togglePresentationMode(false)" title="退出 (Esc)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
     <span class="pres-hint">← → Space · Esc 退出 · F 全屏</span>
   </div>
 
@@ -2305,6 +2863,9 @@
 
   </div>
 
+  <!-- Floating Toast Notification -->
+  <div id="toastNotification" class="toast-notification"></div>
+
   <script>
     // Global Report Data State
     let currentReportData = null;
@@ -2539,12 +3100,14 @@
         if (btnText) btnText.innerHTML = '✅ 完成编辑';
         if (tipBar) tipBar.classList.add('show');
         enableContentEditable(true);
+        if (typeof showToast === 'function') showToast('✏️ 已进入直接编辑模式，点击文字可直接改写');
       } else {
         syncDomToReportData();
         if (btn) btn.classList.remove('btn-edit-active');
         if (btnText) btnText.innerHTML = '✏️ 编辑内容';
         if (tipBar) tipBar.classList.remove('show');
         enableContentEditable(false);
+        if (typeof showToast === 'function') showToast('💾 已退出编辑模式并同步数据');
       }
     }
 
@@ -2786,6 +3349,8 @@
 
     // Download configured standalone HTML with all edits preserved
     function downloadCurrentHtml() {
+      if (typeof showToast === 'function') showToast('📦 正在生成并另存周报 HTML...');
+
       // 1. Sync any DOM edits into currentReportData
       syncDomToReportData();
 
@@ -2826,6 +3391,16 @@
     // =========================================================================
     // Theme Management & Dynamic Switching (企业风格动态适配)
     // =========================================================================
+    const THEME_NAMES = {
+      'astrazeneca': '阿斯利康 (AstraZeneca)',
+      'novartis': '诺华 (Novartis)',
+      'bayer': '拜耳 (Bayer)',
+      'jnj': '强生 (Johnson & Johnson)',
+      'novo-nordisk': '诺和诺德 (Novo Nordisk)',
+      'wukong-green': '极客翠绿 (Wukong Tech)',
+      'vercel-minimal': 'Vercel 极简风'
+    };
+
     function changeTheme(themeName) {
       if (!themeName) return;
       document.body.setAttribute('data-theme', themeName);
@@ -2840,6 +3415,9 @@
       const sel = document.getElementById('themeSelect');
       if (sel && sel.value !== themeName) {
         sel.value = themeName;
+      }
+      if (typeof showToast === 'function') {
+        showToast('🎨 已切换至 ' + (THEME_NAMES[themeName] || themeName));
       }
     }
 
@@ -3474,7 +4052,7 @@
 
 
     // ========================================================================
-    // Presentation / Deck Mode
+    // Presentation / Deck Mode & HUD Motion System
     // Default = normal scroll. Toggle via toolbar, "P", or URL ?present=1
     // Keys: ←/→, Space (next); Esc exit; F fullscreen. Click sides optional.
     // Print/PDF ignores deck mode (all slides still print one-per-page).
@@ -3482,15 +4060,26 @@
     const PRESENTATION_SLIDE_IDS = ['slide1', 'slide2', 'slide3', 'slide4'];
     let presentationIndex = 0;
     let presentationActive = false;
+    let toastTimer = null;
+
+    function showToast(msg, duration = 2200) {
+      const toast = document.getElementById('toastNotification');
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.classList.add('show');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, duration);
+    }
 
     function fitPresentationSlide() {
       if (!presentationActive) return;
       const w = window.innerWidth || document.documentElement.clientWidth;
       const h = window.innerHeight || document.documentElement.clientHeight;
-      const sx = w / 1280;
-      const sy = h / 720;
-      document.documentElement.style.setProperty('--pres-scale-x', sx);
-      document.documentElement.style.setProperty('--pres-scale-y', sy);
+      const s = Math.min(w / 1280, h / 720);
+      document.documentElement.style.setProperty('--pres-scale-x', s);
+      document.documentElement.style.setProperty('--pres-scale-y', s);
     }
     window.addEventListener('resize', fitPresentationSlide);
 
@@ -3504,7 +4093,36 @@
         slide.classList.toggle('is-active-slide', presentationActive && idx === presentationIndex);
       });
       const label = document.getElementById('presentationPageLabel');
-      if (label) label.textContent = `${presentationIndex + 1} / ${slides.length || 4}`;
+      const pad = n => (n < 10 ? '0' : '') + n;
+      if (label) label.textContent = `${pad(presentationIndex + 1)} / ${pad(slides.length || 4)}`;
+      const fill = document.getElementById('presentationProgressBar');
+      if (fill && slides.length) {
+        fill.style.width = (((presentationIndex + 1) / slides.length) * 100) + '%';
+      }
+
+      // Synchronize animated pagination dots
+      const dotsContainer = document.getElementById('presentationDots');
+      if (dotsContainer) {
+        if (dotsContainer.children.length !== slides.length) {
+          dotsContainer.innerHTML = '';
+          slides.forEach((_, idx) => {
+            const dot = document.createElement('button');
+            dot.type = 'button';
+            dot.className = 'presentation-dot' + (idx === presentationIndex ? ' active' : '');
+            dot.title = `第 ${idx + 1} 页`;
+            dot.onclick = (e) => {
+              e.stopPropagation();
+              goToPresentationSlide(idx);
+            };
+            dotsContainer.appendChild(dot);
+          });
+        } else {
+          Array.from(dotsContainer.children).forEach((dot, idx) => {
+            dot.classList.toggle('active', idx === presentationIndex);
+          });
+        }
+      }
+
       const btn = document.getElementById('btnPresentation');
       if (btn) {
         const icon = btn.querySelector('svg');
@@ -3543,6 +4161,7 @@
           if (mid >= top && mid <= bottom) best = i;
         });
         goToPresentationSlide(best);
+        showToast('🖥️ 已进入全屏演示模式 (← → 翻页，Esc 退出)');
       } else {
         const slides = getPresentationSlides();
         slides.forEach(s => s.classList.remove('is-active-slide'));
@@ -3555,6 +4174,7 @@
         document.documentElement.style.removeProperty('--pres-scale-x');
         document.documentElement.style.removeProperty('--pres-scale-y');
         updatePresentationUI();
+        showToast('已退出演示模式');
       }
     }
 
@@ -3657,6 +4277,23 @@
       else if (e.clientX < rect.left + rect.width * 0.45) presentationPrev();
     });
 
+    // Auto-fade HUD on inactivity during presentation
+    let hudTimer = null;
+    function resetHudTimer() {
+      if (!presentationActive) return;
+      const hud = document.getElementById('presentationHud');
+      if (!hud) return;
+      hud.classList.add('hud-visible');
+      if (hudTimer) clearTimeout(hudTimer);
+      hudTimer = setTimeout(() => {
+        if (!hud.matches(':hover') && !hud.matches(':focus-within')) {
+          hud.classList.remove('hud-visible');
+        }
+      }, 2600);
+    }
+    window.addEventListener('mousemove', resetHudTimer);
+    window.addEventListener('keydown', resetHudTimer);
+
     // Initialize on page load
     window.addEventListener('DOMContentLoaded', () => {
       // Check if data script embedded
@@ -3691,6 +4328,10 @@
 
       if (params.get('present') === '1' || params.get('presentation') === '1') {
         togglePresentationMode(true);
+        const slideParam = parseInt(params.get('slide') || params.get('page') || '', 10);
+        if (!isNaN(slideParam) && slideParam >= 1) {
+          goToPresentationSlide(slideParam - 1);
+        }
       }
     });
   </script>
