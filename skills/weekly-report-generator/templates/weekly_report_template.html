@@ -3653,12 +3653,22 @@
         if (mDk2) result.colors.primaryDark = '#' + mDk2[1];
       }
 
-      // Media Files
-      const mediaNames = Object.keys(files).filter(k => k.startsWith('ppt/media/'));
+      // Media Files (only web-compatible raster & vector formats)
+      const validExts = ['.png', '.jpg', '.jpeg', '.webp', '.svg', '.gif'];
+      const mediaNames = Object.keys(files).filter(k => k.startsWith('ppt/media/') && validExts.some(ext => k.toLowerCase().endsWith(ext)));
       const mediaMap = {};
       for (const mn of mediaNames) {
         const base = mn.replace(/^.*[\\\/]/, '');
         mediaMap[base] = files[mn];
+      }
+
+      function getMime(fn) {
+        const l = fn.toLowerCase();
+        if (l.endsWith('.jpg') || l.endsWith('.jpeg')) return 'image/jpeg';
+        if (l.endsWith('.png')) return 'image/png';
+        if (l.endsWith('.svg')) return 'image/svg+xml';
+        if (l.endsWith('.webp')) return 'image/webp';
+        return 'image/png';
       }
 
       // Layouts
@@ -3706,66 +3716,78 @@
       }
 
       // Corporate Logo
-      const logoCand = layoutPics.filter(p => (p.ext[0] > 0 && p.ext[0] < 2500000 && p.ext[1] > 0 && p.ext[1] < 2500000) || p.size < 70000);
-      let logoFile = null;
-      if (logoCand.length > 0) {
-        logoCand.sort((a, b) => a.size - b.size);
-        logoFile = logoCand[0].file;
-      } else {
-        const pngs = Object.keys(mediaMap).filter(k => k.toLowerCase().endsWith('.png') && (mediaMap[k].uncompSize < 80000 || mediaMap[k].compSize < 80000));
-        if (pngs.length > 0) logoFile = pngs[0];
+      const svgLogos = Object.keys(mediaMap).filter(k => k.toLowerCase().endsWith('.svg'));
+      let logoFile = svgLogos[0] || null;
+      if (!logoFile) {
+        const logoCand = layoutPics.filter(p => (p.ext[0] > 0 && p.ext[0] < 2500000 && p.ext[1] > 0 && p.ext[1] < 2500000) || p.size < 70000);
+        if (logoCand.length > 0) {
+          const freq = {};
+          for (const p of logoCand) freq[p.file] = (freq[p.file] || 0) + 1;
+          logoCand.sort((a, b) => (freq[b.file] - freq[a.file]) || (a.size - b.size));
+          logoFile = logoCand[0].file;
+        } else {
+          const pngs = Object.keys(mediaMap).filter(k => k.toLowerCase().endsWith('.png') && (mediaMap[k].uncompSize < 80000 || mediaMap[k].compSize < 80000));
+          if (pngs.length > 0) logoFile = pngs[0];
+        }
       }
 
       if (logoFile && mediaMap[logoFile]) {
         const b = await getBytes(mediaMap[logoFile]);
-        const mime = logoFile.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg';
+        const mime = getMime(logoFile);
         result.logoDataUrl = `data:${mime};base64,${uint8ToBase64(b)}`;
       }
 
       // Cover Background
-      let coverCand = layoutPics.filter(p => p.layout === 1 && (p.ext[0] > 4000000 || p.size > 100000));
+      let coverCand = layoutPics.filter(p => p.layout === 1 && (p.ext[0] > 4000000 || p.size > 100000) && p.file !== logoFile);
       let coverFile = null;
       if (coverCand.length > 0) {
         coverCand.sort((a, b) => b.size - a.size);
         coverFile = coverCand[0].file;
       } else {
-        const sortedMedia = Object.keys(mediaMap).sort((a, b) => mediaMap[b].compSize - mediaMap[a].compSize);
-        coverFile = sortedMedia[0] || null;
+        const widePics = layoutPics.filter(p => p.ext[0] >= 8000000 && p.file !== logoFile);
+        if (widePics.length > 0) {
+          widePics.sort((a, b) => b.size - a.size);
+          coverFile = widePics[0].file;
+        } else {
+          const sortedMedia = Object.keys(mediaMap).filter(k => k !== logoFile).sort((a, b) => mediaMap[b].compSize - mediaMap[a].compSize);
+          coverFile = sortedMedia[0] || null;
+        }
       }
 
       if (coverFile && mediaMap[coverFile]) {
         const b = await getBytes(mediaMap[coverFile]);
-        const mime = coverFile.toLowerCase().match(/\.(jpe?g)$/) ? 'image/jpeg' : 'image/png';
+        const mime = getMime(coverFile);
         result.coverBgDataUrl = `data:${mime};base64,${uint8ToBase64(b)}`;
       }
 
       // Content Background
-      let contentCand = layoutPics.filter(p => p.layout > 1 && p.ext[0] > 8000000 && p.file !== coverFile);
+      let contentCand = layoutPics.filter(p => p.layout > 1 && p.ext[0] > 7000000 && p.file !== coverFile && p.file !== logoFile);
       let contentFile = null;
       if (contentCand.length > 0) {
         contentCand.sort((a, b) => b.size - a.size);
         contentFile = contentCand[0].file;
       } else {
-        const candidates = Object.keys(mediaMap).filter(k => k !== coverFile && k !== logoFile && (mediaMap[k].compSize > 30000 && mediaMap[k].compSize < 2000000));
+        const candidates = Object.keys(mediaMap).filter(k => k !== coverFile && k !== logoFile && (mediaMap[k].compSize > 40000 && mediaMap[k].compSize < 2000000));
         contentFile = candidates[0] || null;
       }
 
       if (contentFile && mediaMap[contentFile]) {
         const b = await getBytes(mediaMap[contentFile]);
-        const mime = contentFile.toLowerCase().match(/\.(jpe?g)$/) ? 'image/jpeg' : 'image/png';
+        const mime = getMime(contentFile);
         result.contentBgDataUrl = `data:${mime};base64,${uint8ToBase64(b)}`;
       }
 
       // Texts
-      for (const s of ['ppt/slides/slide1.xml', 'ppt/slideLayouts/slideLayout1.xml']) {
+      for (const s of ['ppt/slides/slide1.xml', 'ppt/slideLayouts/slideLayout1.xml', 'ppt/slideLayouts/slideLayout3.xml']) {
         if (files[s]) {
           const txt = await getText(files[s]);
           const texts = Array.from(txt.matchAll(/<a:t>([^<]+)<\/a:t>/g)).map(m => m[1]);
           const fullStr = texts.join(' ');
-          if (fullStr.includes('SINOPHARM')) result.companyName = '国药集团 / SINOPHARM';
-          else if (fullStr.includes('国控') || fullStr.includes('国药')) result.companyName = '国药控股';
+          if (fullStr.includes('SINOPHARM') || fullStr.includes('国药')) result.companyName = '国药控股 / 国药集团';
+          else if (fullStr.includes('J&J') || fullStr.includes('Johnson') || fullStr.includes('JJMT')) result.companyName = 'Johnson & Johnson / 强生医疗科技';
+          else if (fullStr.includes('AstraZeneca') || fullStr.includes('AZ')) result.companyName = 'AstraZeneca / 阿斯利康';
           for (const t of texts) {
-            if (['关爱生命', '呵护健康', '科技引领', '持续创新', '客户至上'].some(w => t.includes(w))) {
+            if (['关爱生命', '呵护健康', '科技引领', '持续创新', '客户至上', '医者智库'].some(w => t.includes(w))) {
               result.slogan = t.trim();
             }
           }

@@ -97,13 +97,26 @@ def extract_pptx_template(pptx_path):
                     template_data["colors"]["primaryDark"] = '#' + dk2.group(1)
                 break
 
-        # 2. Map media files and their sizes
+        VALID_WEB_IMG_EXTS = ('.png', '.jpg', '.jpeg', '.webp', '.svg', '.gif')
+
+        def get_img_mime(fn):
+            l = fn.lower()
+            if l.endswith(('.jpg', '.jpeg')): return 'image/jpeg'
+            if l.endswith('.png'): return 'image/png'
+            if l.endswith('.svg'): return 'image/svg+xml'
+            if l.endswith('.webp'): return 'image/webp'
+            if l.endswith('.gif'): return 'image/gif'
+            return 'image/png'
+
+        # 2. Map media files and their sizes (only web-compatible raster & vector formats)
         media_files = {}
         for n in names:
             if n.startswith('ppt/media/'):
-                info = z.getinfo(n)
-                if info.file_size > 0:
-                    media_files[os.path.basename(n)] = (n, info.file_size)
+                base = os.path.basename(n)
+                if any(base.lower().endswith(ext) for ext in VALID_WEB_IMG_EXTS):
+                    info = z.getinfo(n)
+                    if info.file_size > 0:
+                        media_files[base] = (n, info.file_size)
 
         # 3. Parse slideLayouts and rels to identify pictures with precise coordinates
         layout_pics = []
@@ -140,61 +153,73 @@ def extract_pptx_template(pptx_path):
                             })
 
         # 4. Identify Corporate Logo:
-        # A logo is placed across layouts with small dimensions (cx < 2,500,000 and cy < 2,500,000)
-        # or file size < 80KB in PNG format
-        logo_candidates = [p for p in layout_pics if (0 < p["ext"][0] < 2500000 and 0 < p["ext"][1] < 2500000) or p["size"] < 70000]
-        if not logo_candidates:
-            # Fallback to smallest PNG in media_files
-            pngs = [(base, sz) for base, (zp, sz) in media_files.items() if base.lower().endswith('.png') and sz < 80000]
-            pngs.sort(key=lambda x: x[1])
-            if pngs:
-                logo_file = pngs[0][0]
-                logo_bytes = z.read(media_files[logo_file][0])
-                template_data["logo_data_url"] = f"data:image/png;base64,{base64.b64encode(logo_bytes).decode()}"
+        # Prioritize SVG vector logos if available (e.g. AstraZeneca Spark)
+        svg_logos = [f for f in media_files if f.lower().endswith('.svg')]
+        logo_file = None
+        if svg_logos:
+            logo_file = svg_logos[0]
         else:
-            # Sort by frequency and smallest size
-            logo_file = logo_candidates[0]["file"]
+            # Score logo candidates by layout recurrence and small dimensions
+            logo_cands = [p for p in layout_pics if (0 < p["ext"][0] < 2500000 and 0 < p["ext"][1] < 2500000) or p["size"] < 70000]
+            if logo_cands:
+                # Count frequency of each file across layouts
+                freq = {}
+                for p in logo_cands:
+                    freq[p["file"]] = freq.get(p["file"], 0) + 1
+                # Sort primarily by frequency (most repeated across layouts), then smallest size
+                sorted_by_freq = sorted(logo_cands, key=lambda p: (-freq[p["file"]], p["size"]))
+                logo_file = sorted_by_freq[0]["file"]
+            else:
+                pngs = sorted([(b, sz) for b, (zp, sz) in media_files.items() if b.lower().endswith('.png') and sz < 80000], key=lambda x: x[1])
+                if pngs:
+                    logo_file = pngs[0][0]
+
+        if logo_file and logo_file in media_files:
             logo_bytes = z.read(media_files[logo_file][0])
-            ext = 'png' if logo_file.lower().endswith('.png') else 'jpeg'
-            template_data["logo_data_url"] = f"data:image/{ext};base64,{base64.b64encode(logo_bytes).decode()}"
+            mime = get_img_mime(logo_file)
+            template_data["logo_data_url"] = f"data:{mime};base64,{base64.b64encode(logo_bytes).decode()}"
 
         # 5. Identify Cover Background:
-        # Check layout 1 pictures with cx > 4,000,000 or largest image in media_files
-        cover_candidates = [p for p in layout_pics if p["layout"] == 1 and (p["ext"][0] > 4000000 or p["size"] > 100000)]
-        if cover_candidates:
-            cover_candidates.sort(key=lambda x: x["size"], reverse=True)
-            cover_file = cover_candidates[0]["file"]
+        cover_cands = [p for p in layout_pics if p["layout"] == 1 and (p["ext"][0] > 4000000 or p["size"] > 100000) and p["file"] != logo_file]
+        if cover_cands:
+            cover_cands.sort(key=lambda x: x["size"], reverse=True)
+            cover_file = cover_cands[0]["file"]
         else:
-            # Fallback to the largest media file
-            sorted_media = sorted(media_files.items(), key=lambda x: x[1][1], reverse=True)
-            cover_file = sorted_media[0][0] if sorted_media else None
+            # Check layouts with full slide width (cx >= 8,000,000)
+            wide_pics = [p for p in layout_pics if p["ext"][0] >= 8000000 and p["file"] != logo_file]
+            if wide_pics:
+                wide_pics.sort(key=lambda x: x["size"], reverse=True)
+                cover_file = wide_pics[0]["file"]
+            else:
+                # Fallback to the largest media file excluding logo
+                sorted_media = sorted([item for item in media_files.items() if item[0] != logo_file], key=lambda x: x[1][1], reverse=True)
+                cover_file = sorted_media[0][0] if sorted_media else None
 
         if cover_file and cover_file in media_files:
             c_bytes = z.read(media_files[cover_file][0])
             c_bytes, c_filename = optimize_image_if_possible(c_bytes, cover_file)
-            mime = 'image/jpeg' if c_filename.lower().endswith(('.jpg', '.jpeg')) else 'image/png'
+            mime = get_img_mime(c_filename)
             template_data["cover_bg_data_url"] = f"data:{mime};base64,{base64.b64encode(c_bytes).decode()}"
 
         # 6. Identify Content Slide Background Graphic:
-        # Check layout 2..5 pictures with full slide width (cx > 8,000,000) that is NOT the cover image
-        content_candidates = [
+        content_cands = [
             p for p in layout_pics 
-            if p["layout"] > 1 and p["ext"][0] > 8000000 and p["file"] != cover_file
+            if p["layout"] > 1 and p["ext"][0] > 7000000 and p["file"] not in [cover_file, logo_file]
         ]
-        if content_candidates:
-            content_candidates.sort(key=lambda x: x["size"], reverse=True)
-            content_file = content_candidates[0]["file"]
+        if content_cands:
+            content_cands.sort(key=lambda x: x["size"], reverse=True)
+            content_file = content_cands[0]["file"]
         else:
-            # Search media files for images between 50KB and 1.5MB that aren't cover or logo
+            # Search media files for images between 40KB and 2MB that aren't cover or logo
             candidates = [
                 base for base, (zp, sz) in media_files.items()
-                if base != cover_file and (not template_data["logo_data_url"] or base != logo_file) and 30000 < sz < 2000000
+                if base not in [cover_file, logo_file] and 40000 < sz < 2000000
             ]
             content_file = candidates[0] if candidates else None
 
         if content_file and content_file in media_files:
             cnt_bytes = z.read(media_files[content_file][0])
-            mime = 'image/jpeg' if content_file.lower().endswith(('.jpg', '.jpeg')) else 'image/png'
+            mime = get_img_mime(content_file)
             template_data["content_bg_data_url"] = f"data:{mime};base64,{base64.b64encode(cnt_bytes).decode()}"
 
         # 7. Extract texts (Company / Slogans)
@@ -203,12 +228,14 @@ def extract_pptx_template(pptx_path):
                 txt = z.read(s).decode('utf-8', errors='ignore')
                 texts = re.findall(r'<a:t>([^<]+)</a:t>', txt)
                 full_str = ' '.join(texts)
-                if 'SINOPHARM' in full_str:
-                    template_data["company_name"] = "国药集团 / SINOPHARM"
-                elif '国控' in full_str or '国药' in full_str:
-                    template_data["company_name"] = "国药控股"
+                if 'SINOPHARM' in full_str or '国药' in full_str:
+                    template_data["company_name"] = "国药控股 / 国药集团"
+                elif 'J&J' in full_str or 'Johnson' in full_str or 'JJMT' in full_str:
+                    template_data["company_name"] = "Johnson & Johnson / 强生医疗科技"
+                elif 'AstraZeneca' in full_str or 'AZ' in full_str:
+                    template_data["company_name"] = "AstraZeneca / 阿斯利康"
                 for t in texts:
-                    if any(w in t for w in ['关爱生命', '呵护健康', '科技引领', '持续创新', '客户至上']):
+                    if any(w in t for w in ['关爱生命', '呵护健康', '科技引领', '持续创新', '客户至上', '医者智库']):
                         template_data["slogan"] = t.strip()
 
     template_data["has_custom_pptx"] = bool(template_data["cover_bg_data_url"] or template_data["content_bg_data_url"])
