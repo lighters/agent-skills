@@ -34,7 +34,7 @@ python3 scripts/export_pdf.py \
   --output weekly-report.pdf
 ```
 
-Themes: `astrazeneca` / `classic-navy`, `novartis`, `bayer`, `jnj`, `novo-nordisk`, `vercel-minimal`.
+Themes: `astrazeneca` / `classic-navy`, `novartis`, `bayer`, `jnj`, `novo-nordisk`, `wukong-green`, `vercel-minimal`.
 
 ## Work Plan Date & Holiday Constraints (CRITICAL for Agents)
 

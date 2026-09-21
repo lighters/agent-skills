@@ -1,6 +1,6 @@
 # 🤖 Agent Skills Hub (`agent-skills`)
 
-> 通用 AI Agent 技能仓库，面向 Google Antigravity、Claude Code 及主流自动化智能体框架，提供生产级、开箱即用的专业工作流与自动化扩展技能。
+> **通用 AI Agent 技能仓库 (Universal AI Agent Skills Hub)**：面向主流自动化智能体框架（Claude Code、Cursor、Google Antigravity、Roo Code、Windsurf、Cline 及自定义 Agent 系统），遵循行业开放技能标准（`SKILL.md` + 自动化脚本工具链），提供生产级、开箱即用的专业工作流扩展技能。
 
 ---
 
@@ -8,31 +8,76 @@
 
 | 技能名称 (Skill) | 目录路径 | 描述说明 | 依赖环境 |
 | :--- | :--- | :--- | :--- |
-| **`weekly-report-generator`** | [`skills/weekly-report-generator`](./skills/weekly-report-generator) | **企业高保真周报生成器**：1:1 复刻高管汇报级 PPT 排版，支持 4 页标准结构 + 自由扩展 Slide 5+ 方案研讨与议题决议页、端到端 Timeline 甘特图自动排版、交付物红黄绿健康度跟踪、全屏无黑边演示模式、工作周日期智能校验、多企业主题及 16:9 矢量 PDF 导出。 | Python 3.8+ / Google Chrome (可选) |
+| **`weekly-report-generator`** | [`skills/weekly-report-generator`](./skills/weekly-report-generator) | **企业高保真周报与演示文稿生成器**：1:1 复刻麦肯锡、埃森哲等顶级咨询与 500 强高管汇报级排版。支持 4 页标准结构 + 自由扩展 Slide 5+ 方案研讨与议题决议页、端到端 Timeline 甘特图自动排版、交付物健康度跟踪、所见即所得直接编辑、影院级全屏演示动效、7 大企业主题及 16:9 矢量 PDF 导出。 | Python 3.8+ / Google Chrome (可选导出 PDF) |
 
 ---
 
-## 🚀 快速安装指南 (Installation)
+## 🚀 通用安装指南 (Universal Installation)
 
-### 方式一：安装至 Google Antigravity 全局技能库 (推荐)
-在当前机器上的所有项目与会话中均可直接激活：
+本仓库遵循通用 Agent 技能规范（基于标准目录结构的 `SKILL.md`、`scripts/`、`templates/`），兼容各类主流智能体运行时及无 Agent 的本地命令行环境。
 
-```bash
-# 克隆仓库
-git clone https://github.com/lighters/agent-skills.git ~/.gemini/agent-skills
+### 方式一：项目工作区技能 (Project Workspace, 团队共享推荐)
 
-# 软链接技能至 Antigravity 全局 skills 目录
-mkdir -p ~/.gemini/antigravity-cli/skills/
-ln -s ~/.gemini/agent-skills/skills/weekly-report-generator ~/.gemini/antigravity-cli/skills/weekly-report-generator
-```
-
-### 方式二：安装至指定项目工作区 (`.agents/skills`)
-仅对当前项目团队生效，适合随项目代码库一同版本管理：
+将技能引入任意具体项目的代码库，适合团队协同与版本管理：
 
 ```bash
 cd your-project/
-mkdir -p .agents/skills/
-cp -R /path/to/agent-skills/skills/weekly-report-generator .agents/skills/
+
+# 方案 A: 通过 Git Submodule 引入（推荐，便于后续拉取上游技能更新）
+mkdir -p .agents/skills
+git submodule add https://github.com/lighters/agent-skills.git .agents/skills/agent-skills
+
+# 方案 B: 直接拷贝目标技能目录
+mkdir -p .agents/skills/weekly-report-generator
+cp -R /path/to/agent-skills/skills/weekly-report-generator/* .agents/skills/weekly-report-generator/
+```
+
+### 方式二：用户级全局技能 (User Global Skills, 全系统通用)
+
+在本地机器上克隆一次，即可在所有的项目与 Agent 会话中全局调用：
+
+```bash
+# 1. 克隆技能仓库至本地通用目录
+git clone https://github.com/lighters/agent-skills.git ~/.agent-skills
+
+# 2. 创建通用全局技能目录并建立软链接
+mkdir -p ~/.agent/skills
+ln -s ~/.agent-skills/skills/* ~/.agent/skills/
+```
+
+#### 主流 Agent 框架一键软链接映射：
+根据你所使用的 AI Agent 运行时，将技能软链接至其识别的技能目录即可：
+
+```bash
+# Claude Code 全局技能目录
+mkdir -p ~/.claude/skills
+ln -s ~/.agent-skills/skills/weekly-report-generator ~/.claude/skills/weekly-report-generator
+
+# Google Antigravity / Gemini CLI 全局技能目录
+mkdir -p ~/.gemini/antigravity-cli/skills
+ln -s ~/.agent-skills/skills/weekly-report-generator ~/.gemini/antigravity-cli/skills/weekly-report-generator
+
+# Cursor / Windsurf / Cline / Roo Code / OpenCode
+# 推荐放置在项目根目录的 .agents/skills/ 或在规则中指定路径
+```
+
+### 方式三：独立本地命令行使用 (无需 Agent 运行时)
+
+即使不依赖任何 AI Agent，本工具链也可作为标准的 Python CLI 独立运行：
+
+```bash
+cd skills/weekly-report-generator
+
+# 一键编译生成独立 HTML 周报
+python3 scripts/generate_report.py \
+  --data examples/sample_data.json \
+  --theme astrazeneca \
+  --output weekly-report.html
+
+# 一键导出为 16:9 矢量 PDF（依赖本地 Chrome/Edge 浏览器）
+python3 scripts/export_pdf.py \
+  --input weekly-report.html \
+  --output weekly-report.pdf
 ```
 
 ---
@@ -42,37 +87,41 @@ cp -R /path/to/agent-skills/skills/weekly-report-generator .agents/skills/
 ### 1. 核心能力与亮点
 
 1. **PPT 样式 1:1 高保真还原（4 页基础骨架 + Slide 5+ 方案研讨扩展）**：
-   - **Slide 1 封面页**：企业 Branding、徽标、项目编号、汇报周期、汇报人、机密等级与整体健康度徽章。
+   - **Slide 1 封面页**：企业 Branding、徽标、项目编号、汇报周期、汇报人、机密等级与整体健康度徽章，搭配沉浸式深色渐变与微透毛玻璃卡片。
    - **Slide 2 整体项目计划 (Work Plan / Timeline)**：端到端甘特图、跨多周任务条带映射、`We are here` 当前周动态红箭头指针、法定节假日金色高亮列、关键里程碑红星（★）。
-   - **Slide 3 交付物及状态 (Deliverables / Output Status)**：聚焦项目**主要交付物与核心里程碑门禁**，支持红黄绿风险状态指示（`Good` / `Caution` / `High Risk`）。
-   - **Slide 4 本周工作 (Task Management)**：聚焦微观战术任务执行，完全复刻双列卡片（前期工作 / 下周计划 / 风险管理 / 未来两周里程碑）+ 状态徽标。
+   - **Slide 3 交付物及状态 (Deliverables / Output Status)**：聚焦项目**主要交付物与战略里程碑门禁**，支持红黄绿风险状态指示（`Good` / `Caution` / `High Risk`）与软胶囊徽标。
+   - **Slide 4 本周工作 (Task Management)**：聚焦微观战术任务执行，完全复刻双列卡片（前期工作 / 下周计划 / 风险管理 / 未来两周里程碑）+ 统一行高规范与彩色指示前缀。
    - **Slide 5+ 方案研讨与议题扩展页 (Discussion & Proposal Slides)**：周报后可按需追加任意多页议题页，支持 **方案比选 (`comparison`)**、**卡片矩阵 (`cards`)**、**议题深研 (`agenda`)**、**评估矩阵表格 (`table`)** 与 **自由 HTML (`custom`)** 等多种专业排版，配备方案推荐徽标与底部周会决议卡片。
-2. **所见即所得直接内容编辑 (WYSIWYG Inline Editing)**：
-   - **细节改字零阻力**：无需 Agent 重新调用 skill 重新生成，点击顶部工具栏 **「✏️ 编辑内容」**（或直接双击页面任意文字，或按快捷键 `E`）即可直接在网页上修改字词、措辞或交付物状态。
-   - **双向数据同步**：修改后的文字即时生效并同步回填至嵌入的 JSON 数据中。
-   - **一键另存与打印**：点击 **「💾 另存 HTML」** 可将修改好的独立文件保存在本地；点击 **「导出 PDF / 打印」** 直接打印为矢量 PDF。
-3. **全屏无黑边演播模式 (Presentation Deck Mode)**：
-   - 支持动态 1 至 N 页全屏演播，自动识别总页数并同步更新翻页状态（`1 / N`）。
-   - 点击顶部工具栏 **「📽️ 演示模式」**（或按快捷键 `P`，或 URL 附带 `?present=1`）进入演播模式。
-   - 响应式等比铺满浏览器视口（自适应屏幕分辨率，彻底消除黑边与背景留白）。
-   - 快捷键支持：`←` / `→` 或 `Space` 翻页，`F` 进入全屏，`Esc` 退出；鼠标点击左/右半屏直接切页。
+2. **影院级演播动效与无黑边演示模式 (Presentation Deck Mode)**：
+   - **交错入场动画（Staggered Entrance）**：翻页时标题、指标与卡片依次平滑升起，动效自然灵动。
+   - **动态微胶囊分页点**：悬浮 HUD 自动适配页面数量，当前页展开为发光胶囊 Pill，支持点击任意点即时跳转。
+   - **空闲 2.6s 自动隐匿**：全屏演播时 HUD 智能淡出，100% 呈现无遮挡内容；鼠标轻移或按键瞬间滑出唤醒。
+   - **快捷键交互**：`P` 进入演示，`←` / `→` 或 `Space` 翻页，`F` 全屏，`Esc` 退出；鼠标点击左右两侧半屏直接切页。
+   - **浮空 Toast 通知**：主题切换、模式切换、保存导出时提供柔和的毛玻璃气泡状态反馈。
+3. **所见即所得直接内容编辑 (WYSIWYG Inline Editing)**：
+   - **细节改字零阻力**：无需 Agent 重新调用技能编译，点击顶部工具栏 **「✏️ 编辑内容」**（或直接双击页面任意文字，或按快捷键 `E`）即可直接在网页上改写字词或交付物状态。
+   - **双向数据同步**：修改内容即时渲染并自动同步回填至嵌入的 JSON 数据中。
+   - **一键另存与打印**：点击 **「💾 另存 HTML」** 下载包含所有修改的独立文件；点击 **「导出 PDF / 打印」** 直接打印为矢量 PDF。
 4. **工作周日期严格约束与智能校验系统**：
-   - **周一至周五标准工作周**：Timeline 中的每周日期严格要求为周一至周五（Python `weekday() == 0` 到 `4`），杜绝大模型凭空猜测日历导致的星期偏移。
+   - **周一至周五标准工作周**：Timeline 中的每周日期严格要求为周一至周五（Python `weekday() == 0` 到 `4`），杜绝大模型猜测日历导致的星期偏移。
    - **智能推导与报错诊断**：运行生成脚本时自动校验日历，提供详细告警并附带推算后的标准周一至周五区间建议。
-   - **命令行支持**：提供 `--check-dates`（仅校验）、`--fix-dates`（自动对齐纠正）与 `--strict-dates`（严格报错中断）。
-5. **全页面大标题与副标题动态渲染 & 智能自适应**：
-   - Slide 2、3、4 的大标题（`title`）与副标题（`subtitle`）全面支持从输入 JSON 动态传入。
-   - **自动范围推导**：若未显式指定副标题或沿用了旧模板默认值，生成器将自动根据实际周列表智能推导周期（如自适应更新为 `(W1 - W8)`），并优先保留用户自定义的阶段目标说明。
-6. **多企业风格定义 (Theme System)**：
-   - 基于 CSS Custom Properties，内置 6 款预设企业主题：`classic-navy`（阿斯利康蓝）、`tech-blue`（科技蓝）、`corporate-crimson`（华为/联想红）、`emerald-forest`（ESG森绿）、`cyber-purple`（数智紫）、`minimal-slate`（极简灰）。
-   - 网页端支持侧边栏抽屉一键实时换肤，内置实时 JSON 编辑器并支持即时重新渲染。
-7. **用于邮件提交的 16:9 矢量 PDF 导出**：
-   - 精准 `@media print` 媒体查询，一页幻灯片严格对应一页 PDF，无内容截断或溢出。
-   - 支持网页一键打印与 Python 无头 Chrome 自动化静默导出。
+   - **命令行工具支持**：提供 `--check-dates`（仅校验）、`--fix-dates`（自动对齐纠正）与 `--strict-dates`（严格报错中断）。
+5. **7 大企业主题与自定义调色 (Theme System)**：
+   - 内置 7 套企业级视觉预设：
+     * `astrazeneca`（阿斯利康 · 经典深蓝与洋红）
+     * `novartis`（诺华 · 钴蓝与活力暖橙）
+     * `bayer`（拜耳 · 经典深蓝与生机绿）
+     * `jnj`（强生 · 热情红）
+     * `novo-nordisk`（诺和诺德 · 纯蓝与海蓝）
+     * `wukong-green`（极客翠绿 · 翠绿生机与赛博青）
+     * `vercel-minimal`（Vercel 极简风 · 黑白无衬线）
+   - 支持在 JSON 数据中传入 `customTheme` 自定义颜色覆盖，网页端支持侧边栏抽屉一键实时调色。
+6. **用于邮件提交的 16:9 矢量 PDF 导出**：
+   - 精准 `@media print` 媒体查询，动画与过渡自动安全降级为零延迟矢量排版，一页幻灯片严格对应一页 PDF，无跨页或溢出截断。
 
 ---
 
-### 2. 快速使用
+### 2. 快速使用指令
 
 ```bash
 cd skills/weekly-report-generator
@@ -80,7 +129,7 @@ cd skills/weekly-report-generator
 # 1. 常规编译生成 HTML 周报
 python3 scripts/generate_report.py \
   --data examples/sample_data.json \
-  --theme classic-navy \
+  --theme astrazeneca \
   --output weekly-report.html
 
 # 2. 仅校验时间轴日期合法性（不生成 HTML）
@@ -89,7 +138,7 @@ python3 scripts/generate_report.py --data examples/sample_data.json --check-date
 # 3. 自动将非标准日期对齐为周一至周五并生成报告
 python3 scripts/generate_report.py --data your_data.json --fix-dates --output weekly-report.html
 
-# 4. 导出为高清 16:9 矢量 PDF 附件（依赖本地 Chrome）
+# 4. 导出为高清 16:9 矢量 PDF 附件（依赖本地 Chrome/Edge）
 python3 scripts/export_pdf.py \
   --input weekly-report.html \
   --output weekly-report.pdf
@@ -97,47 +146,47 @@ python3 scripts/export_pdf.py \
 
 ---
 
-### 3. Agent 周报生成最佳实践 (Agent Best Practices)
+### 3. Agent 驱动周报生成最佳实践 (Agent Best Practices)
 
-当驱动 AI Agent 自动生成周报 JSON 数据时，请特别注意以下设计原则：
+当驱动任意 AI Agent（Claude Code、Antigravity、Cursor 等）自动构建周报 JSON 数据时，请提示 Agent 遵循以下设计准则：
 
-#### ① Timeline 日期生成规则
-- 严禁凭空估算日期！Agent 应通过 Python 准确推导目标年份的目标工作周：
+#### ① Timeline 日期推导规则
+- 严禁凭空估算日期！Agent 应使用标准库准确推导目标年份的工作周：
   ```python
   import datetime
   d = datetime.date(2026, 9, 16)
-  mon = d - datetime.timedelta(days=d.weekday()) # 周一
-  fri = mon + datetime.timedelta(days=4)          # 周五
-  dates = f"{mon.month}.{mon.day}-{fri.month}.{fri.day}" # "9.14-9.18"
+  mon = d - datetime.timedelta(days=d.weekday())  # 周一 (Monday)
+  fri = mon + datetime.timedelta(days=4)           # 周五 (Friday)
+  dates = f"{mon.month}.{mon.day}-{fri.month}.{fri.day}"  # "9.14-9.18"
   ```
 - 法定节假日周（如国庆、春节等）必须设置 `"isHoliday": true` 并提供 `"holidayName": "国庆假期"`，甘特图将自动渲染贯通金色高亮列。
 
 #### ② 交付物看板 (Slide 3) vs 本周任务 (Slide 4) 职责边界
-- **Slide 3（Deliverables / Output Status）**：**仅填写主要成果物与战略级里程碑门禁**（如需求确认、核心系统开发完成、SIT/UAT 验收签收、上线发布 Go-Live 等，通常 5~10 项），**严禁记录琐碎的细节开发进展**。
-- **Slide 4（This Week / Task Management）**：记录微观战术任务，包括日常联调细节、具体 bug 修复进展、下周行动项与即时风险。
+- **Slide 3（Deliverables / Output Status）**：**仅填写主要成果物与战略级里程碑门禁**（如需求确认、核心系统开发完成、SIT/UAT 验收签收、上线发布 Go-Live 等，通常 5~10 项），**严禁记录细碎的日常开发动作**。
+- **Slide 4（This Week / Task Management）**：记录微观战术任务，包括日常联调细节、具体功能收尾、下周行动项与即时风险。
 
 ---
 
 ### 4. 详细规范与文档链接
 
-- 技能指令说明（Agent Prompting）：[`skills/weekly-report-generator/SKILL.md`](./skills/weekly-report-generator/SKILL.md)
+- 技能定义与 Agent Runbook：[`skills/weekly-report-generator/SKILL.md`](./skills/weekly-report-generator/SKILL.md)
 - 数据格式与输入指南：[`skills/weekly-report-generator/references/input_format_guide.md`](./skills/weekly-report-generator/references/input_format_guide.md)
 - JSON 数据 Schema 规范：[`skills/weekly-report-generator/references/data_schema.md`](./skills/weekly-report-generator/references/data_schema.md)
 - 示例数据集：[`skills/weekly-report-generator/examples/sample_data.json`](./skills/weekly-report-generator/examples/sample_data.json)
 
 ---
 
-## 📝 贡献新技能 (Contributing)
+## 📝 扩展新技能 (Contributing)
 
-欢迎扩展更多通用 Agent Skills！每个新技能应遵循 Antigravity 官方技能规范：
+欢迎贡献更多通用 Agent Skills！每个新技能遵循通用开放技能标准：
 
 ```text
 skills/<skill-name>/
-├── SKILL.md            # 包含 YAML frontmatter (name, description) 与 Runbook 说明
-├── scripts/            # 自动化脚本与工具链
+├── SKILL.md            # 包含 YAML frontmatter (name, description) 与执行手册
+├── scripts/            # 跨平台自动化脚本与工具链
 ├── templates/          # 模板与配置资源
-├── examples/           # 样例输入与产出
-└── references/         # 详细规范文档与手册
+├── examples/           # 样例输入与生成产出
+└── references/         # 详细规范文档与数据模型说明
 ```
 
 ---
