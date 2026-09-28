@@ -135,6 +135,7 @@ skills/weekly-report-generator/
 │   ├── sample_data.json              # 基础范例数据（包含多工作流、甘特条、节假日与研讨页）
 │   ├── weekly-report.html            # 编译生成的示范周报
 │   └── weekly-report.pdf             # 导出的示范矢量 PDF
+├── tests/                            # unittest 测试（python3 -m unittest discover -s tests）
 └── references/
     ├── input_format_guide.md         # 周报 JSON 数据输入格式与甘特图排版详细指南
     └── schema.json                   # JSON Schema 字段定义（校验依据）

@@ -14,10 +14,10 @@ import argparse
 from pathlib import Path
 
 try:
-    from pptx_extractor import extract_pptx_template, build_pptx_css_override
+    from pptx_extractor import extract_pptx_template
     from validate_data import validate_data, print_report
 except ImportError:
-    from .pptx_extractor import extract_pptx_template, build_pptx_css_override
+    from .pptx_extractor import extract_pptx_template
     from .validate_data import validate_data, print_report
 
 TEMPLATE_PATH = Path(__file__).resolve().parent.parent / "templates" / "weekly_report_template.html"
@@ -180,8 +180,8 @@ def generate_report(data_path, output_path, theme=None, pptx_path=None, auto_fix
     """
     Builds the standalone report HTML. All slide content is rendered client-side by the
     template's renderAll() from the embedded #weekly-report-data JSON (also used by headless
-    Chrome for PDF export), so this only validates data, applies theme/PPTX styling and
-    embeds the JSON.
+    Chrome for PDF export), so this only validates data, extracts PPTX assets into the data,
+    sets the initial theme and embeds the JSON.
     """
     if auto_fix_dates:
         fix_dates_in_file(data_path)
@@ -203,8 +203,6 @@ def generate_report(data_path, output_path, theme=None, pptx_path=None, auto_fix
     if pptx_path:
         print(f"📦 Extracting corporate template assets from PPTX: {pptx_path}...")
         pptx_data = extract_pptx_template(pptx_path)
-        pptx_css = build_pptx_css_override(pptx_data)
-        html = html.replace("</head>", f"{pptx_css}\n</head>", 1)
 
         company = data.setdefault("company", {})
         if pptx_data.get("logo_data_url"):
@@ -215,7 +213,7 @@ def generate_report(data_path, output_path, theme=None, pptx_path=None, auto_fix
         if pptx_data.get("slogan") and not company.get("department"):
             company["department"] = pptx_data["slogan"]
 
-        # Stored in data so client-side re-rendering retains customPptx info
+        # Backgrounds, colors and logo are applied by the template's applyPptxTemplateStyles()
         data["customPptx"] = {
             "colors": pptx_data.get("colors", {}),
             "coverBgDataUrl": pptx_data.get("cover_bg_data_url"),
