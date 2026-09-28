@@ -2117,6 +2117,7 @@
       .data-modal-overlay,
       .presentation-hud,
       .edit-mode-tip-bar,
+      .toast-notification,
       script,
       noscript {
         display: none !important;
@@ -2383,6 +2384,12 @@
     </button>
   </div>
 
+  <noscript>
+    <div style="padding: 12px 16px; background: #fef3c7; color: #92400e; font-weight: 600; text-align: center;">
+      本周报由 JavaScript 渲染，请在浏览器中打开并启用 JavaScript（当前显示的是模板示例内容）。
+    </div>
+  </noscript>
+
   <!-- All 4 Slides Deck -->
   <div class="slide-deck">
 
@@ -2405,7 +2412,7 @@
 
       <div class="cover-center-content">
         <div class="cover-tag">Project Weekly Progress</div>
-        <h1 class="cover-main-title">Weekly Report</h1>
+        <h1 class="cover-main-title" id="displayReportTitle">Weekly Report</h1>
         <h2 class="cover-sub-title" id="displayProjectTitle">手机端搭建与 Web 端优化项目</h2>
         <div class="cover-period-pill">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2421,13 +2428,13 @@
       <div class="cover-meta-grid">
         <div class="meta-card">
           <span class="meta-label">项目编号 / Code</span>
-          <span class="meta-value">PRJ-2024-AZ-Q1</span>
+          <span class="meta-value" id="displayProjectCode">PRJ-2024-AZ-Q1</span>
         </div>
         <div class="meta-card">
           <span class="meta-label">当前进度状态 / Status</span>
-          <span class="meta-value" style="color: #d97706; display: flex; align-items: center; gap: 6px;">
+          <span class="meta-value" id="displayOverallStatus" style="color: #d97706; display: flex; align-items: center; gap: 6px;">
             <span class="status-dot dot-caution" style="width: 8px; height: 8px;"></span>
-            受控推进中
+            <span class="overall-status-text">受控推进中</span>
           </span>
         </div>
         <div class="meta-card">
@@ -2436,7 +2443,7 @@
         </div>
         <div class="meta-card">
           <span class="meta-label">发布日期 / Date</span>
-          <span class="meta-value">2024-04-03</span>
+          <span class="meta-value" id="displayReportDate">2024-04-03</span>
         </div>
       </div>
 
@@ -3160,7 +3167,7 @@
         '.slide .company-dept',
         '.slide .cover-logo-text',
         '.slide .company-logo-icon',
-        '.slide .cover-meta-item span',
+        '.slide .cover-meta-grid .meta-value:not(#displayOverallStatus)',
         '.slide .cover-tag',
         '.slide .overall-status-text',
         '#slide2 .gantt-table td:not(.col-gantt-bar)',
@@ -3222,6 +3229,14 @@
       }
       const reporter = document.getElementById('displayReporter');
       if (reporter) currentReportData.project.reporter = reporter.innerText.trim();
+      const reportTitle = document.getElementById('displayReportTitle');
+      if (reportTitle) currentReportData.project.reportTitle = reportTitle.innerText.trim();
+      const projCode = document.getElementById('displayProjectCode');
+      if (projCode) currentReportData.project.projectCode = projCode.innerText.trim();
+      const reportDate = document.getElementById('displayReportDate');
+      if (reportDate) currentReportData.project.reportDate = reportDate.innerText.trim();
+      const statusText = document.querySelector('#displayOverallStatus .overall-status-text');
+      if (statusText) currentReportData.project.overallStatusText = statusText.innerText.trim();
 
       // 2. Timeline Slide 2
       const tlTitle = document.querySelector('#slide2 .slide-title');
@@ -3417,7 +3432,7 @@
         dataScript.type = 'application/json';
         clonedDoc.querySelector('body').appendChild(dataScript);
       }
-      dataScript.textContent = JSON.stringify(currentReportData || DEFAULT_SAMPLE_DATA, null, 2);
+      dataScript.textContent = JSON.stringify(currentReportData || DEFAULT_SAMPLE_DATA, null, 2).replace(/<\//g, '<\\/');
 
       const blob = new Blob(["<!DOCTYPE html>\n" + clonedDoc.outerHTML], { type: "text/html;charset=utf-8" });
       const a = document.createElement('a');
@@ -3441,7 +3456,7 @@
       'vercel-minimal': 'Vercel 极简风'
     };
 
-    function changeTheme(themeName) {
+    function changeTheme(themeName, silent) {
       if (!themeName) return;
       document.body.setAttribute('data-theme', themeName);
       
@@ -3456,7 +3471,7 @@
       if (sel && sel.value !== themeName) {
         sel.value = themeName;
       }
-      if (typeof showToast === 'function') {
+      if (!silent && typeof showToast === 'function') {
         showToast('🎨 已切换至 ' + (THEME_NAMES[themeName] || themeName));
       }
     }
@@ -3488,17 +3503,20 @@
       const logo = document.getElementById('inputLogoText')?.value;
       const dept = document.getElementById('inputDeptName')?.value;
 
+      if (currentReportData && !currentReportData.company) currentReportData.company = {};
+      const comp = currentReportData ? currentReportData.company : {};
+
       if (company) {
-        const cEl = document.querySelector('.cover-company');
-        if (cEl) cEl.textContent = company;
+        setText('displayCompanyName', company);
+        comp.name = company;
       }
-      if (logo) {
-        const lEl = document.querySelector('.cover-logo-text');
-        if (lEl) lEl.textContent = logo;
+      if (logo && !comp.logoDataUrl) {
+        setText('logoIconBadge', logo);
+        comp.logoText = logo;
       }
       if (dept) {
-        const dEl = document.querySelector('.cover-meta-item:first-child span');
-        if (dEl) dEl.textContent = dept;
+        setText('displayDeptName', dept);
+        comp.department = dept;
       }
     }
 
@@ -4093,7 +4111,7 @@
 
       // 1. Theme
       if (data.theme) {
-        changeTheme(data.theme);
+        changeTheme(data.theme, true);
         const sel = document.getElementById('themeSelect');
         if (sel) sel.value = data.theme;
       }
@@ -4128,49 +4146,85 @@
       renderCover(data);
 
       // 3. Timeline / Work Plan (Slide 2)
-      renderTimeline(data.timeline || data.slide2_plan);
+      renderTimeline(data.timeline || data.slide2_plan || {});
 
       // 4. Deliverables (Slide 3)
-      renderDeliverables(data.deliverables || data.slide3_deliverables);
+      renderDeliverables(data.deliverables || data.slide3_deliverables || {});
 
       // 5. This Week / Task Management (Slide 4)
-      renderThisWeek(data.thisWeek || data.slide4_tasks);
+      renderThisWeek(data.thisWeek || data.slide4_tasks || {}, getOverallStatus(data));
 
       // 6. Discussion / Proposal Slides (Slide 5+)
       renderDiscussionSlides(data.discussionSlides || data.appendixSlides || []);
     }
 
     // Render Slide 1: Cover
+    const OVERALL_STATUS = {
+      good:    { color: '#059669', dot: 'dot-good',    text: '如期进行' },
+      caution: { color: '#d97706', dot: 'dot-caution', text: '受控推进中' },
+      risk:    { color: '#dc2626', dot: 'dot-risk',    text: '存在风险' }
+    };
+
+    function getOverallStatus(data) {
+      const proj = data.project || {};
+      const tw = data.thisWeek || data.slide4_tasks || {};
+      const key = String(proj.overallStatus || tw.overallStatus || 'caution').toLowerCase();
+      return OVERALL_STATUS[key] ? key : 'caution';
+    }
+
+    function setText(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    }
+
     function renderCover(data) {
       const comp = data.company || {};
       const proj = data.project || {};
-      
-      if (comp.name) document.getElementById('displayCompanyName').textContent = comp.name;
-      if (comp.logoDataUrl) {
-        const logoBadge = document.getElementById('logoIconBadge');
-        if (logoBadge) {
-          logoBadge.innerHTML = `<img src="${comp.logoDataUrl}" style="max-height:36px;max-width:48px;object-fit:contain;" alt="Logo" />`;
+
+      const companyName = comp.name || '企业数字化创新交付中心';
+      const department = comp.department || '技术交付团队';
+      const logoText = comp.logoText || 'TECH';
+      const reportTitle = proj.reportTitle || 'Weekly Report';
+
+      setText('displayCompanyName', companyName);
+      setText('displayDeptName', department);
+      setText('displayReportTitle', reportTitle);
+      setText('displayProjectTitle', proj.title || '核心系统升级与交付项目');
+      setText('displayReportPeriod', '汇报周期：' + (proj.period || ''));
+      setText('displayProjectCode', proj.projectCode || '-');
+      setText('displayReporter', proj.reporter || '项目交付团队');
+      setText('displayReportDate', proj.reportDate || '-');
+      document.title = `项目周报 | ${reportTitle}`;
+
+      const logoBadge = document.getElementById('logoIconBadge');
+      if (logoBadge) {
+        if (comp.logoDataUrl) {
+          logoBadge.innerHTML = `<img src="${escapeHtml(comp.logoDataUrl)}" style="max-height:36px;max-width:48px;object-fit:contain;" alt="Logo" />`;
           logoBadge.style.background = 'transparent';
           logoBadge.style.border = 'none';
           logoBadge.style.boxShadow = 'none';
-        }
-      } else if (comp.logoText) {
-        const logoBadge = document.getElementById('logoIconBadge');
-        if (logoBadge) {
+        } else {
           logoBadge.removeAttribute('style');
-          logoBadge.textContent = comp.logoText;
+          logoBadge.textContent = logoText;
         }
       }
-      if (comp.department) document.getElementById('displayDeptName').textContent = comp.department;
-      
-      if (proj.title) document.getElementById('displayProjectTitle').textContent = proj.title;
-      if (proj.period) document.getElementById('displayReportPeriod').textContent = "汇报周期：" + proj.period;
-      if (proj.reporter) document.getElementById('displayReporter').textContent = proj.reporter;
+
+      // Overall status (cover meta card)
+      const statusKey = getOverallStatus(data);
+      const st = OVERALL_STATUS[statusKey];
+      const statusEl = document.getElementById('displayOverallStatus');
+      if (statusEl) {
+        statusEl.style.color = st.color;
+        const dot = statusEl.querySelector('.status-dot');
+        if (dot) dot.className = `status-dot ${st.dot}`;
+        const txt = statusEl.querySelector('.overall-status-text');
+        if (txt) txt.textContent = proj.overallStatusText || st.text;
+      }
 
       // Fill in input values in drawer
-      if (comp.name) document.getElementById('inputCompanyName').value = comp.name;
-      if (comp.logoText) document.getElementById('inputLogoText').value = comp.logoText;
-      if (comp.department) document.getElementById('inputDeptName').value = comp.department;
+      document.getElementById('inputCompanyName').value = companyName;
+      document.getElementById('inputLogoText').value = logoText;
+      document.getElementById('inputDeptName').value = department;
     }
 
     // Render Slide 2: Timeline (Work Plan — Overview)
@@ -4179,13 +4233,11 @@
       const weeks = timelineData.weeks || [];
       const tasks = timelineData.tasks || timelineData.rows || [];
       const currentWeekId = timelineData.currentWeek || "W16";
-      const weAreHereText = timelineData.weAreHereText || "We are here";
+      const weAreHereText = escapeHtml(timelineData.weAreHereText || "We are here");
       
       // Update Slide 2 Title & Subtitle
-      if (timelineData.title) {
-        const titleEl = document.querySelector('#slide2 .slide-title');
-        if (titleEl) titleEl.textContent = timelineData.title;
-      }
+      const tlTitleEl = document.querySelector('#slide2 .slide-title');
+      if (tlTitleEl) tlTitleEl.textContent = timelineData.title || 'Work Plan —Overview';
       let subText = timelineData.subtitle;
       if (weeks.length) {
         const firstW = weeks[0].name || weeks[0].id || '';
@@ -4197,10 +4249,8 @@
           subText = subText.replace('(W6 - W20)', rangeStr);
         }
       }
-      if (subText) {
-        const subEl = document.querySelector('#slide2 .slide-subtitle');
-        if (subEl) subEl.textContent = subText;
-      }
+      const tlSubEl = document.querySelector('#slide2 .slide-subtitle');
+      if (tlSubEl) tlSubEl.textContent = subText || '端到端执行计划及进度跟踪';
 
       const holidayMap = {};
       weeks.forEach(w => {
@@ -4222,8 +4272,8 @@
           else if (w.id === currentWeekId) style = ' style="background-color: var(--brand-primary-dark);"';
           ths += `
             <th class="gantt-header-th col-week"${style}>
-              <div class="week-title">${w.name || w.id}</div>
-              <div class="week-date">${w.dates || ''}</div>
+              <div class="week-title">${escapeHtml(w.name || w.id)}</div>
+              <div class="week-date">${escapeHtml(w.dates || '')}</div>
             </th>
           `;
         });
@@ -4263,7 +4313,7 @@
           }
 
           // Stars
-          let stars = t.stars || [];
+          const stars = [...(t.stars || [])];
           if (t.milestone) {
             if (typeof t.milestone === 'string') stars.push(t.milestone);
             else if (t.milestone === true && t.end) stars.push(t.end);
@@ -4274,17 +4324,17 @@
           // Workstream rowspan cell
           if (!renderedWs.has(ws)) {
             renderedWs.add(ws);
-            cells += `<td rowspan="${workstreamCounts[ws]}" class="col-workstream" style="background:#f8fafc; font-weight:700;">${ws}</td>`;
+            cells += `<td rowspan="${workstreamCounts[ws]}" class="col-workstream" style="background:#f8fafc; font-weight:700;">${escapeHtml(ws)}</td>`;
           }
 
           // Category rowspan cell
           if (!renderedCat.has(wsCatKey)) {
             renderedCat.add(wsCatKey);
-            cells += `<td rowspan="${wsCatCounts[wsCatKey]}" class="col-category">${cat}</td>`;
+            cells += `<td rowspan="${wsCatCounts[wsCatKey]}" class="col-category">${escapeHtml(cat)}</td>`;
           }
 
           // Task name
-          cells += `<td class="col-task">${taskName}</td>`;
+          cells += `<td class="col-task">${escapeHtml(taskName)}</td>`;
 
           // Week cells
           weeks.forEach((w, wIdx) => {
@@ -4293,11 +4343,11 @@
             if (holidayMap[wId]) {
               if (rowIdx === 0) {
                 const holidayName = holidayMap[wId];
-                let holidayContent = `<div class="holiday-col-text">${holidayName}</div>`;
+                let holidayContent = `<div class="holiday-col-text">${escapeHtml(holidayName)}</div>`;
                 let holidayStyle = '';
                 if (wId === currentWeekId) {
                   holidayContent += `
-                    <div class="we-are-here-indicator" data-week="${wId}">
+                    <div class="we-are-here-indicator" data-week="${escapeHtml(wId)}">
                       <span class="red-arrow-up"></span>
                       <span>${weAreHereText}</span>
                     </div>`;
@@ -4316,7 +4366,7 @@
               if (startIdx !== -1 && endIdx !== -1 && wIdx >= startIdx && wIdx <= endIdx) {
                 const status = (s.status || s.type || "completed").toLowerCase();
                 if (status === "completed" || status === "done") cellClass = "gantt-bar-completed";
-                else if (status === "active" || status === "ongoing") cellClass = "gantt-bar-active";
+                else if (status === "active" || status === "ongoing" || status === "current") cellClass = "gantt-bar-active";
                 else cellClass = "gantt-bar-planned";
                 break;
               }
@@ -4331,7 +4381,7 @@
             // We are here indicator
             if (rowIdx === tasks.length - 1 && wId === currentWeekId) {
               content += `
-                <div class="we-are-here-indicator" data-week="${wId}">
+                <div class="we-are-here-indicator" data-week="${escapeHtml(wId)}">
                   <span class="red-arrow-up"></span>
                   <span>${weAreHereText}</span>
                 </div>
@@ -4354,10 +4404,8 @@
       if (!delivData) return;
 
       // Update Slide 3 Title & Subtitle
-      if (delivData.title) {
-        const titleEl = document.querySelector('#slide3 .slide-title');
-        if (titleEl) titleEl.textContent = delivData.title;
-      }
+      const delivTitleEl = document.querySelector('#slide3 .slide-title');
+      if (delivTitleEl) delivTitleEl.textContent = delivData.title || 'Deliverables / Output Status';
       const subEl = document.querySelector('#slide3 .slide-subtitle');
       if (subEl) {
         subEl.textContent = delivData.subtitle || "关键交付节点与成果物健康度评估";
@@ -4368,23 +4416,24 @@
       if (tbody) {
         let rowsHtml = '';
         items.forEach(item => {
-          const status = item.status || "未开始";
+          const status = String(item.status || "未开始");
+          const statusLc = status.toLowerCase();
           let pillCls = "pending";
-          if (status.includes("完成") || status.toLowerCase() === "completed") pillCls = "completed";
-          else if (status.includes("进行") || status.toLowerCase() === "ongoing") pillCls = "ongoing";
+          if (status.includes("完成") || statusLc === "completed") pillCls = "completed";
+          else if (status.includes("进行") || statusLc === "ongoing" || statusLc === "active") pillCls = "ongoing";
 
           let dotHtml = '<span style="color:#94a3b8;">-</span>';
-          const risk = (item.risk || "none").toLowerCase();
-          if (risk === "good" || risk === "norisk") dotHtml = '<span class="status-dot dot-good"></span>';
-          else if (risk === "caution" || risk === "warning") dotHtml = '<span class="status-dot dot-caution"></span>';
-          else if (risk === "risk" || risk === "danger") dotHtml = '<span class="status-dot dot-risk"></span>';
+          const risk = String(item.risk || "none").toLowerCase();
+          if (["good", "norisk", "no_risk"].includes(risk)) dotHtml = '<span class="status-dot dot-good"></span>';
+          else if (["caution", "warning", "medium"].includes(risk)) dotHtml = '<span class="status-dot dot-caution"></span>';
+          else if (["risk", "high", "danger"].includes(risk)) dotHtml = '<span class="status-dot dot-risk"></span>';
 
           rowsHtml += `
             <tr>
-              <td class="col-m-name">${item.milestone || ''}</td>
-              <td class="col-m-prog">${item.progress || '-'}</td>
-              <td class="col-m-date">${item.date || ''}</td>
-              <td class="col-m-stat"><span class="status-pill ${pillCls}">${status}</span></td>
+              <td class="col-m-name">${escapeHtml(item.milestone || '')}</td>
+              <td class="col-m-prog">${escapeHtml(item.progress || '-')}</td>
+              <td class="col-m-date">${escapeHtml(item.date || '')}</td>
+              <td class="col-m-stat"><span class="status-pill ${pillCls}">${escapeHtml(status)}</span></td>
               <td class="col-m-indi">${dotHtml}</td>
             </tr>
           `;
@@ -4394,23 +4443,19 @@
     }
 
     // Render Slide 4: This Week (Task Management)
-    function renderThisWeek(thisWeekData) {
+    function renderThisWeek(thisWeekData, overallStatus) {
       if (!thisWeekData) return;
 
       // Title & Subtitle
-      if (thisWeekData.title) {
-        const titleEl = document.querySelector('#slide4 .slide-title');
-        if (titleEl) titleEl.textContent = thisWeekData.title;
-      }
-      if (thisWeekData.subtitle) {
-        const sub = document.querySelector('#slide4 .slide-subtitle');
-        if (sub) sub.textContent = thisWeekData.subtitle;
-      }
+      const twTitleEl = document.querySelector('#slide4 .slide-title');
+      if (twTitleEl) twTitleEl.textContent = thisWeekData.title || 'Task Management';
+      const twSubEl = document.querySelector('#slide4 .slide-subtitle');
+      if (twSubEl) twSubEl.textContent = thisWeekData.subtitle || '';
 
-      // Status Circle
+      // Status Circle (PPT traffic-light colors)
       const circle = document.querySelector('#slide4 .ppt-status-circle');
       if (circle) {
-        const status = (thisWeekData.overallStatus || "caution").toLowerCase();
+        const status = String(thisWeekData.overallStatus || overallStatus || 'caution').toLowerCase();
         let color = "#ED7D31"; // caution
         if (status === "good") color = "#00B050";
         else if (status === "risk") color = "#FF0000";
@@ -4425,7 +4470,7 @@
           prevBox.innerHTML = tasks.map((t, idx) => `
             <div class="ppt-list-item">
               <span class="ppt-list-num">${idx + 1}.</span>
-              <div>${t.tag ? `<span class="ppt-tag">【${t.tag}】</span>` : ''}${t.content || ''}</div>
+              <div>${t.tag ? `<span class="ppt-tag">【${escapeHtml(t.tag)}】</span>` : ''}${escapeHtml(t.content || '')}</div>
             </div>
           `).join('');
         } else {
@@ -4441,7 +4486,7 @@
           nextBox.innerHTML = tasks.map((t, idx) => `
             <div class="ppt-list-item">
               <span class="ppt-list-num">${idx + 1}.</span>
-              <div>${t.tag ? `<span class="ppt-tag">【${t.tag}】</span>` : ''}${t.content || ''}</div>
+              <div>${t.tag ? `<span class="ppt-tag">【${escapeHtml(t.tag)}】</span>` : ''}${escapeHtml(t.content || '')}</div>
             </div>
           `).join('');
         } else {
@@ -4457,7 +4502,7 @@
           riskBox.innerHTML = tasks.map((t, idx) => `
             <div class="ppt-list-item">
               <span class="ppt-list-num">${idx + 1}.</span>
-              <div>${t.tag ? `<span class="ppt-tag">【${t.tag}】</span>` : ''}${t.content || ''}</div>
+              <div>${t.tag ? `<span class="ppt-tag">【${escapeHtml(t.tag)}】</span>` : ''}${escapeHtml(t.content || '')}</div>
             </div>
           `).join('');
         } else {
@@ -4472,8 +4517,8 @@
         if (ms.length) {
           msTableTbody.innerHTML = ms.map(m => `
             <tr>
-              <td>${m.name || '-'}</td>
-              <td>${m.date || '-'}</td>
+              <td>${escapeHtml(m.name || '-')}</td>
+              <td>${escapeHtml(m.date || '-')}</td>
             </tr>
           `).join('');
         } else {

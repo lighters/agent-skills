@@ -34,7 +34,9 @@ python3 scripts/export_pdf.py \
   --output weekly-report.pdf
 ```
 
-Themes: `astrazeneca` / `classic-navy`, `novartis`, `bayer`, `jnj`, `novo-nordisk`, `wukong-green`, `vercel-minimal`.
+Themes: `astrazeneca` / `classic-navy`, `novartis`, `bayer`, `jnj`, `novo-nordisk`, `wukong-green`, `vercel-minimal`. An unknown theme fails with the list of valid ids.
+
+`generate_report.py` validates the data and embeds it as JSON; all slides are rendered in the browser by the template's JS (`renderAll`). Open the HTML in a browser with JavaScript enabled — `export_pdf.py` uses headless Chrome, which runs the same renderer.
 
 ## Work Plan Date & Holiday Constraints (CRITICAL for Agents)
 
