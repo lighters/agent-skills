@@ -2405,9 +2405,7 @@
             <span class="company-dept" id="displayDeptName">商业技术交付团队</span>
           </div>
         </div>
-        <div style="font-size: 12px; color: #64748b; font-weight: 600;">
-          CONFIDENTIAL · 内部汇报
-        </div>
+        <div id="displayConfidential" style="font-size: 12px; color: #64748b; font-weight: 600;">CONFIDENTIAL · 内部汇报</div>
       </div>
 
       <div class="cover-center-content">
@@ -3169,6 +3167,7 @@
         '.slide .company-logo-icon',
         '.slide .cover-meta-grid .meta-value:not(#displayOverallStatus)',
         '.slide .cover-tag',
+        '#displayConfidential',
         '.slide .overall-status-text',
         '#slide2 .gantt-table td:not(.col-gantt-bar)',
         '#slide2 .gantt-table th:not(.gantt-week-th)',
@@ -3235,6 +3234,8 @@
       if (projCode) currentReportData.project.projectCode = projCode.innerText.trim();
       const reportDate = document.getElementById('displayReportDate');
       if (reportDate) currentReportData.project.reportDate = reportDate.innerText.trim();
+      const confidential = document.getElementById('displayConfidential');
+      if (confidential) currentReportData.project.confidential = confidential.innerText.trim();
       const statusText = document.querySelector('#displayOverallStatus .overall-status-text');
       if (statusText) currentReportData.project.overallStatusText = statusText.innerText.trim();
 
@@ -4194,6 +4195,7 @@
       setText('displayProjectCode', proj.projectCode || '-');
       setText('displayReporter', proj.reporter || '项目交付团队');
       setText('displayReportDate', proj.reportDate || '-');
+      setText('displayConfidential', proj.confidential || 'CONFIDENTIAL · 内部汇报');
       document.title = `项目周报 | ${reportTitle}`;
 
       const logoBadge = document.getElementById('logoIconBadge');

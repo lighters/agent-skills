@@ -34,9 +34,12 @@
   - **细节改字零阻力**：无需 Agent 重新跑一遍技能生成，点击顶部 **「✏️ 编辑内容」**（或直接双击页面任意文字，或按 `E`）即可直接在网页上修改错别字、润色一句话或修改交付物状态。
   - **双向数据同步**：修改后的文字不仅即时更新 DOM，还会自动同步回填至嵌入的 JSON 数据状态中。
   - **一键另存与打印**：点击 **「💾 另存 HTML」** 可一键下载保存包含修改的完整 HTML；点击 **「导出 PDF / 打印」** 即刻输出最新矢量 PDF。
+  - **JSON 全量更新**：点击 **「📝 数据 JSON」** 粘贴或修改完整数据，点击「即时计算生成全套周报」即可重新渲染所有页面（包括 Timeline 甘特图）。
 - **📅 周一至周五工作周严格约束与智能日期校验**：
   - 时间轴日期严格要求为周一至周五（Python `weekday() == 0` 到 `4`），杜绝大模型日期幻觉。
-  - 内置自动校验机制，支持 `--check-dates`（校验）、`--fix-dates`（自动对齐纠正）与 `--strict-dates`（严格模式）。
+  - 内置自动校验机制，支持 `--check-dates`（校验）、`--fix-dates`（自动对齐纠正并写回数据文件）与 `--strict-dates`（严格模式）。
+- **🔎 数据校验 (`--validate`)**：
+  - 基于 [`references/schema.json`](./references/schema.json) 检查字段类型、枚举值与必填项，并校验周 ID 引用、甘特图行分组与日期；拼错的字段名会给出「did you mean」提示。生成前自动执行，有错误时中止。
 - **🏷️ 全页面标题/副标题动态自适应**：
   - 支持自定义所有页面的大标题与副标题，未指定时自动根据实际周列表自适应计算周期区间（如 `(W1 - W8)`）。
 - **🎨 客户定制 PPT 模板导入与背景自适应 (Custom PPTX Template Extraction)**：
@@ -101,10 +104,10 @@ python3 scripts/generate_report.py \
   --pptx "/path/to/customer_template.pptx" \
   --output weekly-report.html
 
-# 3. 仅校验时间轴日期与节假日合法性
-python3 scripts/generate_report.py --data examples/sample_data.json --check-dates
+# 3. 校验数据（字段、枚举、周 ID 引用、甘特图行分组、周一至周五日期）
+python3 scripts/generate_report.py --data examples/sample_data.json --validate
 
-# 4. 自动纠正非标准日期为周一至周五并生成报告
+# 4. 将非标准日期纠正为周一至周五（写回数据文件）并生成报告
 python3 scripts/generate_report.py --data your_data.json --fix-dates --output weekly-report.html
 
 # 5. 导出为高清 16:9 矢量 PDF 附件（依赖本地 Chrome/Edge 浏览器）
@@ -122,19 +125,19 @@ skills/weekly-report-generator/
 ├── SKILL.md                          # 通用 Agent 技能描述与执行规范 (必读)
 ├── README.md                         # 技能概述与使用手册
 ├── scripts/
-│   ├── generate_report.py            # 周报核心 HTML 编译引擎（支持日期校验与 PPT 模板绑定）
+│   ├── generate_report.py            # 周报编译入口：数据校验、主题与 PPT 模板绑定、嵌入 JSON
+│   ├── validate_data.py              # 基于 schema.json 的数据校验（纯标准库）
 │   ├── pptx_extractor.py             # PPTX 母版底图、配色与 Logo 纯标准库提取器
 │   └── export_pdf.py                 # 无头 Chrome 矢量 PDF 导出脚本
 ├── templates/
-│   ├── weekly_report_template.html   # 高保真 PPT 响应式 HTML 模板（含动效、演示系统与 PPTX 导入）
-│   └── theme-presets.json            # 7 套企业主题调色板配置
+│   └── weekly_report_template.html   # 渲染引擎与主题（含动效、演示系统、编辑模式与 PPTX 导入）
 ├── examples/
 │   ├── sample_data.json              # 基础范例数据（包含多工作流、甘特条、节假日与研讨页）
 │   ├── weekly-report.html            # 编译生成的示范周报
 │   └── weekly-report.pdf             # 导出的示范矢量 PDF
 └── references/
     ├── input_format_guide.md         # 周报 JSON 数据输入格式与甘特图排版详细指南
-    └── data_schema.md                # JSON Schema 字段定义规范
+    └── schema.json                   # JSON Schema 字段定义（校验依据）
 ```
 
 ---
@@ -143,4 +146,4 @@ skills/weekly-report-generator/
 
 - **Agent 技能指令与执行约束**：[`SKILL.md`](./SKILL.md)
 - **JSON 输入格式与排版指南**：[`references/input_format_guide.md`](./references/input_format_guide.md)
-- **Schema 字段说明**：[`references/data_schema.md`](./references/data_schema.md)
+- **Schema 字段定义**：[`references/schema.json`](./references/schema.json)

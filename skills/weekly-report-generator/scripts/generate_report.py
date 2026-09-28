@@ -15,14 +15,26 @@ from pathlib import Path
 
 try:
     from pptx_extractor import extract_pptx_template, build_pptx_css_override
+    from validate_data import validate_data, print_report
 except ImportError:
     from .pptx_extractor import extract_pptx_template, build_pptx_css_override
+    from .validate_data import validate_data, print_report
+
+TEMPLATE_PATH = Path(__file__).resolve().parent.parent / "templates" / "weekly_report_template.html"
 
 def load_json(path):
     with open(path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
-def validate_timeline_dates(timeline_data, project_data, auto_fix=False, strict=False):
+def save_json(path, data):
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+
+def get_timeline(data):
+    return data.get("timeline", data.get("slide2_plan", {}))
+
+def validate_timeline_dates(timeline_data, project_data, auto_fix=False, strict=False, verbose=True):
     """
     Validates work plan timeline weeks against standard business calendar rules:
     1. Standard work weeks MUST be Monday to Friday (周一至周五).
@@ -125,7 +137,7 @@ def validate_timeline_dates(timeline_data, project_data, auto_fix=False, strict=
     if fixed_count > 0:
         print(f"🔧 [Date Auto-Fix] Automatically adjusted {fixed_count} week(s) to exact Monday-to-Friday dates.")
 
-    if issues:
+    if issues and verbose:
         print("\n" + "=" * 76, file=sys.stderr)
         print("⚠️  [Work Plan Timeline Date Validation Warnings]", file=sys.stderr)
         print("   Each regular week in Work Plan must represent Monday to Friday (周一至周五),", file=sys.stderr)
@@ -135,14 +147,34 @@ def validate_timeline_dates(timeline_data, project_data, auto_fix=False, strict=
             print(f"   • {issue}", file=sys.stderr)
         print("=" * 76 + "\n", file=sys.stderr)
 
-        if strict:
-            raise ValueError(f"Timeline date validation failed with {len(issues)} issue(s). Use --fix-dates to auto-correct.")
+    if issues and strict:
+        raise ValueError(f"Timeline date validation failed with {len(issues)} issue(s). Use --fix-dates to auto-correct.")
 
     return issues
 
 def load_theme_ids(template_html):
     """Theme ids that have a [data-theme="..."] CSS block in the template."""
     return list(dict.fromkeys(re.findall(r'\[data-theme="([\w-]+)"\]', template_html)))
+
+def fix_dates_in_file(data_path):
+    """Aligns non-holiday weeks to Monday-Friday and writes the corrected JSON back."""
+    data = load_json(data_path)
+    before = json.dumps(data, ensure_ascii=False)
+    validate_timeline_dates(get_timeline(data), data.get("project", {}), auto_fix=True, verbose=False)
+    if json.dumps(data, ensure_ascii=False) != before:
+        save_json(data_path, data)
+        print(f"💾 Wrote corrected dates back to {data_path}")
+
+def check_data(data):
+    """Schema + cross-field validation. Prints findings; returns (errors, warnings)."""
+    with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
+        theme_ids = load_theme_ids(f.read())
+    errors, warnings = validate_data(data, theme_ids)
+    if errors or warnings:
+        print("\n🔎 [Data Validation]", file=sys.stderr)
+        print_report(errors, warnings, sys.stderr)
+        print("   Field reference: references/schema.json\n", file=sys.stderr)
+    return errors, warnings
 
 def generate_report(data_path, output_path, theme=None, pptx_path=None, auto_fix_dates=False, strict_dates=False):
     """
@@ -151,22 +183,19 @@ def generate_report(data_path, output_path, theme=None, pptx_path=None, auto_fix
     Chrome for PDF export), so this only validates data, applies theme/PPTX styling and
     embeds the JSON.
     """
-    base_dir = Path(__file__).resolve().parent.parent
-    template_path = base_dir / "templates" / "weekly_report_template.html"
-
+    if auto_fix_dates:
+        fix_dates_in_file(data_path)
     data = load_json(data_path)
-    with open(template_path, "r", encoding="utf-8") as f:
+    with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
         html = f.read()
 
-    theme = theme or data.get("theme") or "astrazeneca"
-    theme_ids = load_theme_ids(html)
-    if theme not in theme_ids:
-        raise ValueError(f"Unknown theme '{theme}'. Available: {', '.join(theme_ids)}")
-    data["theme"] = theme
+    data["theme"] = theme = theme or data.get("theme") or "astrazeneca"
+    errors, _ = check_data(data)
+    if errors:
+        raise ValueError(f"Data validation failed with {len(errors)} error(s); see above.")
 
     # Validate work plan timeline dates
-    timeline = data.get("timeline", data.get("slide2_plan", {}))
-    validate_timeline_dates(timeline, data.get("project", {}), auto_fix=auto_fix_dates, strict=strict_dates)
+    validate_timeline_dates(get_timeline(data), data.get("project", {}), strict=strict_dates)
 
     # Apply PPTX custom template override if provided
     if pptx_path and not os.path.isfile(pptx_path):
@@ -220,31 +249,42 @@ def generate_report(data_path, output_path, theme=None, pptx_path=None, auto_fix
     print(f"✅ Successfully compiled weekly report HTML: {output_path} (Theme: {theme})")
     return output_path
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description="Generate Weekly Report HTML")
     parser.add_argument("--data", default=None, help="Path to JSON data file")
     parser.add_argument("--output", default="weekly-report.html", help="Path to output HTML file")
     parser.add_argument("--theme", default=None, help="Theme ID (astrazeneca/classic-navy, novartis, bayer, jnj, novo-nordisk, wukong-green, vercel-minimal); defaults to the JSON 'theme' field")
     parser.add_argument("--pptx", "--pptx-template", dest="pptx", default=None, help="Path to PowerPoint (.pptx) template file to extract backgrounds, theme colors, and logo from")
-    parser.add_argument("--check-dates", action="store_true", help="Only validate timeline dates and report issues without generating HTML")
-    parser.add_argument("--fix-dates", action="store_true", help="Auto-adjust non-holiday timeline dates to exact Monday-to-Friday")
+    parser.add_argument("--validate", action="store_true", help="Validate the data (schema, week references, dates) without generating HTML; exits 1 on errors or date issues")
+    parser.add_argument("--check-dates", action="store_true", help="Only validate timeline dates without generating HTML")
+    parser.add_argument("--fix-dates", action="store_true", help="Align non-holiday timeline dates to Monday-Friday and write them back to the data file")
     parser.add_argument("--strict-dates", action="store_true", help="Fail with non-zero exit code if timeline date validation finds any issue")
     args = parser.parse_args()
 
     base_dir = Path(__file__).resolve().parent.parent
     data_file = args.data if args.data else str(base_dir / "examples" / "sample_data.json")
-    
-    if args.check_dates:
-        data = load_json(data_file)
-        timeline = data.get("timeline", data.get("slide2_plan", {}))
-        project = data.get("project", {})
-        issues = validate_timeline_dates(timeline, project, auto_fix=args.fix_dates, strict=args.strict_dates)
-        if not issues:
-            print("✅ All Work Plan timeline dates strictly conform to Monday-to-Friday and statutory holiday rules.")
-        sys.exit(1 if issues and not args.fix_dates else 0)
 
     try:
+        if args.validate or args.check_dates:
+            if args.fix_dates:
+                fix_dates_in_file(data_file)
+            data = load_json(data_file)
+            errors = warnings = []
+            if args.validate:
+                if args.theme:
+                    data["theme"] = args.theme
+                errors, warnings = check_data(data)
+            date_issues = validate_timeline_dates(get_timeline(data), data.get("project", {}))
+            if errors or date_issues:
+                sys.exit(1)
+            print("✅ Data is valid." if args.validate else
+                  "✅ All Work Plan timeline dates strictly conform to Monday-to-Friday and statutory holiday rules.")
+            return
+
         generate_report(data_file, args.output, args.theme, pptx_path=args.pptx, auto_fix_dates=args.fix_dates, strict_dates=args.strict_dates)
     except (FileNotFoundError, ValueError) as e:
         print(f"❌ {e}", file=sys.stderr)
         sys.exit(1)
+
+if __name__ == "__main__":
+    main()
