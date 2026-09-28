@@ -77,7 +77,6 @@
     }
 
     /* Enterprise Themes Presets (5大医药巨头 + Vercel 极简风 + 极客翠绿) */
-    [data-theme="astrazeneca"],
     [data-theme="classic-navy"] {
       --brand-primary: #003865;
       --brand-primary-dark: #001847;
@@ -98,6 +97,28 @@
       --glow-color: rgba(208, 0, 111, 0.22);
       --bg-ambient-top: #0d1e2e;
       --bg-ambient-bot: #060e17;
+    }
+
+    [data-theme="astrazeneca"] {
+      --brand-primary: #830051;
+      --brand-primary-dark: #003865;
+      --brand-primary-light: #fbf0f6;
+      --brand-accent: #F0AB00;
+      --brand-accent-sec: #003865;
+      --brand-status-header: #245D38;
+      --brand-border: #830051;
+      --brand-table-header: #830051;
+      --brand-gantt-header: #003865;
+      --brand-holiday: #F0AB00;
+      --brand-text-main: #003865;
+      --brand-text-body: #1e293b;
+      --brand-bg: #fdfafd;
+      --grad-primary: linear-gradient(135deg, #830051 0%, #003865 100%);
+      --grad-cover: linear-gradient(150deg, #830051 0%, #5c0039 52%, #003865 100%);
+      --grad-page: linear-gradient(180deg, #FBF0F6 0%, #FCF8FA 58%, #FFFFFF 100%);
+      --glow-color: rgba(240, 171, 0, 0.25);
+      --bg-ambient-top: #1f0b18;
+      --bg-ambient-bot: #0a0408;
     }
 
     [data-theme="novartis"] {
@@ -145,23 +166,23 @@
     }
 
     [data-theme="jnj"] {
-      --brand-primary: #D71600;
-      --brand-primary-dark: #8A0000;
+      --brand-primary: #C8102E;
+      --brand-primary-dark: #A00D1E;
       --brand-primary-light: #fef2f2;
-      --brand-accent: #0F2C59;
-      --brand-accent-sec: #D71600;
+      --brand-accent: #1E22AA;
+      --brand-accent-sec: #C8102E;
       --brand-status-header: #15803D;
-      --brand-border: #D71600;
-      --brand-table-header: #8A0000;
-      --brand-gantt-header: #D71600;
-      --brand-holiday: #F59E0B;
-      --brand-text-main: #450A0A;
+      --brand-border: #C8102E;
+      --brand-table-header: #C8102E;
+      --brand-gantt-header: #C8102E;
+      --brand-holiday: #FF8200;
+      --brand-text-main: #1c1917;
       --brand-text-body: #292524;
       --brand-bg: #fcf8f8;
-      --grad-primary: linear-gradient(135deg, #D71600 0%, #b81400 60%, #8A0000 100%);
-      --grad-cover: linear-gradient(150deg, #5A0000 0%, #3a0000 52%, #1a0000 100%);
+      --grad-primary: linear-gradient(135deg, #D71600 0%, #C8102E 60%, #9B0014 100%);
+      --grad-cover: linear-gradient(150deg, #D71600 0%, #C8102E 52%, #9B0014 100%);
       --grad-page: linear-gradient(180deg, #FDECEC 0%, #FCF6F6 58%, #FFFFFF 100%);
-      --glow-color: rgba(215, 22, 0, 0.25);
+      --glow-color: rgba(200, 16, 46, 0.25);
       --bg-ambient-top: #240a0a;
       --bg-ambient-bot: #120404;
     }
@@ -2096,6 +2117,7 @@
       .data-modal-overlay,
       .presentation-hud,
       .edit-mode-tip-bar,
+      .toast-notification,
       script,
       noscript {
         display: none !important;
@@ -2163,7 +2185,7 @@
     }
   </style>
 </head>
-<body data-theme="classic-navy">
+<body data-theme="astrazeneca">
 
   <!-- Top Presentation Progress Bar -->
   <div class="presentation-progress"><div class="presentation-progress-fill" id="presentationProgressBar"></div></div>
@@ -2183,7 +2205,7 @@
     <div class="control-actions">
       <span style="font-size: 12px; color: #94a3b8;">企业风格适配:</span>
       <select class="select-theme" id="themeSelect" onchange="changeTheme(this.value)">
-        <option value="astrazeneca">阿斯利康 (AstraZeneca · 经典深蓝与洋红)</option>
+        <option value="astrazeneca" selected>阿斯利康 (AstraZeneca · 经典深蓝与洋红)</option>
         <option value="novartis">诺华 (Novartis · 钴蓝与活力暖橙)</option>
         <option value="bayer">拜耳 (Bayer · 经典深蓝与生机绿)</option>
         <option value="jnj">强生 (Johnson & Johnson · 2023热情红)</option>
@@ -2362,6 +2384,12 @@
     </button>
   </div>
 
+  <noscript>
+    <div style="padding: 12px 16px; background: #fef3c7; color: #92400e; font-weight: 600; text-align: center;">
+      本周报由 JavaScript 渲染，请在浏览器中打开并启用 JavaScript（当前显示的是模板示例内容）。
+    </div>
+  </noscript>
+
   <!-- All 4 Slides Deck -->
   <div class="slide-deck">
 
@@ -2377,14 +2405,12 @@
             <span class="company-dept" id="displayDeptName">商业技术交付团队</span>
           </div>
         </div>
-        <div style="font-size: 12px; color: #64748b; font-weight: 600;">
-          CONFIDENTIAL · 内部汇报
-        </div>
+        <div id="displayConfidential" style="font-size: 12px; color: #64748b; font-weight: 600;">CONFIDENTIAL · 内部汇报</div>
       </div>
 
       <div class="cover-center-content">
         <div class="cover-tag">Project Weekly Progress</div>
-        <h1 class="cover-main-title">Weekly Report</h1>
+        <h1 class="cover-main-title" id="displayReportTitle">Weekly Report</h1>
         <h2 class="cover-sub-title" id="displayProjectTitle">手机端搭建与 Web 端优化项目</h2>
         <div class="cover-period-pill">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2393,20 +2419,20 @@
             <line x1="8" y1="2" x2="8" y2="6"></line>
             <line x1="3" y1="10" x2="21" y2="10"></line>
           </svg>
-          <span id="displayReportPeriod">汇报周期：Week 16 (2024.04.01 ～ 2024.04.03)</span>
+          <span id="displayReportPeriod">汇报周期：Week 16（2024.04.01 ～ 2024.04.03）</span>
         </div>
       </div>
 
       <div class="cover-meta-grid">
         <div class="meta-card">
           <span class="meta-label">项目编号 / Code</span>
-          <span class="meta-value">PRJ-2024-AZ-Q1</span>
+          <span class="meta-value" id="displayProjectCode">PRJ-2024-AZ-Q1</span>
         </div>
         <div class="meta-card">
           <span class="meta-label">当前进度状态 / Status</span>
-          <span class="meta-value" style="color: #d97706; display: flex; align-items: center; gap: 6px;">
+          <span class="meta-value" id="displayOverallStatus" style="color: #d97706; display: flex; align-items: center; gap: 6px;">
             <span class="status-dot dot-caution" style="width: 8px; height: 8px;"></span>
-            受控推进中
+            <span class="overall-status-text">受控推进中</span>
           </span>
         </div>
         <div class="meta-card">
@@ -2415,7 +2441,7 @@
         </div>
         <div class="meta-card">
           <span class="meta-label">发布日期 / Date</span>
-          <span class="meta-value">2024-04-03</span>
+          <span class="meta-value" id="displayReportDate">2024-04-03</span>
         </div>
       </div>
 
@@ -2453,43 +2479,199 @@
 
       <div class="gantt-container">
         <table class="gantt-table">
-        <thead>
-            <tr><th class="gantt-header-th col-workstream">Workstream</th><th class="gantt-header-th col-category">Category</th><th class="gantt-header-th col-task">Tasks</th><th class="gantt-header-th col-week"><div class="week-title">W6</div><div class="week-date">1.22-1.26</div></th><th class="gantt-header-th col-week"><div class="week-title">W7</div><div class="week-date">1.29-2.2</div></th><th class="gantt-header-th col-week"><div class="week-title">W8</div><div class="week-date">2.5-2.9</div></th><th class="gantt-header-th col-week" style="background-color: #d97706;"><div class="week-title">W9</div><div class="week-date">2.12-2.16</div></th><th class="gantt-header-th col-week"><div class="week-title">W10</div><div class="week-date">2.19-2.23</div></th><th class="gantt-header-th col-week"><div class="week-title">W11</div><div class="week-date">2.26-3.1</div></th><th class="gantt-header-th col-week"><div class="week-title">W12</div><div class="week-date">3.4-3.8</div></th><th class="gantt-header-th col-week"><div class="week-title">W13</div><div class="week-date">3.11-3.15</div></th><th class="gantt-header-th col-week"><div class="week-title">W14</div><div class="week-date">3.18-3.22</div></th><th class="gantt-header-th col-week"><div class="week-title">W15</div><div class="week-date">3.25-3.29</div></th><th class="gantt-header-th col-week" style="background-color: var(--brand-primary-dark);"><div class="week-title">W16</div><div class="week-date">4.1-4.5</div></th><th class="gantt-header-th col-week"><div class="week-title">W17</div><div class="week-date">4.8-4.12</div></th><th class="gantt-header-th col-week"><div class="week-title">W18</div><div class="week-date">4.15-4.19</div></th><th class="gantt-header-th col-week"><div class="week-title">W19</div><div class="week-date">4.22-4.26</div></th><th class="gantt-header-th col-week"><div class="week-title">W20</div><div class="week-date">4.29-5.3</div></th></tr>
-        </thead>
-        <tbody>
-            <tr><td rowspan="13" class="col-workstream" style="background:#f8fafc; font-weight:700;">手机端搭建</td><td rowspan="1" class="col-category">项目启动</td><td class="col-task">项目启动</td><td></td><td></td><td></td><td rowspan="26" class="cell-holiday"><div class="holiday-col-text">春节假期</div></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-            <tr><td rowspan="3" class="col-category">需求收集</td><td class="col-task">手机端接入确认</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-            <tr><td class="col-task">功能梳理及确认</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-            <tr><td class="col-task">环境准备</td><td></td><td></td><td><span class="milestone-star">★</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-            <tr><td rowspan="2" class="col-category">系统设计</td><td class="col-task">原型设计与确认</td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-            <tr><td class="col-task">高保真确认</td><td></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-            <tr><td rowspan="3" class="col-category">系统开发&测试</td><td class="col-task">系统开发</td><td></td><td></td><td></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td><span class="milestone-star">★</span></td><td></td><td></td><td></td></tr>
-            <tr><td class="col-task">掌上AZ集成</td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td></td><td><span class="milestone-star">★</span></td><td></td><td></td></tr>
-            <tr><td class="col-task">SIT</td><td></td><td></td><td><span class="milestone-star">★</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td></td><td></td><td></td></tr>
-            <tr><td rowspan="2" class="col-category">UAT</td><td class="col-task">UAT准备</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td></td><td></td><td></td></tr>
-            <tr><td class="col-task">系统UAT</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td></td><td></td></tr>
-            <tr><td rowspan="2" class="col-category">Go-live</td><td class="col-task">上线准备&部署</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td></td><td></td></tr>
-            <tr><td class="col-task">系统上线</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td></td></tr>
-            <tr><td rowspan="13" class="col-workstream" style="background:#f8fafc; font-weight:700;">Web端优化</td><td rowspan="1" class="col-category">需求梳理</td><td class="col-task">功能梳理及确认</td><td class="gantt-bar-completed"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-            <tr><td rowspan="2" class="col-category">重点功能设计</td><td class="col-task">原型设计与确认</td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-            <tr><td class="col-task">高保真设计与确认</td><td></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="milestone-star">★</span></td><td></td><td></td><td></td></tr>
-            <tr><td rowspan="2" class="col-category">重点功能开发&测试</td><td class="col-task">系统功能搭建</td><td></td><td></td><td></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td></td><td><span class="milestone-star">★</span></td><td></td><td></td></tr>
-            <tr><td class="col-task">SIT</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td></td><td></td><td></td></tr>
-            <tr><td rowspan="2" class="col-category">其他功能设计</td><td class="col-task">原型设计与确认</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td></td><td></td><td></td><td></td></tr>
-            <tr><td class="col-task">高保真设计与确认</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td></td><td></td><td></td></tr>
-            <tr><td rowspan="2" class="col-category">其他功能开发&测试</td><td class="col-task">系统功能搭建</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td class="gantt-bar-planned"></td><td class="gantt-bar-planned"></td></tr>
-            <tr><td class="col-task">SIT</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-            <tr><td rowspan="2" class="col-category">UAT</td><td class="col-task">UAT准备</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td></td><td></td><td></td></tr>
-            <tr><td class="col-task">系统UAT</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td></td><td></td></tr>
-            <tr><td rowspan="2" class="col-category">Go-live</td><td class="col-task">上线准备&部署</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-planned"></td><td></td><td></td></tr>
-            <tr><td class="col-task">系统上线</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td style="position: relative;">
-                <div class="we-are-here-indicator" data-week="W16">
+          <thead>
+            <tr>
+              <th class="gantt-header-th col-workstream">Workstream</th>
+              <th class="gantt-header-th col-category">Category</th>
+              <th class="gantt-header-th col-task">Tasks</th>
+              <th class="gantt-header-th col-week"><div class="week-title">W6</div><div class="week-date">1.22-1.26</div></th>
+              <th class="gantt-header-th col-week"><div class="week-title">W7</div><div class="week-date">1.29-2.2</div></th>
+              <th class="gantt-header-th col-week"><div class="week-title">W8</div><div class="week-date">2.4-2.8</div></th>
+              <th class="gantt-header-th col-week" style="background-color: #d97706;"><div class="week-title">W9</div><div class="week-date">2.12-2.17</div></th>
+              <th class="gantt-header-th col-week"><div class="week-title">W10</div><div class="week-date">2.18-2.23</div></th>
+              <th class="gantt-header-th col-week"><div class="week-title">W11</div><div class="week-date">2.26-3.1</div></th>
+              <th class="gantt-header-th col-week"><div class="week-title">W12</div><div class="week-date">3.4-3.8</div></th>
+              <th class="gantt-header-th col-week"><div class="week-title">W13</div><div class="week-date">3.11-3.15</div></th>
+              <th class="gantt-header-th col-week"><div class="week-title">W14</div><div class="week-date">3.18-3.22</div></th>
+              <th class="gantt-header-th col-week"><div class="week-title">W15</div><div class="week-date">3.25-3.29</div></th>
+              <th class="gantt-header-th col-week" style="background-color: var(--brand-primary-dark);"><div class="week-title">W16</div><div class="week-date">4.1-4.5</div></th>
+              <th class="gantt-header-th col-week"><div class="week-title">W17</div><div class="week-date">4.8-4.12</div></th>
+              <th class="gantt-header-th col-week"><div class="week-title">W18</div><div class="week-date">4.15-4.19</div></th>
+              <th class="gantt-header-th col-week"><div class="week-title">W19</div><div class="week-date">4.22-4.26</div></th>
+              <th class="gantt-header-th col-week"><div class="week-title">W20</div><div class="week-date">4.29-5.3</div></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Row 1: 手机端搭建 - 项目启动 -->
+            <tr>
+              <td rowspan="13" class="col-workstream" style="background:#f8fafc; font-weight: 700;">手机端搭建</td>
+              <td class="col-category">项目启动</td>
+              <td class="col-task">项目启动</td>
+              <td></td><td></td><td></td>
+              <td rowspan="13" class="cell-holiday"><div class="holiday-col-text">春节假期</div></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+            <!-- Row 2: 需求收集 -->
+            <tr>
+              <td rowspan="3" class="col-category">需求收集</td>
+              <td class="col-task">手机端接入确认</td>
+              <td></td><td></td><td></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td class="col-task">功能梳理及确认</td>
+              <td></td><td></td><td></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td class="col-task">环境准备</td>
+              <td></td><td></td><td><span class="milestone-star">★</span></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+            <!-- Row 5: 系统设计 -->
+            <tr>
+              <td rowspan="2" class="col-category">系统设计</td>
+              <td class="col-task">原型设计与确认</td>
+              <td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td class="col-task">高保真确认</td>
+              <td></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+            <!-- Row 7: 系统开发&测试 -->
+            <tr>
+              <td rowspan="3" class="col-category">系统开发&测试</td>
+              <td class="col-task">系统开发</td>
+              <td></td><td></td><td></td>
+              <td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td><span class="milestone-star">★</span></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td class="col-task">掌上AZ集成</td>
+              <td></td><td></td><td></td>
+              <td></td><td></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td></td><td><span class="milestone-star">★</span></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td class="col-task">SIT</td>
+              <td></td><td></td><td><span class="milestone-star">★</span></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td><td></td><td></td><td></td>
+            </tr>
+            <!-- Row 10: UAT -->
+            <tr>
+              <td rowspan="2" class="col-category">UAT</td>
+              <td class="col-task">UAT准备</td>
+              <td></td><td></td><td></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td class="col-task">系统UAT</td>
+              <td></td><td></td><td></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td><td></td><td></td>
+            </tr>
+            <!-- Row 12: Go-live -->
+            <tr>
+              <td rowspan="2" class="col-category">Go-live</td>
+              <td class="col-task">上线准备&部署</td>
+              <td></td><td></td><td></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td class="col-task">系统上线</td>
+              <td></td><td></td><td></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td><td></td>
+            </tr>
+
+            <!-- Row 14: Web端优化 - 需求梳理 -->
+            <tr>
+              <td rowspan="13" class="col-workstream" style="background:#f8fafc; font-weight: 700;">Web端优化</td>
+              <td class="col-category">需求梳理</td>
+              <td class="col-task">功能梳理及确认</td>
+              <td class="gantt-bar-completed"></td><td></td><td></td>
+              <td rowspan="13" class="cell-holiday"><div class="holiday-col-text">春节假期</div></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+            <!-- Row 15: 重点功能设计 -->
+            <tr>
+              <td rowspan="2" class="col-category">重点功能设计</td>
+              <td class="col-task">原型设计与确认</td>
+              <td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td class="col-task">高保真设计与确认</td>
+              <td></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="milestone-star">★</span></td><td></td><td></td><td></td>
+            </tr>
+            <!-- Row 17: 重点功能开发&测试 -->
+            <tr>
+              <td rowspan="2" class="col-category">重点功能开发&测试</td>
+              <td class="col-task">系统功能搭建</td>
+              <td></td><td></td><td></td>
+              <td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-completed"></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td></td><td><span class="milestone-star">★</span></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td class="col-task">SIT</td>
+              <td></td><td></td><td></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td><td></td><td></td><td></td>
+            </tr>
+            <!-- Row 19: 其他功能设计 -->
+            <tr>
+              <td rowspan="2" class="col-category">其他功能设计</td>
+              <td class="col-task">原型设计与确认</td>
+              <td></td><td></td><td></td>
+              <td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td class="col-task">高保真设计与确认</td>
+              <td></td><td></td><td></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td></td><td></td><td></td>
+            </tr>
+            <!-- Row 21: 其他功能开发&测试 -->
+            <tr>
+              <td rowspan="2" class="col-category">其他功能开发&测试</td>
+              <td class="col-task">系统功能搭建</td>
+              <td></td><td></td><td></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td><td class="gantt-bar-active"></td>
+            </tr>
+            <tr>
+              <td class="col-task">SIT</td>
+              <td></td><td></td><td></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+            <!-- Row 23: UAT -->
+            <tr>
+              <td rowspan="2" class="col-category">UAT</td>
+              <td class="col-task">UAT准备</td>
+              <td></td><td></td><td></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td class="col-task">系统UAT</td>
+              <td></td><td></td><td></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td><td></td><td></td>
+            </tr>
+            <!-- Row 25: Go-live -->
+            <tr>
+              <td rowspan="2" class="col-category">Go-live</td>
+              <td class="col-task">上线准备&部署</td>
+              <td></td><td></td><td></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td class="col-task">系统上线</td>
+              <td></td><td></td><td></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="gantt-bar-active"></td>
+              <td style="position: relative;">
+                <!-- We are here pointer -->
+                <div class="we-are-here-indicator">
                   <span class="red-arrow-up"></span>
                   <span>We are here</span>
                 </div>
-                </td><td></td><td></td><td class="gantt-bar-planned"></td><td></td></tr>
-        </tbody>
-      </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <div class="slide-footer-num">2</div>
@@ -2650,11 +2832,11 @@
             <div class="ppt-card-body">
               <div class="ppt-list-item">
                 <span class="ppt-list-num">1.</span>
-                <div><span class='ppt-tag'>【系统开发】</span>系统开发，手机端功能收尾。</div>
+                <div><span class="ppt-tag">【系统开发】</span>系统开发，手机端功能收尾。</div>
               </div>
               <div class="ppt-list-item">
                 <span class="ppt-list-num">2.</span>
-                <div><span class='ppt-tag'>【变更处理】</span>首页设计基于讨论做了更新，待确认。</div>
+                <div><span class="ppt-tag">【变更处理】</span>首页设计基于讨论做了更新，待确认。</div>
               </div>
             </div>
           </div>
@@ -2665,7 +2847,7 @@
             <div class="ppt-card-body">
               <div class="ppt-list-item">
                 <span class="ppt-list-num">1.</span>
-                <div><span class='ppt-tag'>【系统实现】</span>手机端功能联调，掌上AZ&翻译API。</div>
+                <div><span class="ppt-tag">【系统实现】</span>手机端功能联调，掌上AZ&翻译API。</div>
               </div>
             </div>
           </div>
@@ -2722,72 +2904,6 @@
       </div>
 
       <div class="slide-footer-num">4</div>
-    </section>
-
-
-    <!-- ====================================================================
-         PAGE 5: 方案研讨与议题讨论 (Discussion & Proposal)
-         ==================================================================== -->
-    <section class="slide slide-discussion" id="slide5">
-      <div class="slide-header" style="align-items: center;">
-        <div class="slide-title-group">
-          <h2 class="slide-title">方案研讨：掌上 AZ 与第三方翻译 API 架构选型</h2>
-          <div class="slide-subtitle" style="font-size: 14px; margin-top: 2px;">核心议题与技术方案权衡 (Week 16 决策项)</div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span class="discussion-category-pill">架构选型</span>
-          <span class="discussion-badge">方案决策</span>
-        </div>
-      </div>
-
-      <div class="discussion-body">
-        <div class="discussion-grid grid-cols-2">
-            <div class="discussion-card">
-              <div class="discussion-card-header">
-                <span class="card-header-title">方案 A：企业级自建网关服务 (推荐)</span>
-                <span class="card-badge badge-recommended">推荐方案</span>
-              </div>
-              <div class="discussion-card-body">
-                <div class="card-summary">在内网统一接入 API 代理，集中鉴权、缓存、数据脱敏、审计与限流。</div>
-                <div class="card-items">
-<div class="discussion-item-row"><span class="item-label">核心优势</span><span class="item-text">敏感数据不出境与合规内控、降低各端接入复杂度、支持熔断降级。</span></div>
-<div class="discussion-item-row"><span class="item-label">潜在短板</span><span class="item-text">初期部署需 1.5 周，需配置独立专线与域名证书。</span></div>
-<div class="discussion-item-row"><span class="item-label">资源预估</span><span class="item-text">后端开发 2 人周，网关运维支持 3 天。</span></div>
-</div>
-                
-                <div class="card-verdict">结论：作为长期标准基础设施首选，符合企业安全基线，建议本期采纳落地。</div>
-              </div>
-            </div>
-            <div class="discussion-card">
-              <div class="discussion-card-header">
-                <span class="card-header-title">方案 B：前端直连云端翻译 SDK</span>
-                <span class="card-badge badge-alternative">备选方案</span>
-              </div>
-              <div class="discussion-card-body">
-                <div class="card-summary">前端直接集成翻译供应商 SDK，通过短期临时凭证完成调用。</div>
-                <div class="card-items">
-<div class="discussion-item-row"><span class="item-label">核心优势</span><span class="item-text">开发周期短，仅需 2-3 天即可完成全平台上线。</span></div>
-<div class="discussion-item-row"><span class="item-label">潜在短板</span><span class="item-text">凭证泄露风险高，无法进行集中数据脱敏与调用量审计。</span></div>
-<div class="discussion-item-row"><span class="item-label">资源预估</span><span class="item-text">前端开发 0.5 人周，免网关开发。</span></div>
-</div>
-                
-                <div class="card-verdict">结论：仅适用于轻量非涉密 PoC，不符合企业安全合规基线，不建议生产采用。</div>
-              </div>
-            </div>
-          </div>
-      </div>
-      
-        <div class="discussion-conclusion-box">
-          <div class="conclusion-badge">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
-            </svg>
-            <span>周会决议待确认</span>
-          </div>
-          <div class="conclusion-text">本周会重点评审自建网关之脱敏合规路径与排期，请架构师 @Leo 与安全顾问 @Sarah 确认准入清单。</div>
-        </div>
-
-      <div class="slide-footer-num">5</div>
     </section>
 
   </div>
@@ -3049,8 +3165,9 @@
         '.slide .company-dept',
         '.slide .cover-logo-text',
         '.slide .company-logo-icon',
-        '.slide .cover-meta-item span',
+        '.slide .cover-meta-grid .meta-value:not(#displayOverallStatus)',
         '.slide .cover-tag',
+        '#displayConfidential',
         '.slide .overall-status-text',
         '#slide2 .gantt-table td:not(.col-gantt-bar)',
         '#slide2 .gantt-table th:not(.gantt-week-th)',
@@ -3111,6 +3228,16 @@
       }
       const reporter = document.getElementById('displayReporter');
       if (reporter) currentReportData.project.reporter = reporter.innerText.trim();
+      const reportTitle = document.getElementById('displayReportTitle');
+      if (reportTitle) currentReportData.project.reportTitle = reportTitle.innerText.trim();
+      const projCode = document.getElementById('displayProjectCode');
+      if (projCode) currentReportData.project.projectCode = projCode.innerText.trim();
+      const reportDate = document.getElementById('displayReportDate');
+      if (reportDate) currentReportData.project.reportDate = reportDate.innerText.trim();
+      const confidential = document.getElementById('displayConfidential');
+      if (confidential) currentReportData.project.confidential = confidential.innerText.trim();
+      const statusText = document.querySelector('#displayOverallStatus .overall-status-text');
+      if (statusText) currentReportData.project.overallStatusText = statusText.innerText.trim();
 
       // 2. Timeline Slide 2
       const tlTitle = document.querySelector('#slide2 .slide-title');
@@ -3306,7 +3433,7 @@
         dataScript.type = 'application/json';
         clonedDoc.querySelector('body').appendChild(dataScript);
       }
-      dataScript.textContent = JSON.stringify(currentReportData || DEFAULT_SAMPLE_DATA, null, 2);
+      dataScript.textContent = JSON.stringify(currentReportData || DEFAULT_SAMPLE_DATA, null, 2).replace(/<\//g, '<\\/');
 
       const blob = new Blob(["<!DOCTYPE html>\n" + clonedDoc.outerHTML], { type: "text/html;charset=utf-8" });
       const a = document.createElement('a');
@@ -3330,7 +3457,7 @@
       'vercel-minimal': 'Vercel 极简风'
     };
 
-    function changeTheme(themeName) {
+    function changeTheme(themeName, silent) {
       if (!themeName) return;
       document.body.setAttribute('data-theme', themeName);
       
@@ -3345,7 +3472,7 @@
       if (sel && sel.value !== themeName) {
         sel.value = themeName;
       }
-      if (typeof showToast === 'function') {
+      if (!silent && typeof showToast === 'function') {
         showToast('🎨 已切换至 ' + (THEME_NAMES[themeName] || themeName));
       }
     }
@@ -3377,17 +3504,20 @@
       const logo = document.getElementById('inputLogoText')?.value;
       const dept = document.getElementById('inputDeptName')?.value;
 
+      if (currentReportData && !currentReportData.company) currentReportData.company = {};
+      const comp = currentReportData ? currentReportData.company : {};
+
       if (company) {
-        const cEl = document.querySelector('.cover-company');
-        if (cEl) cEl.textContent = company;
+        setText('displayCompanyName', company);
+        comp.name = company;
       }
-      if (logo) {
-        const lEl = document.querySelector('.cover-logo-text');
-        if (lEl) lEl.textContent = logo;
+      if (logo && !comp.logoDataUrl) {
+        setText('logoIconBadge', logo);
+        comp.logoText = logo;
       }
       if (dept) {
-        const dEl = document.querySelector('.cover-meta-item:first-child span');
-        if (dEl) dEl.textContent = dept;
+        setText('displayDeptName', dept);
+        comp.department = dept;
       }
     }
 
@@ -3563,12 +3693,22 @@
         if (mDk2) result.colors.primaryDark = '#' + mDk2[1];
       }
 
-      // Media Files
-      const mediaNames = Object.keys(files).filter(k => k.startsWith('ppt/media/'));
+      // Media Files (only web-compatible raster & vector formats)
+      const validExts = ['.png', '.jpg', '.jpeg', '.webp', '.svg', '.gif'];
+      const mediaNames = Object.keys(files).filter(k => k.startsWith('ppt/media/') && validExts.some(ext => k.toLowerCase().endsWith(ext)));
       const mediaMap = {};
       for (const mn of mediaNames) {
         const base = mn.replace(/^.*[\\\/]/, '');
         mediaMap[base] = files[mn];
+      }
+
+      function getMime(fn) {
+        const l = fn.toLowerCase();
+        if (l.endsWith('.jpg') || l.endsWith('.jpeg')) return 'image/jpeg';
+        if (l.endsWith('.png')) return 'image/png';
+        if (l.endsWith('.svg')) return 'image/svg+xml';
+        if (l.endsWith('.webp')) return 'image/webp';
+        return 'image/png';
       }
 
       // Layouts
@@ -3616,66 +3756,77 @@
       }
 
       // Corporate Logo
-      const logoCand = layoutPics.filter(p => (p.ext[0] > 0 && p.ext[0] < 2500000 && p.ext[1] > 0 && p.ext[1] < 2500000) || p.size < 70000);
-      let logoFile = null;
-      if (logoCand.length > 0) {
-        logoCand.sort((a, b) => a.size - b.size);
-        logoFile = logoCand[0].file;
-      } else {
-        const pngs = Object.keys(mediaMap).filter(k => k.toLowerCase().endsWith('.png') && (mediaMap[k].uncompSize < 80000 || mediaMap[k].compSize < 80000));
-        if (pngs.length > 0) logoFile = pngs[0];
+      const svgLogos = Object.keys(mediaMap).filter(k => k.toLowerCase().endsWith('.svg'));
+      let logoFile = svgLogos[0] || null;
+      if (!logoFile) {
+        const logoCand = layoutPics.filter(p => (p.ext[0] > 0 && p.ext[0] < 2500000 && p.ext[1] > 0 && p.ext[1] < 2500000) || p.size < 70000);
+        if (logoCand.length > 0) {
+          const freq = {};
+          for (const p of logoCand) freq[p.file] = (freq[p.file] || 0) + 1;
+          logoCand.sort((a, b) => (freq[b.file] - freq[a.file]) || (a.size - b.size));
+          logoFile = logoCand[0].file;
+        } else {
+          const pngs = Object.keys(mediaMap).filter(k => k.toLowerCase().endsWith('.png') && (mediaMap[k].uncompSize < 80000 || mediaMap[k].compSize < 80000));
+          if (pngs.length > 0) logoFile = pngs[0];
+        }
       }
 
       if (logoFile && mediaMap[logoFile]) {
         const b = await getBytes(mediaMap[logoFile]);
-        const mime = logoFile.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg';
+        const mime = getMime(logoFile);
         result.logoDataUrl = `data:${mime};base64,${uint8ToBase64(b)}`;
       }
 
       // Cover Background
-      let coverCand = layoutPics.filter(p => p.layout === 1 && (p.ext[0] > 4000000 || p.size > 100000));
+      let coverCand = layoutPics.filter(p => p.layout === 1 && (p.ext[0] > 4000000 || p.size > 100000) && p.file !== logoFile);
       let coverFile = null;
       if (coverCand.length > 0) {
         coverCand.sort((a, b) => b.size - a.size);
         coverFile = coverCand[0].file;
       } else {
-        const sortedMedia = Object.keys(mediaMap).sort((a, b) => mediaMap[b].compSize - mediaMap[a].compSize);
-        coverFile = sortedMedia[0] || null;
+        const widePics = layoutPics.filter(p => p.ext[0] >= 8000000 && p.file !== logoFile);
+        if (widePics.length > 0) {
+          widePics.sort((a, b) => b.size - a.size);
+          coverFile = widePics[0].file;
+        } else {
+          const sortedMedia = Object.keys(mediaMap).filter(k => k !== logoFile).sort((a, b) => mediaMap[b].compSize - mediaMap[a].compSize);
+          coverFile = sortedMedia[0] || null;
+        }
       }
 
       if (coverFile && mediaMap[coverFile]) {
         const b = await getBytes(mediaMap[coverFile]);
-        const mime = coverFile.toLowerCase().match(/\.(jpe?g)$/) ? 'image/jpeg' : 'image/png';
+        const mime = getMime(coverFile);
         result.coverBgDataUrl = `data:${mime};base64,${uint8ToBase64(b)}`;
       }
 
       // Content Background
-      let contentCand = layoutPics.filter(p => p.layout > 1 && p.ext[0] > 8000000 && p.file !== coverFile);
+      let contentCand = layoutPics.filter(p => p.layout > 1 && p.ext[0] > 7000000 && p.file !== coverFile && p.file !== logoFile);
       let contentFile = null;
       if (contentCand.length > 0) {
         contentCand.sort((a, b) => b.size - a.size);
         contentFile = contentCand[0].file;
-      } else {
-        const candidates = Object.keys(mediaMap).filter(k => k !== coverFile && k !== logoFile && (mediaMap[k].compSize > 30000 && mediaMap[k].compSize < 2000000));
-        contentFile = candidates[0] || null;
       }
 
       if (contentFile && mediaMap[contentFile]) {
         const b = await getBytes(mediaMap[contentFile]);
-        const mime = contentFile.toLowerCase().match(/\.(jpe?g)$/) ? 'image/jpeg' : 'image/png';
+        const mime = getMime(contentFile);
         result.contentBgDataUrl = `data:${mime};base64,${uint8ToBase64(b)}`;
+      } else {
+        result.contentBgDataUrl = null;
       }
 
       // Texts
-      for (const s of ['ppt/slides/slide1.xml', 'ppt/slideLayouts/slideLayout1.xml']) {
+      for (const s of ['ppt/slides/slide1.xml', 'ppt/slideLayouts/slideLayout1.xml', 'ppt/slideLayouts/slideLayout3.xml']) {
         if (files[s]) {
           const txt = await getText(files[s]);
           const texts = Array.from(txt.matchAll(/<a:t>([^<]+)<\/a:t>/g)).map(m => m[1]);
           const fullStr = texts.join(' ');
-          if (fullStr.includes('SINOPHARM')) result.companyName = '国药集团 / SINOPHARM';
-          else if (fullStr.includes('国控') || fullStr.includes('国药')) result.companyName = '国药控股';
+          if (fullStr.includes('SINOPHARM') || fullStr.includes('国药')) result.companyName = '国药控股 / 国药集团';
+          else if (fullStr.includes('J&J') || fullStr.includes('Johnson') || fullStr.includes('JJMT')) result.companyName = 'Johnson & Johnson / 强生医疗科技';
+          else if (fullStr.includes('AstraZeneca') || /(^|[^A-Za-z])AZ(?![A-Za-z])/.test(fullStr)) result.companyName = 'AstraZeneca / 阿斯利康';
           for (const t of texts) {
-            if (['关爱生命', '呵护健康', '科技引领', '持续创新', '客户至上'].some(w => t.includes(w))) {
+            if (['关爱生命', '呵护健康', '科技引领', '持续创新', '客户至上', '医者智库'].some(w => t.includes(w))) {
               result.slogan = t.trim();
             }
           }
@@ -3721,20 +3872,132 @@
 
       let coverCss = '';
       if (pptxData.coverBgDataUrl) {
-        coverCss = `
-          body .slide-cover {
-            background-image: linear-gradient(135deg, rgba(8, 20, 36, 0.78) 0%, rgba(14, 40, 70, 0.68) 100%), url('${pptxData.coverBgDataUrl}') !important;
-            background-size: cover !important;
-            background-position: center !important;
-            background-repeat: no-repeat !important;
+        const logoTlCss = pptxData.coverHasLogoTopLeft ? `
+          body .slide-cover .company-badge {
+            visibility: hidden !important;
           }
-          body .slide-cover::before, body .slide-cover::after {
+          body .slide-cover .cover-center-content {
+            margin-top: 56px !important;
+          }
+        ` : '';
+
+        const darkLogoTlCss = pptxData.coverHasLogoTopLeft ? `
+          body .slide-cover .company-logo-icon {
             display: none !important;
           }
-        `;
+          body .slide-cover .company-info-text {
+            margin-left: 55px !important;
+          }
+        ` : '';
+
+        if (pptxData.isLightCover) {
+          const primaryCol = colors.primary || '#830051';
+          const darkCol = colors.primaryDark || '#003865';
+          coverCss = `
+            body .slide-cover {
+              background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%), url('${pptxData.coverBgDataUrl}') !important;
+              background-size: cover !important;
+              background-position: center !important;
+              background-repeat: no-repeat !important;
+              color: ${darkCol} !important;
+            }
+            body .slide-cover::before, body .slide-cover::after {
+              display: none !important;
+            }
+            body .slide-cover .company-name,
+            body .slide-cover .company-dept,
+            body .slide-cover .cover-sub-title,
+            body .slide-cover .cover-project-title {
+              color: ${darkCol} !important;
+              -webkit-text-fill-color: ${darkCol} !important;
+            }
+            body .slide-cover .cover-main-title {
+              color: ${primaryCol} !important;
+              background: transparent !important;
+              -webkit-background-clip: border-box !important;
+              background-clip: border-box !important;
+              -webkit-text-fill-color: ${primaryCol} !important;
+              text-shadow: none !important;
+            }
+            body .slide-cover .cover-tag {
+              background: rgba(131, 0, 81, 0.08) !important;
+              color: ${primaryCol} !important;
+              border-color: rgba(131, 0, 81, 0.25) !important;
+            }
+            body .slide-cover .cover-period-pill {
+              background: rgba(0, 56, 101, 0.08) !important;
+              color: ${darkCol} !important;
+              border-color: rgba(0, 56, 101, 0.2) !important;
+            }
+            body .slide-cover .meta-card,
+            body .slide-cover .cover-stat-card {
+              background: rgba(255, 255, 255, 0.90) !important;
+              border: 1px solid rgba(0, 56, 101, 0.15) !important;
+              box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06) !important;
+              backdrop-filter: blur(10px) !important;
+            }
+            body .slide-cover .meta-value,
+            body .slide-cover .stat-card-val {
+              color: ${darkCol} !important;
+            }
+            body .slide-cover .meta-label,
+            body .slide-cover .stat-card-label {
+              color: #64748b !important;
+            }
+            ${logoTlCss}
+          `;
+        } else {
+          coverCss = `
+            body .slide-cover {
+              background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.12) 100%), url('${pptxData.coverBgDataUrl}') !important;
+              background-size: cover !important;
+              background-position: center !important;
+              background-repeat: no-repeat !important;
+              color: #ffffff !important;
+            }
+            body .slide-cover::before, body .slide-cover::after {
+              display: none !important;
+            }
+            body .slide-cover .cover-main-title {
+              color: #ffffff !important;
+              background: none !important;
+              -webkit-background-clip: border-box !important;
+              background-clip: border-box !important;
+              -webkit-text-fill-color: #ffffff !important;
+            }
+            body .slide-cover .cover-sub-title {
+              color: rgba(255, 255, 255, 0.95) !important;
+            }
+            body .slide-cover .meta-card,
+            body .slide-cover .cover-stat-card {
+              background: rgba(0, 0, 0, 0.24) !important;
+              border: 1px solid rgba(255, 255, 255, 0.25) !important;
+              backdrop-filter: blur(10px) !important;
+            }
+            body .slide-cover .meta-value,
+            body .slide-cover .stat-card-val {
+              color: #ffffff !important;
+            }
+            body .slide-cover .meta-label,
+            body .slide-cover .stat-card-label {
+              color: rgba(255, 255, 255, 0.82) !important;
+            }
+            ${darkLogoTlCss}
+          `;
+        }
       }
 
       let contentCss = '';
+      const cntLogoTrCss = pptxData.contentHasLogoTopRight ? `
+        body .slide:not(.slide-cover) .slide-header {
+          padding-right: 90px !important;
+        }
+        body .slide:not(.slide-cover) .gantt-legend,
+        body .slide:not(.slide-cover) .status-summary-pills {
+          margin-right: 90px !important;
+        }
+      ` : '';
+
       if (pptxData.contentBgDataUrl) {
         contentCss = `
           body .slide:not(.slide-cover) {
@@ -3756,6 +4019,18 @@
             -webkit-backdrop-filter: blur(10px) !important;
             box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05) !important;
           }
+          ${cntLogoTrCss}
+        `;
+      } else if (cntLogoTrCss) {
+        contentCss = `
+          body .slide:not(.slide-cover) {
+            background-color: #ffffff !important;
+            background-image: none !important;
+          }
+          body .slide:not(.slide-cover)::before {
+            display: none !important;
+          }
+          ${cntLogoTrCss}
         `;
       }
 
@@ -3786,7 +4061,7 @@
         `;
         const logoBadge = document.getElementById('logoIconBadge');
         if (logoBadge) {
-          logoBadge.innerHTML = `<img src="${pptxData.logoDataUrl}" style="max-height:38px;max-width:54px;object-fit:contain;" alt="Logo" />`;
+          logoBadge.innerHTML = `<img src="${escapeHtml(pptxData.logoDataUrl)}" style="max-height:38px;max-width:54px;object-fit:contain;" alt="Logo" />`;
           logoBadge.style.background = 'transparent';
           logoBadge.style.border = 'none';
           logoBadge.style.boxShadow = 'none';
@@ -3837,7 +4112,7 @@
 
       // 1. Theme
       if (data.theme) {
-        changeTheme(data.theme);
+        changeTheme(data.theme, true);
         const sel = document.getElementById('themeSelect');
         if (sel) sel.value = data.theme;
       }
@@ -3872,49 +4147,86 @@
       renderCover(data);
 
       // 3. Timeline / Work Plan (Slide 2)
-      renderTimeline(data.timeline || data.slide2_plan);
+      renderTimeline(data.timeline || data.slide2_plan || {});
 
       // 4. Deliverables (Slide 3)
-      renderDeliverables(data.deliverables || data.slide3_deliverables);
+      renderDeliverables(data.deliverables || data.slide3_deliverables || {});
 
       // 5. This Week / Task Management (Slide 4)
-      renderThisWeek(data.thisWeek || data.slide4_tasks);
+      renderThisWeek(data.thisWeek || data.slide4_tasks || {}, getOverallStatus(data));
 
       // 6. Discussion / Proposal Slides (Slide 5+)
       renderDiscussionSlides(data.discussionSlides || data.appendixSlides || []);
     }
 
     // Render Slide 1: Cover
+    const OVERALL_STATUS = {
+      good:    { color: '#059669', dot: 'dot-good',    text: '如期进行' },
+      caution: { color: '#d97706', dot: 'dot-caution', text: '受控推进中' },
+      risk:    { color: '#dc2626', dot: 'dot-risk',    text: '存在风险' }
+    };
+
+    function getOverallStatus(data) {
+      const proj = data.project || {};
+      const tw = data.thisWeek || data.slide4_tasks || {};
+      const key = String(proj.overallStatus || tw.overallStatus || 'caution').toLowerCase();
+      return OVERALL_STATUS[key] ? key : 'caution';
+    }
+
+    function setText(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    }
+
     function renderCover(data) {
       const comp = data.company || {};
       const proj = data.project || {};
-      
-      if (comp.name) document.getElementById('displayCompanyName').textContent = comp.name;
-      if (comp.logoDataUrl) {
-        const logoBadge = document.getElementById('logoIconBadge');
-        if (logoBadge) {
-          logoBadge.innerHTML = `<img src="${comp.logoDataUrl}" style="max-height:36px;max-width:48px;object-fit:contain;" alt="Logo" />`;
+
+      const companyName = comp.name || '企业数字化创新交付中心';
+      const department = comp.department || '技术交付团队';
+      const logoText = comp.logoText || 'TECH';
+      const reportTitle = proj.reportTitle || 'Weekly Report';
+
+      setText('displayCompanyName', companyName);
+      setText('displayDeptName', department);
+      setText('displayReportTitle', reportTitle);
+      setText('displayProjectTitle', proj.title || '核心系统升级与交付项目');
+      setText('displayReportPeriod', '汇报周期：' + (proj.period || ''));
+      setText('displayProjectCode', proj.projectCode || '-');
+      setText('displayReporter', proj.reporter || '项目交付团队');
+      setText('displayReportDate', proj.reportDate || '-');
+      setText('displayConfidential', proj.confidential || 'CONFIDENTIAL · 内部汇报');
+      document.title = `项目周报 | ${reportTitle}`;
+
+      const logoBadge = document.getElementById('logoIconBadge');
+      if (logoBadge) {
+        if (comp.logoDataUrl) {
+          logoBadge.innerHTML = `<img src="${escapeHtml(comp.logoDataUrl)}" style="max-height:36px;max-width:48px;object-fit:contain;" alt="Logo" />`;
           logoBadge.style.background = 'transparent';
           logoBadge.style.border = 'none';
           logoBadge.style.boxShadow = 'none';
-        }
-      } else if (comp.logoText) {
-        const logoBadge = document.getElementById('logoIconBadge');
-        if (logoBadge) {
+        } else {
           logoBadge.removeAttribute('style');
-          logoBadge.textContent = comp.logoText;
+          logoBadge.textContent = logoText;
         }
       }
-      if (comp.department) document.getElementById('displayDeptName').textContent = comp.department;
-      
-      if (proj.title) document.getElementById('displayProjectTitle').textContent = proj.title;
-      if (proj.period) document.getElementById('displayReportPeriod').textContent = "汇报周期：" + proj.period;
-      if (proj.reporter) document.getElementById('displayReporter').textContent = proj.reporter;
+
+      // Overall status (cover meta card)
+      const statusKey = getOverallStatus(data);
+      const st = OVERALL_STATUS[statusKey];
+      const statusEl = document.getElementById('displayOverallStatus');
+      if (statusEl) {
+        statusEl.style.color = st.color;
+        const dot = statusEl.querySelector('.status-dot');
+        if (dot) dot.className = `status-dot ${st.dot}`;
+        const txt = statusEl.querySelector('.overall-status-text');
+        if (txt) txt.textContent = proj.overallStatusText || st.text;
+      }
 
       // Fill in input values in drawer
-      if (comp.name) document.getElementById('inputCompanyName').value = comp.name;
-      if (comp.logoText) document.getElementById('inputLogoText').value = comp.logoText;
-      if (comp.department) document.getElementById('inputDeptName').value = comp.department;
+      document.getElementById('inputCompanyName').value = companyName;
+      document.getElementById('inputLogoText').value = logoText;
+      document.getElementById('inputDeptName').value = department;
     }
 
     // Render Slide 2: Timeline (Work Plan — Overview)
@@ -3923,13 +4235,11 @@
       const weeks = timelineData.weeks || [];
       const tasks = timelineData.tasks || timelineData.rows || [];
       const currentWeekId = timelineData.currentWeek || "W16";
-      const weAreHereText = timelineData.weAreHereText || "We are here";
+      const weAreHereText = escapeHtml(timelineData.weAreHereText || "We are here");
       
       // Update Slide 2 Title & Subtitle
-      if (timelineData.title) {
-        const titleEl = document.querySelector('#slide2 .slide-title');
-        if (titleEl) titleEl.textContent = timelineData.title;
-      }
+      const tlTitleEl = document.querySelector('#slide2 .slide-title');
+      if (tlTitleEl) tlTitleEl.textContent = timelineData.title || 'Work Plan —Overview';
       let subText = timelineData.subtitle;
       if (weeks.length) {
         const firstW = weeks[0].name || weeks[0].id || '';
@@ -3941,10 +4251,8 @@
           subText = subText.replace('(W6 - W20)', rangeStr);
         }
       }
-      if (subText) {
-        const subEl = document.querySelector('#slide2 .slide-subtitle');
-        if (subEl) subEl.textContent = subText;
-      }
+      const tlSubEl = document.querySelector('#slide2 .slide-subtitle');
+      if (tlSubEl) tlSubEl.textContent = subText || '端到端执行计划及进度跟踪';
 
       const holidayMap = {};
       weeks.forEach(w => {
@@ -3966,8 +4274,8 @@
           else if (w.id === currentWeekId) style = ' style="background-color: var(--brand-primary-dark);"';
           ths += `
             <th class="gantt-header-th col-week"${style}>
-              <div class="week-title">${w.name || w.id}</div>
-              <div class="week-date">${w.dates || ''}</div>
+              <div class="week-title">${escapeHtml(w.name || w.id)}</div>
+              <div class="week-date">${escapeHtml(w.dates || '')}</div>
             </th>
           `;
         });
@@ -4007,7 +4315,7 @@
           }
 
           // Stars
-          let stars = t.stars || [];
+          const stars = [...(t.stars || [])];
           if (t.milestone) {
             if (typeof t.milestone === 'string') stars.push(t.milestone);
             else if (t.milestone === true && t.end) stars.push(t.end);
@@ -4018,17 +4326,17 @@
           // Workstream rowspan cell
           if (!renderedWs.has(ws)) {
             renderedWs.add(ws);
-            cells += `<td rowspan="${workstreamCounts[ws]}" class="col-workstream" style="background:#f8fafc; font-weight:700;">${ws}</td>`;
+            cells += `<td rowspan="${workstreamCounts[ws]}" class="col-workstream" style="background:#f8fafc; font-weight:700;">${escapeHtml(ws)}</td>`;
           }
 
           // Category rowspan cell
           if (!renderedCat.has(wsCatKey)) {
             renderedCat.add(wsCatKey);
-            cells += `<td rowspan="${wsCatCounts[wsCatKey]}" class="col-category">${cat}</td>`;
+            cells += `<td rowspan="${wsCatCounts[wsCatKey]}" class="col-category">${escapeHtml(cat)}</td>`;
           }
 
           // Task name
-          cells += `<td class="col-task">${taskName}</td>`;
+          cells += `<td class="col-task">${escapeHtml(taskName)}</td>`;
 
           // Week cells
           weeks.forEach((w, wIdx) => {
@@ -4037,11 +4345,11 @@
             if (holidayMap[wId]) {
               if (rowIdx === 0) {
                 const holidayName = holidayMap[wId];
-                let holidayContent = `<div class="holiday-col-text">${holidayName}</div>`;
+                let holidayContent = `<div class="holiday-col-text">${escapeHtml(holidayName)}</div>`;
                 let holidayStyle = '';
                 if (wId === currentWeekId) {
                   holidayContent += `
-                    <div class="we-are-here-indicator" data-week="${wId}">
+                    <div class="we-are-here-indicator" data-week="${escapeHtml(wId)}">
                       <span class="red-arrow-up"></span>
                       <span>${weAreHereText}</span>
                     </div>`;
@@ -4060,7 +4368,7 @@
               if (startIdx !== -1 && endIdx !== -1 && wIdx >= startIdx && wIdx <= endIdx) {
                 const status = (s.status || s.type || "completed").toLowerCase();
                 if (status === "completed" || status === "done") cellClass = "gantt-bar-completed";
-                else if (status === "active" || status === "ongoing") cellClass = "gantt-bar-active";
+                else if (status === "active" || status === "ongoing" || status === "current") cellClass = "gantt-bar-active";
                 else cellClass = "gantt-bar-planned";
                 break;
               }
@@ -4075,7 +4383,7 @@
             // We are here indicator
             if (rowIdx === tasks.length - 1 && wId === currentWeekId) {
               content += `
-                <div class="we-are-here-indicator" data-week="${wId}">
+                <div class="we-are-here-indicator" data-week="${escapeHtml(wId)}">
                   <span class="red-arrow-up"></span>
                   <span>${weAreHereText}</span>
                 </div>
@@ -4098,10 +4406,8 @@
       if (!delivData) return;
 
       // Update Slide 3 Title & Subtitle
-      if (delivData.title) {
-        const titleEl = document.querySelector('#slide3 .slide-title');
-        if (titleEl) titleEl.textContent = delivData.title;
-      }
+      const delivTitleEl = document.querySelector('#slide3 .slide-title');
+      if (delivTitleEl) delivTitleEl.textContent = delivData.title || 'Deliverables / Output Status';
       const subEl = document.querySelector('#slide3 .slide-subtitle');
       if (subEl) {
         subEl.textContent = delivData.subtitle || "关键交付节点与成果物健康度评估";
@@ -4112,23 +4418,24 @@
       if (tbody) {
         let rowsHtml = '';
         items.forEach(item => {
-          const status = item.status || "未开始";
+          const status = String(item.status || "未开始");
+          const statusLc = status.toLowerCase();
           let pillCls = "pending";
-          if (status.includes("完成") || status.toLowerCase() === "completed") pillCls = "completed";
-          else if (status.includes("进行") || status.toLowerCase() === "ongoing") pillCls = "ongoing";
+          if (status.includes("完成") || statusLc === "completed") pillCls = "completed";
+          else if (status.includes("进行") || statusLc === "ongoing" || statusLc === "active") pillCls = "ongoing";
 
           let dotHtml = '<span style="color:#94a3b8;">-</span>';
-          const risk = (item.risk || "none").toLowerCase();
-          if (risk === "good" || risk === "norisk") dotHtml = '<span class="status-dot dot-good"></span>';
-          else if (risk === "caution" || risk === "warning") dotHtml = '<span class="status-dot dot-caution"></span>';
-          else if (risk === "risk" || risk === "danger") dotHtml = '<span class="status-dot dot-risk"></span>';
+          const risk = String(item.risk || "none").toLowerCase();
+          if (["good", "norisk", "no_risk"].includes(risk)) dotHtml = '<span class="status-dot dot-good"></span>';
+          else if (["caution", "warning", "medium"].includes(risk)) dotHtml = '<span class="status-dot dot-caution"></span>';
+          else if (["risk", "high", "danger"].includes(risk)) dotHtml = '<span class="status-dot dot-risk"></span>';
 
           rowsHtml += `
             <tr>
-              <td class="col-m-name">${item.milestone || ''}</td>
-              <td class="col-m-prog">${item.progress || '-'}</td>
-              <td class="col-m-date">${item.date || ''}</td>
-              <td class="col-m-stat"><span class="status-pill ${pillCls}">${status}</span></td>
+              <td class="col-m-name">${escapeHtml(item.milestone || '')}</td>
+              <td class="col-m-prog">${escapeHtml(item.progress || '-')}</td>
+              <td class="col-m-date">${escapeHtml(item.date || '')}</td>
+              <td class="col-m-stat"><span class="status-pill ${pillCls}">${escapeHtml(status)}</span></td>
               <td class="col-m-indi">${dotHtml}</td>
             </tr>
           `;
@@ -4138,23 +4445,19 @@
     }
 
     // Render Slide 4: This Week (Task Management)
-    function renderThisWeek(thisWeekData) {
+    function renderThisWeek(thisWeekData, overallStatus) {
       if (!thisWeekData) return;
 
       // Title & Subtitle
-      if (thisWeekData.title) {
-        const titleEl = document.querySelector('#slide4 .slide-title');
-        if (titleEl) titleEl.textContent = thisWeekData.title;
-      }
-      if (thisWeekData.subtitle) {
-        const sub = document.querySelector('#slide4 .slide-subtitle');
-        if (sub) sub.textContent = thisWeekData.subtitle;
-      }
+      const twTitleEl = document.querySelector('#slide4 .slide-title');
+      if (twTitleEl) twTitleEl.textContent = thisWeekData.title || 'Task Management';
+      const twSubEl = document.querySelector('#slide4 .slide-subtitle');
+      if (twSubEl) twSubEl.textContent = thisWeekData.subtitle || '';
 
-      // Status Circle
+      // Status Circle (PPT traffic-light colors)
       const circle = document.querySelector('#slide4 .ppt-status-circle');
       if (circle) {
-        const status = (thisWeekData.overallStatus || "caution").toLowerCase();
+        const status = String(thisWeekData.overallStatus || overallStatus || 'caution').toLowerCase();
         let color = "#ED7D31"; // caution
         if (status === "good") color = "#00B050";
         else if (status === "risk") color = "#FF0000";
@@ -4169,7 +4472,7 @@
           prevBox.innerHTML = tasks.map((t, idx) => `
             <div class="ppt-list-item">
               <span class="ppt-list-num">${idx + 1}.</span>
-              <div>${t.tag ? `<span class="ppt-tag">【${t.tag}】</span>` : ''}${t.content || ''}</div>
+              <div>${t.tag ? `<span class="ppt-tag">【${escapeHtml(t.tag)}】</span>` : ''}${escapeHtml(t.content || '')}</div>
             </div>
           `).join('');
         } else {
@@ -4185,7 +4488,7 @@
           nextBox.innerHTML = tasks.map((t, idx) => `
             <div class="ppt-list-item">
               <span class="ppt-list-num">${idx + 1}.</span>
-              <div>${t.tag ? `<span class="ppt-tag">【${t.tag}】</span>` : ''}${t.content || ''}</div>
+              <div>${t.tag ? `<span class="ppt-tag">【${escapeHtml(t.tag)}】</span>` : ''}${escapeHtml(t.content || '')}</div>
             </div>
           `).join('');
         } else {
@@ -4201,7 +4504,7 @@
           riskBox.innerHTML = tasks.map((t, idx) => `
             <div class="ppt-list-item">
               <span class="ppt-list-num">${idx + 1}.</span>
-              <div>${t.tag ? `<span class="ppt-tag">【${t.tag}】</span>` : ''}${t.content || ''}</div>
+              <div>${t.tag ? `<span class="ppt-tag">【${escapeHtml(t.tag)}】</span>` : ''}${escapeHtml(t.content || '')}</div>
             </div>
           `).join('');
         } else {
@@ -4216,8 +4519,8 @@
         if (ms.length) {
           msTableTbody.innerHTML = ms.map(m => `
             <tr>
-              <td>${m.name || '-'}</td>
-              <td>${m.date || '-'}</td>
+              <td>${escapeHtml(m.name || '-')}</td>
+              <td>${escapeHtml(m.date || '-')}</td>
             </tr>
           `).join('');
         } else {
@@ -4722,7 +5025,7 @@
 
   <script id="weekly-report-data" type="application/json">
 {
-  "theme": "classic-navy",
+  "theme": "astrazeneca",
   "company": {
     "name": "AstraZeneca / 数字化交付中心",
     "logoText": "AZ",

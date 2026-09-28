@@ -2,6 +2,9 @@
 
 本文档详细说明每一页周报内容的输入格式规范。其他 Agent 或业务系统只需按照此 JSON 结构提供数据，即可通过生成脚本或 HTML 页面自动生成完整的 4 页周报（包含自动计算排版的端到端 Timeline 甘特图）。
 
+- 精确的字段、类型与枚举值定义见 [`schema.json`](./schema.json)（JSON Schema，可直接用于编辑器补全）。
+- 生成前请运行 `python3 scripts/generate_report.py --data your.json --validate`：它会检查字段类型与枚举、必填项、周 ID 引用、甘特图行分组以及周一至周五日期，并对拼错的字段名给出提示。
+
 ---
 
 ## 1. 整体数据结构概览
@@ -130,7 +133,7 @@ Timeline 是核心复杂图表，支持**按周时间轴**定义、**多工作�
 ```
 
 #### Timeline 自动生成逻辑：
-1. **自动单元格合并 (`rowspan`)**：生成引擎会扫描 `workstream` 与 `category`，自动计算合并跨度，无需手动写 HTML `rowspan`。
+1. **自动单元格合并 (`rowspan`)**：生成引擎会扫描 `workstream` 与 `category`，自动计算合并跨度，无需手动写 HTML `rowspan`。**同一 `workstream`（及其下同一 `category`）的任务必须在 `tasks` 数组中连续排列**，否则表格会错位（`--validate` 会报错）。
 2. **特殊假期列自动识别**：只要 `isHoliday: true`，该列会被自动渲染为纵向金色条带，并垂直居中显示 `holidayName`（如“春节假期”）。支持时间轴中包含多个节假日周。
 3. **指针自动定位**：在 `currentWeek` 所在列的底部自动锚定红箭头与 `We are here`。
 4. **里程碑星标渲染**：若指定了 `milestone: "Wxx"`，系统会在该任务的对应周格中渲染红星 ★。
@@ -340,35 +343,21 @@ Timeline 是核心复杂图表，支持**按周时间轴**定义、**多工作�
 
 ## 3. 生成方法
 
-### 方式 A：使用 Python 脚本生成 (推荐 Agent 使用)
 ```bash
-# 1. 常规生成（脚本会自动校验周一至周五日期与节假日标注，若有问题会输出高亮警示与推导建议）
+# 1. 校验数据（字段/枚举/周 ID 引用/行分组/周一至周五日期），有错误时退出码为 1：
+python3 scripts/generate_report.py --data your_weekly_data.json --validate
+
+# 2. 生成 HTML（生成前会自动校验，有错误时中止）：
 python3 scripts/generate_report.py \
   --data your_weekly_data.json \
-  --theme classic-navy \
+  --theme astrazeneca \
   --output weekly-report.html
 
-# 2. 仅进行时间轴日期与节假日合法性校验（不生成 HTML）：
-python3 scripts/generate_report.py --data your_weekly_data.json --check-dates
+# 3. 将非节假日周自动对齐为周一至周五，并写回数据文件：
+python3 scripts/generate_report.py --data your_weekly_data.json --check-dates --fix-dates
 
-# 3. 自动将非节假日日期纠正对齐为周一至周五标准区间：
-python3 scripts/generate_report.py --data your_weekly_data.json --fix-dates --output weekly-report.html
-
-# 4. 严格校验模式（若日期非周一至周五直接报错中断）：
-python3 scripts/generate_report.py --data your_weekly_data.json --strict-dates
+# 4. 严格日期模式（日期不合规时直接中断生成）：
+python3 scripts/generate_report.py --data your_weekly_data.json --strict-dates --output weekly-report.html
 ```
 
-### 方式 B：在网页中直接修改文字 (所见即所得，适合细节微调)
-1. 用浏览器打开 `weekly-report.html`。
-2. 点击顶部栏中的 **「✏️ 编辑内容」** 按钮（或直接双击页面上任意想修改的文字，或按快捷键 `E`）。
-3. 页面立即进入直接编辑模式，鼠标点击任何文字、卡片、标题或表格单元格即可直接修改（删减字句、修饰措辞）。
-4. 修改完毕后：
-   - 点击 **「💾 另存 HTML」**，即可将包含最新文字修改的独立 HTML 保存至本地（修改内容自动同步嵌入数据）。
-   - 点击 **「导出 PDF / 打印」**，直接将修改后的内容输出为 16:9 高清矢量 PDF。
-   - 按 `Esc` 或点击「完成编辑」即可退出编辑模式。
-
-### 方式 C：在网页弹窗中通过 JSON 全量更新 (批量重排 Timeline)
-1. 点击顶部栏中的 **「📝 数据 JSON」** 按钮。
-2. 弹出 JSON 编辑器，粘贴或修改您的数据（包含修改 Timeline 的任务与周期）。
-3. 点击 **「即时计算生成全套周报」**，所有页面（包括 Timeline 甘特图）立即实时重新计算并渲染。
-4. 点击 **「导出 PDF」** 即可获取最新周报。
+生成的 HTML 在浏览器中还支持直接改字、JSON 全量更新与演示模式，详见 [`README.md`](../README.md)。

@@ -23,11 +23,16 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Validate Timeline Dates Check
+      - name: Run Unit Tests
+        run: python3 -m unittest discover -s skills/weekly-report-generator/tests -v
+
+      - name: Validate Example Data (schema, references, dates)
         run: |
-          python3 skills/weekly-report-generator/scripts/generate_report.py \
-            --data skills/weekly-report-generator/examples/sample_data.json \
-            --check-dates
+          for f in sample_data vercel_sample_data; do
+            python3 skills/weekly-report-generator/scripts/generate_report.py \
+              --data skills/weekly-report-generator/examples/$f.json \
+              --validate
+          done
 
       - name: Test Report Compilation (AstraZeneca Theme)
         run: |
@@ -59,7 +64,5 @@ jobs:
 
       - name: Verify Zero External Python Dependencies
         run: |
-          python3 -c "
-          import json, os, re, sys, datetime, argparse, pathlib
-          print('All required modules belong to Python standard library!')
-          "
+          cd skills/weekly-report-generator/scripts
+          python3 -c "import generate_report, validate_data, pptx_extractor, export_pdf; print('All scripts import with the standard library only')"

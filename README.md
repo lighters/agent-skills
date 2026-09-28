@@ -128,7 +128,7 @@ python3 scripts/export_pdf.py \
 4. **工作周日期严格约束与智能校验系统**：
    - **周一至周五标准工作周**：Timeline 中的每周日期严格要求为周一至周五（Python `weekday() == 0` 到 `4`），杜绝大模型猜测日历导致的星期偏移。
    - **智能推导与报错诊断**：运行生成脚本时自动校验日历，提供详细告警并附带推算后的标准周一至周五区间建议。
-   - **命令行工具支持**：提供 `--check-dates`（仅校验）、`--fix-dates`（自动对齐纠正）与 `--strict-dates`（严格报错中断）。
+   - **命令行工具支持**：提供 `--validate`（数据全量校验）、`--check-dates`（仅校验日期）、`--fix-dates`（自动对齐纠正并写回）与 `--strict-dates`（严格报错中断）。
 5. **7 大企业主题与自定义调色 (Theme System)**：
    - 内置 7 套企业级视觉预设：
      * `astrazeneca`（阿斯利康 · 经典深蓝与洋红）
@@ -155,10 +155,10 @@ python3 scripts/generate_report.py \
   --theme astrazeneca \
   --output weekly-report.html
 
-# 2. 仅校验时间轴日期合法性（不生成 HTML）
-python3 scripts/generate_report.py --data examples/sample_data.json --check-dates
+# 2. 校验数据：字段、枚举、周 ID 引用与周一至周五日期（不生成 HTML）
+python3 scripts/generate_report.py --data examples/sample_data.json --validate
 
-# 3. 自动将非标准日期对齐为周一至周五并生成报告
+# 3. 自动将非标准日期对齐为周一至周五（写回数据文件）并生成报告
 python3 scripts/generate_report.py --data your_data.json --fix-dates --output weekly-report.html
 
 # 4. 导出为高清 16:9 矢量 PDF 附件（依赖本地 Chrome/Edge）

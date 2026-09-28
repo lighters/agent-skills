@@ -44,11 +44,9 @@ skills/<skill-name>/
    ```
 3. **Test locally**:
    - Verify that your scripts run without external dependency errors.
-   - If modifying `weekly-report-generator`, test compilation:
+   - If modifying `weekly-report-generator`, run its test suite (the rendering tests need a local Chrome/Chromium and are skipped without one):
      ```bash
-     python3 skills/weekly-report-generator/scripts/generate_report.py \
-       --data skills/weekly-report-generator/examples/sample_data.json \
-       --output /tmp/test.html
+     python3 -m unittest discover -s skills/weekly-report-generator/tests
      ```
 4. **Commit with Conventional Commits**:
    - `feat(skill-name): add ...`

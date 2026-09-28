@@ -1,0 +1,276 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lighters/agent-skills/skills/weekly-report-generator/references/schema.json",
+  "title": "Weekly Report Data",
+  "description": "Input data for weekly-report-generator. Checked by `generate_report.py --validate` (and before every generation). Legacy keys slide2_plan / slide3_deliverables / slide4_tasks / appendixSlides / timeline.rows are still accepted.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "theme": {
+      "type": "string",
+      "description": "Theme id: astrazeneca | classic-navy | novartis | bayer | jnj | novo-nordisk | wukong-green | vercel-minimal. --theme overrides it."
+    },
+    "customTheme": {
+      "type": "object",
+      "description": "CSS color overrides applied on top of the theme.",
+      "additionalProperties": false,
+      "properties": {
+        "primary": { "type": "string" },
+        "primaryDark": { "type": "string" },
+        "accent": { "type": "string" },
+        "holiday": { "type": "string" },
+        "bg": { "type": "string" }
+      }
+    },
+    "company": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "description": "Company or business unit name." },
+        "logoText": { "type": "string", "description": "2-4 letter logo badge, e.g. 'AZ'. Ignored when logoDataUrl is set." },
+        "logoDataUrl": { "type": "string", "description": "Logo image as a data: URL (set automatically by --pptx)." },
+        "department": { "type": "string", "description": "Department or PMO team name." }
+      }
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string", "description": "Full project title (cover subtitle)." },
+        "reportTitle": { "type": "string", "description": "Cover headline. Default 'Weekly Report'." },
+        "projectCode": { "type": "string" },
+        "period": { "type": "string", "description": "Reporting period text, e.g. 'Week 16 (2024.04.01 ～ 2024.04.05)'." },
+        "reporter": { "type": "string" },
+        "reportDate": { "type": "string", "description": "YYYY-MM-DD. Its year is used to validate timeline dates." },
+        "confidential": { "type": "string", "description": "Classification label on the cover. Default 'CONFIDENTIAL · 内部汇报'." },
+        "overallStatus": { "$ref": "#/$defs/overallStatus" },
+        "overallStatusText": { "type": "string", "description": "Cover status label. Defaults by status: 如期进行 / 受控推进中 / 存在风险." }
+      }
+    },
+    "timeline": { "$ref": "#/$defs/timeline" },
+    "slide2_plan": { "$ref": "#/$defs/timeline", "description": "Deprecated alias of timeline." },
+    "deliverables": { "$ref": "#/$defs/deliverables" },
+    "slide3_deliverables": { "$ref": "#/$defs/deliverables", "description": "Deprecated alias of deliverables." },
+    "thisWeek": { "$ref": "#/$defs/thisWeek" },
+    "slide4_tasks": { "$ref": "#/$defs/thisWeek", "description": "Deprecated alias of thisWeek." },
+    "discussionSlides": {
+      "type": "array",
+      "description": "Optional Slide 5+ pages.",
+      "items": { "$ref": "#/$defs/discussionSlide" }
+    },
+    "appendixSlides": {
+      "type": "array",
+      "description": "Deprecated alias of discussionSlides.",
+      "items": { "$ref": "#/$defs/discussionSlide" }
+    },
+    "customPptx": {
+      "type": "object",
+      "description": "Set automatically by --pptx or the in-browser PPTX import. Do not write by hand."
+    }
+  },
+  "$defs": {
+    "overallStatus": {
+      "enum": ["good", "caution", "risk"],
+      "description": "good = 如期进行 (green), caution = 有问题但不影响进度 (amber), risk = 重大问题 (red)."
+    },
+    "barStatus": {
+      "enum": ["completed", "done", "active", "ongoing", "current", "planned", "pending"],
+      "description": "completed/done = finished bar, active/ongoing/current = in-flight bar, planned/pending = future bar."
+    },
+    "weekRef": {
+      "type": "string",
+      "description": "Must equal one of timeline.weeks[].id."
+    },
+    "week": {
+      "type": "object",
+      "required": ["id", "dates"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "description": "Unique week id referenced by tasks, e.g. 'W16'." },
+        "name": { "type": "string", "description": "Column header. Defaults to id." },
+        "dates": { "type": "string", "description": "Monday-Friday span 'M.D-M.D' (or 'YYYY.M.D-YYYY.M.D' across years)." },
+        "isHoliday": { "type": "boolean", "description": "Statutory holiday week: rendered as a full-height golden column." },
+        "holidayName": { "type": "string", "description": "Required when isHoliday is true, e.g. '国庆假期'." },
+        "isCurrent": { "type": "boolean", "description": "Deprecated; use timeline.currentWeek." }
+      }
+    },
+    "span": {
+      "type": "object",
+      "required": ["start", "end"],
+      "additionalProperties": false,
+      "properties": {
+        "start": { "$ref": "#/$defs/weekRef" },
+        "end": { "$ref": "#/$defs/weekRef" },
+        "status": { "$ref": "#/$defs/barStatus" },
+        "type": { "$ref": "#/$defs/barStatus", "description": "Deprecated alias of status." }
+      }
+    },
+    "task": {
+      "type": "object",
+      "required": ["task"],
+      "additionalProperties": false,
+      "description": "Use start/end/status for a single bar, or spans[] for multi-phase bars.",
+      "properties": {
+        "workstream": { "type": "string", "description": "Merged vertically; tasks sharing a workstream must be adjacent." },
+        "category": { "type": "string", "description": "Merged vertically within a workstream; tasks sharing a category must be adjacent." },
+        "task": { "type": "string" },
+        "start": { "$ref": "#/$defs/weekRef" },
+        "end": { "$ref": "#/$defs/weekRef" },
+        "status": { "$ref": "#/$defs/barStatus" },
+        "spans": { "type": "array", "items": { "$ref": "#/$defs/span" } },
+        "milestone": {
+          "type": ["boolean", "string"],
+          "description": "true = star on the end week; a week id = star on that week."
+        },
+        "stars": { "type": "array", "items": { "$ref": "#/$defs/weekRef" } }
+      }
+    },
+    "timeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string", "description": "Default 'Work Plan —Overview'." },
+        "subtitle": { "type": "string", "description": "Default '端到端执行计划及进度跟踪 (<first> - <last>)'." },
+        "currentWeek": { "$ref": "#/$defs/weekRef", "description": "Week that gets the 'We are here' pointer." },
+        "weAreHereText": { "type": "string" },
+        "weeks": { "type": "array", "items": { "$ref": "#/$defs/week" } },
+        "tasks": { "type": "array", "items": { "$ref": "#/$defs/task" } },
+        "rows": { "type": "array", "items": { "$ref": "#/$defs/task" }, "description": "Deprecated alias of tasks." }
+      }
+    },
+    "deliverables": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Slide 3: major deliverables and milestone gates only. Tactical tasks belong in thisWeek.",
+      "properties": {
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["milestone"],
+            "additionalProperties": false,
+            "properties": {
+              "milestone": { "type": "string" },
+              "progress": { "type": "string", "description": "1-2 sentence summary, or '-'." },
+              "date": { "type": "string", "description": "Target date YYYY.M.D." },
+              "status": {
+                "type": "string",
+                "description": "已完成 / 进行中 / 未开始 (or completed / active / planned). Text containing 完成 or 进行 is styled accordingly; anything else is styled as not started."
+              },
+              "risk": {
+                "enum": ["good", "norisk", "no_risk", "caution", "warning", "medium", "risk", "high", "danger", "none"],
+                "description": "good = 🟢, caution = 🟡, risk = 🔴, none = '-'."
+              }
+            }
+          }
+        }
+      }
+    },
+    "listItem": {
+      "type": "object",
+      "required": ["content"],
+      "additionalProperties": false,
+      "properties": {
+        "tag": { "type": "string", "description": "Shown as 【tag】 before the content." },
+        "content": { "type": "string" },
+        "index": { "type": "integer", "description": "Ignored; items are numbered automatically." }
+      }
+    },
+    "thisWeek": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Slide 4: tactical weekly execution.",
+      "properties": {
+        "title": { "type": "string", "description": "Default 'Task Management'." },
+        "subtitle": { "type": "string", "description": "e.g. 'Week 16：4.1～4.5，2024'." },
+        "overallStatus": { "$ref": "#/$defs/overallStatus" },
+        "previousTasks": { "type": "array", "items": { "$ref": "#/$defs/listItem" } },
+        "nextSteps": { "type": "array", "items": { "$ref": "#/$defs/listItem" } },
+        "risks": { "type": "array", "items": { "$ref": "#/$defs/listItem" } },
+        "milestones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string" },
+              "date": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "discussionCard": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string" },
+        "badge": { "type": "string" },
+        "badgeType": { "enum": ["recommended", "success", "alternative", "info", "warning", "risk", "neutral"] },
+        "summary": { "type": "string" },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "label": { "type": "string" },
+              "text": { "type": "string" },
+              "value": { "type": "string", "description": "Alias of text." }
+            }
+          }
+        },
+        "points": { "type": "array", "items": { "type": "string" } },
+        "verdict": { "type": "string" }
+      }
+    },
+    "discussionSlide": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "badge": { "type": "string" },
+        "category": { "type": "string" },
+        "layout": {
+          "enum": ["comparison", "cards", "agenda", "deep-dive", "table", "custom"],
+          "description": "comparison/cards use cards[]; agenda/deep-dive use sections[]; table uses table; custom uses html. Default comparison."
+        },
+        "columns": { "enum": [2, 3, 4] },
+        "cards": { "type": "array", "items": { "$ref": "#/$defs/discussionCard" } },
+        "sections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "title": { "type": "string" },
+              "content": { "type": "string" },
+              "contentHtml": { "type": "string", "description": "Raw HTML (not escaped); takes precedence over content." }
+            }
+          }
+        },
+        "table": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "headers": { "type": "array", "items": { "type": ["string", "number"] } },
+            "rows": { "type": "array", "items": { "type": "array", "items": { "type": ["string", "number"] } } }
+          }
+        },
+        "html": { "type": "string", "description": "Raw HTML for layout 'custom' (not escaped)." },
+        "conclusion": {
+          "type": ["string", "object"],
+          "description": "Bottom decision box: a string, or { badge, text }.",
+          "additionalProperties": false,
+          "properties": {
+            "badge": { "type": "string" },
+            "text": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}
