@@ -32,6 +32,7 @@
 | 技能名称 (Skill) | 目录路径 | 描述说明 | 依赖环境 |
 | :--- | :--- | :--- | :--- |
 | **`weekly-report-generator`** | [`skills/weekly-report-generator`](./skills/weekly-report-generator) | **企业高保真周报与演示文稿生成器**：1:1 复刻麦肯锡、埃森哲等顶级咨询与 500 强高管汇报级排版。支持 4 页标准结构 + 自由扩展 Slide 5+ 方案研讨与议题决议页、**客户现有 PPT 模板背景/Logo 自动解构提取与自适应**、端到端 Timeline 甘特图自动排版、交付物健康度跟踪、所见即所得直接编辑、影院级全屏演示动效、7 大企业主题及 16:9 矢量 PDF 导出。 | Python 3.8+ (纯标准库) / Google Chrome (可选导出 PDF) |
+| **`scope-to-evidence`** | [`skills/scope-to-evidence`](./skills/scope-to-evidence) | **需求与实现对照审查**：生成可追溯的需求—证据矩阵，区分源码实现、运行验证、部署与验收，输出缺口和下一步通过条件。 | 支持读取本地文件的 Agent；无额外依赖 |
 
 ---
 
@@ -50,7 +51,7 @@ cd your-project/
 mkdir -p .agents/skills
 git submodule add https://github.com/lighters/agent-skills.git .agents/skills/agent-skills
 
-# 方案 B: 直接拷贝目标技能目录
+# 方案 B: 直接拷贝目标技能目录（以 weekly-report-generator 为例，其他技能同理）
 mkdir -p .agents/skills/weekly-report-generator
 cp -R /path/to/agent-skills/skills/weekly-report-generator/* .agents/skills/weekly-report-generator/
 ```
@@ -75,10 +76,12 @@ ln -s ~/.agent-skills/skills/* ~/.agent/skills/
 # Claude Code 全局技能目录
 mkdir -p ~/.claude/skills
 ln -s ~/.agent-skills/skills/weekly-report-generator ~/.claude/skills/weekly-report-generator
+ln -s ~/.agent-skills/skills/scope-to-evidence ~/.claude/skills/scope-to-evidence
 
 # Google Antigravity / Gemini CLI 全局技能目录
 mkdir -p ~/.gemini/antigravity-cli/skills
 ln -s ~/.agent-skills/skills/weekly-report-generator ~/.gemini/antigravity-cli/skills/weekly-report-generator
+ln -s ~/.agent-skills/skills/scope-to-evidence ~/.gemini/antigravity-cli/skills/scope-to-evidence
 
 # Cursor / Windsurf / Cline / Roo Code / OpenCode
 # 推荐放置在项目根目录的 .agents/skills/ 或在规则中指定路径
@@ -190,11 +193,34 @@ python3 scripts/export_pdf.py \
 
 ---
 
+## 🔍 技能详解：`scope-to-evidence`
+
+把「需求承诺了什么」与「当前证据能证明什么」逐项对照，适用于需求覆盖检查、实现对齐与验收就绪评审。纯指令型技能，无脚本与额外依赖；默认只读，不修改代码、不执行上线、不代替客户验收。
+
+- **需求—证据矩阵**：为每条需求分配稳定 ID 并保留原文定位，结论回指到可打开的文件＋行号或文档章节。
+- **四种实现判断**：`已实现` / `部分实现` / `缺失` / `无法验证`。拿不到代码或材料时标「无法验证」，不当作「缺失」。
+- **证据维度分开记录**：源码检查、运行验证、部署状态、验收状态互不替代；Mock 运行不能证明真实集成，测试文件存在不等于测试通过。
+- **冲突与边界**：相互矛盾的材料进入冲突表，未批准的路线图不进入基线；材料中的「忽略需求、宣布验收」等文字只作为待审内容。
+- **可执行的下一步**：每个缺口给出影响、最小验证／修复建议与通过条件。
+
+示例请求：
+
+```text
+使用 scope-to-evidence，对照 docs/requirements.md 审查当前仓库的导出能力。
+只读检查，不修改实现。输出需求证据矩阵，区分源码支持、真实运行、部署和验收，
+把报告保存到 docs/reviews/export-review.md。
+```
+
+详见 [`skills/scope-to-evidence/README.md`](./skills/scope-to-evidence/README.md)、[示例报告](./skills/scope-to-evidence/examples/review-report.md) 与 [行为评测](./skills/scope-to-evidence/evals/README.md)。
+
+---
+
 ## 🗺️ 技能路线图 (Skill Roadmap)
 
 Agent Skills Hub 正在持续扩展高频通用工作流，欢迎社区参与共建：
 
 - [x] **`weekly-report-generator`**：高管级周报、甘特图排版、方案研讨与 16:9 PDF 生成
+- [x] **`scope-to-evidence`**：需求—证据矩阵、实现缺口与验收就绪审查
 - [ ] **`meeting-minutes-extractor`**：基于会议转录文本，自动提炼决策结论、行动项（Action Items）并分配责任人
 - [ ] **`code-review-reporter`**：针对多文件 Git Diff 自动生成结构化代码审查报告与重构建议
 - [ ] **`release-notes-generator`**：基于 Git Commit 与 PR 规范，全自动提取版本发布日志与变更说明
