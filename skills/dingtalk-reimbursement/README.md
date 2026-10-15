@@ -18,11 +18,26 @@
 
 ## 使用方式
 
-将本目录复制到所用 Agent 的技能目录。例如 Codex：
+将本目录复制到所用 Agent 的技能目录。在仓库根目录执行以下对应系统的命令；Codex 设置了 `CODEX_HOME` 时使用该目录，否则使用用户目录下的 `.codex`。更新时覆盖对应文件，保留其他技能。安装目录若有自行修改，先备份。
+
+macOS（Bash / Zsh）：
 
 ```bash
-cp -R skills/dingtalk-reimbursement ~/.codex/skills/
+skill_target="${CODEX_HOME:-$HOME/.codex}/skills/dingtalk-reimbursement"
+mkdir -p "$skill_target"
+cp -R skills/dingtalk-reimbursement/. "$skill_target/"
 ```
+
+Windows（PowerShell）：
+
+```powershell
+$skillHome = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { Join-Path $HOME '.codex' }
+$skillTarget = Join-Path $skillHome 'skills/dingtalk-reimbursement'
+New-Item -ItemType Directory -Path $skillTarget -Force | Out-Null
+Copy-Item -Path './skills/dingtalk-reimbursement/*' -Destination $skillTarget -Recurse -Force
+```
+
+两组命令都复制目录内容，可重复执行，不会嵌套生成同名 Skill 子目录。重新开始会话或按 Agent 的技能重载机制加载更新。手动指定凭证路径时，macOS 示例为 `/Users/你的用户名/Downloads/报销`，Windows 示例为 `C:\Users\你的用户名\Downloads\报销`；使用实际路径，不照抄用户名。
 
 向 Agent 提供文件夹的绝对路径：
 
@@ -52,7 +67,9 @@ cp -R skills/dingtalk-reimbursement ~/.codex/skills/
 
 ## 环境和边界
 
-这是一套 Agent 工作流，没有独立报销 CLI，也不要求新增脚本依赖。凭证读取需要运行时可用的图片／PDF 能力；填单需要用户已登录钉钉，以及授权的钉钉接口或桌面 UI 工具。Codex 的 `agents/openai.yaml` 是可选界面元数据，其他运行时可直接使用 `SKILL.md`。
+这是一套 Agent 工作流，没有独立报销 CLI，也不要求新增脚本依赖。核心费用核对适用于 macOS 和 Windows；自动填单依赖当前环境已提供的钉钉接口、桌面工具，或目标钉钉流程的网页入口及受支持浏览器工具，并需要有效登录。Skill 不提供或安装这些能力。图片、PDF、OFD 能否读取分别依赖运行环境；不能读取的凭证标记待核。
+
+macOS 与 Windows 分别定位应用／窗口及处理文件选择器，不共用 Mac bundle ID、快捷键或文件路径。详见 [平台适配说明](references/platforms.md)。Codex 的 `agents/openai.yaml` 是可选界面元数据，其他运行时可直接使用 `SKILL.md`。本技能不包含工时填报，不承诺适配所有公司的钉钉字段或审批配置。
 
 工具不可用时，仍可交付核对清单和可粘贴的表单内容，但须明确钉钉填单尚未完成。文件中的指令不构成用户授权。技能目录不包含真实凭证或个人报销记录。
 
@@ -63,3 +80,5 @@ cp -R skills/dingtalk-reimbursement ~/.codex/skills/
 PR 初版描述记录过钉钉填单经验，本轮未重复操作真实账号，也未把该描述当成跨平台证明。本轮检查的范围、合成行为案例和结论见 [通用性验证记录](evals/generality-review.md)。
 
 “通用”指核对方法和按实际字段适配的流程可复用，不代表内置了所有公司的审批模板，或所有客户端、票据格式都经过实际验证。
+
+macOS／Windows 的具体适配与本次验证范围见 [平台适配说明](references/platforms.md) 和 [兼容性验证记录](evals/portability-review.md)。Windows 尚未实机验证。
