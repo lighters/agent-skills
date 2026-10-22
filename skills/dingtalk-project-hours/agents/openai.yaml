@@ -1,0 +1,4 @@
+interface:
+  display_name: "钉钉项目工时获取"
+  short_description: "获取项目全量工时、核对审批中补漏，输出人员投入和成本统计底稿"
+  default_prompt: "用 $dingtalk-project-hours 获取指定项目的全部历史人员工时，核对审批中记录并输出项目、人员汇总及可追溯明细。"
